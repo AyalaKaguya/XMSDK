@@ -31,7 +31,7 @@ namespace ConsoleApplication1
             Console.WriteLine("=== 测试配置文件绑定 ===");
             LocalFileBinder.BindAll();
 
-            Console.WriteLine("=== 初始配置值 ===");
+            Console.WriteLine("初始配置值");
             Console.WriteLine($"DatabaseUrl: {TestConfig.DatabaseUrl}");
             Console.WriteLine($"MaxConnections: {TestConfig.MaxConnections}");
             Console.WriteLine($"EnableLogging: {TestConfig.EnableLogging}");
@@ -71,10 +71,10 @@ namespace ConsoleApplication1
                     Console.WriteLine($"Signal D2816 changed from {oldValue} to {newValue}");
                     server.Broadcast($"Signal D2816 changed to {newValue}");
                 })
-                .OnClientConnected(((server, client) =>
+                .OnClientConnected((server, client) =>
                 {
                     Console.WriteLine($"Client {client.Client.RemoteEndPoint} Connected");
-                }))
+                })
                 .Build();
             
             serverHandle.Run();
@@ -98,14 +98,16 @@ namespace ConsoleApplication1
             Task.Delay(1000).Wait(); // 等待信号处理
             
             Console.WriteLine("测试服务端信号发送");
-            serverHandle.Signal("D2816", true);
+            serverHandle.Signal("D2816", false);
             
             Task.Delay(1000).Wait(); // 等待信号处理
             
+            Console.WriteLine("关闭客户端和服务器");
             clientHandle.Stop();
             serverHandle.Stop();
             
             Task.Delay(1000).Wait(); // 等待信号处理
+            Console.WriteLine("=== 测试完成 ===");
         }
     }
 }

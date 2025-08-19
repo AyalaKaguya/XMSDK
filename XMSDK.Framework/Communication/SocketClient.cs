@@ -60,7 +60,7 @@ namespace XMSDK.Framework.Communication
         public void Stop()
         {
             _isRunning = false;
-            
+
             try
             {
                 _stream?.Close();
@@ -96,14 +96,19 @@ namespace XMSDK.Framework.Communication
                 if (_signals.TryGetValue(name, out var handler))
                 {
                     var oldValue = handler.GetValue();
-                    handler.SetValue(value);
                     
-                    // 发送信号到服务器
-                    var message = MessageProtocol.FormatSignalMessage(name, value);
-                    Send(message);
-                    
-                    // 触发信号变化回调
-                    handler.InvokeChangedClient(this, oldValue, value);
+                    // 比较新旧值，只有在值真正发生变化时才处理
+                    if (!Equals(oldValue, value))
+                    {
+                        handler.SetValue(value);
+
+                        // 发送信号到服务器
+                        var message = MessageProtocol.FormatSignalMessage(name, value);
+                        Send(message);
+
+                        // 触发信号变化回调
+                        handler.InvokeChangedClient(this, oldValue, value);
+                    }
                 }
             }
         }
@@ -121,7 +126,7 @@ namespace XMSDK.Framework.Communication
         public bool GetSignal<T>(string name, out T value)
         {
             value = default(T);
-            
+
             lock (_signalLock)
             {
                 if (_signals.TryGetValue(name, out var handler) && handler is SignalHandler<T>)
@@ -130,14 +135,14 @@ namespace XMSDK.Framework.Communication
                     return true;
                 }
             }
-            
+
             return false;
         }
 
         private void ReceiveMessages()
         {
             var buffer = new byte[1024 * 1024]; // 1MB buffer
-            
+
             while (_isRunning && IsConnected)
             {
                 try
@@ -179,10 +184,14 @@ namespace XMSDK.Framework.Communication
                     {
                         var oldValue = handler.GetValue();
                         var newValue = MessageProtocol.ConvertValue(signalValue, handler.ValueType);
-                        handler.SetValue(newValue);
                         
-                        // 触发信号变化回调
-                        handler.InvokeChangedClient(this, oldValue, newValue);
+                        // 只有在值真正发生变化时才触发回调
+                        if (!Equals(oldValue, newValue))
+                        {
+                            handler.SetValue(newValue);
+                            // 触发信号变化回调
+                            handler.InvokeChangedClient(this, oldValue, newValue);
+                        }
                     }
                 }
                 return;
@@ -195,6 +204,7 @@ namespace XMSDK.Framework.Communication
                 {
                     handler.InvokeClient(this);
                 }
+
                 return;
             }
 

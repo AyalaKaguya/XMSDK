@@ -87,8 +87,6 @@ namespace XMSDK.Framework.Communication
             {
                 Close(client);
             }
-
-            _listenerThread?.Join(5000);
         }
 
         public void Broadcast(string message)
@@ -116,14 +114,19 @@ namespace XMSDK.Framework.Communication
                 if (!_signals.TryGetValue(name, out var handler)) return;
 
                 var oldValue = handler.GetValue();
-                handler.SetValue(value);
+                
+                // 只有在值真正发生变化时才处理
+                if (!Equals(oldValue, value))
+                {
+                    handler.SetValue(value);
 
-                // 通知所有客户端信号变化
-                var message = MessageProtocol.FormatSignalMessage(name, value);
-                Broadcast(message);
+                    // 通知所有客户端信号变化
+                    var message = MessageProtocol.FormatSignalMessage(name, value);
+                    Broadcast(message);
 
-                // 触发信号变化回调
-                handler.InvokeChanged(this, null, oldValue, value);
+                    // 触发信号变化回调
+                    handler.InvokeChanged(this, null, oldValue, value);
+                }
             }
         }
 
@@ -196,7 +199,8 @@ namespace XMSDK.Framework.Communication
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error accepting client: {ex.Message}");
+                    if (_isRunning) // 仅在服务器仍在运行时记录错误
+                        Console.WriteLine($"Error accepting client: {ex.Message}");
                 }
             }
         }
@@ -253,13 +257,18 @@ namespace XMSDK.Framework.Communication
                     {
                         var oldValue = handler.GetValue();
                         var newValue = MessageProtocol.ConvertValue(signalValue, handler.ValueType);
-                        handler.SetValue(newValue);
+                        
+                        // 只有在值真正发生变化时才处理
+                        if (!Equals(oldValue, newValue))
+                        {
+                            handler.SetValue(newValue);
 
-                        // 广播给其他客户端
-                        BroadcastExclude(client, message);
+                            // 广播给其他客户端
+                            BroadcastExclude(client, message);
 
-                        // 触发信号变化回调
-                        handler.InvokeChanged(this, client, oldValue, newValue);
+                            // 触发信号变化回调
+                            handler.InvokeChanged(this, client, oldValue, newValue);
+                        }
                     }
                 }
 
