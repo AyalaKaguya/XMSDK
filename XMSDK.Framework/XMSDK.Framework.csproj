@@ -131,6 +131,7 @@
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>
     <ItemGroup>
+      <Folder Include="Crypt\" />
       <Folder Include="License\" />
     </ItemGroup>
     <ItemGroup>

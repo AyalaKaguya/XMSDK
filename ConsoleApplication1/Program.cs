@@ -1,5 +1,4 @@
 using System;
-using System.Configuration;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using XMSDK.Framework.Communication;
@@ -23,7 +22,7 @@ namespace ConsoleApplication1
         }
     }
 
-    internal class Program
+    internal static class Program
     {
         public static void Main(string[] args)
         {
@@ -40,7 +39,7 @@ namespace ConsoleApplication1
 
             Console.WriteLine("\n修改配置值");
             TestConfig.MaxConnections = 700;
-            TestConfig.DatabaseUrl = "newserver:5432";
+            TestConfig.DatabaseUrl = "server:5432";
             TestConfig.Advanced.Timeout = 60;
 
             Console.WriteLine($"修改后 MaxConnections: {TestConfig.MaxConnections}");
@@ -52,7 +51,7 @@ namespace ConsoleApplication1
 
 
             // 测试日志记录
-            Console.WriteLine("测试 Trace 和 Debug 输出");
+            Console.WriteLine("\n=== 测试 Trace 和 Debug 输出 ===");
             new TraceMessageReceiver()
                 // .AddToDebug()
                 .AddToTrace()
@@ -113,7 +112,7 @@ namespace ConsoleApplication1
             Console.WriteLine("=== 测试完成 ===");
         }
         
-        private void Test()
+        private static void Test()
         {
             // 我大概想这么实现：
             var serverHandle = SocketBuilder.Server("0.0.0.0", 8000) // 这里返回SocketServerBuilder的实例
@@ -136,7 +135,7 @@ namespace ConsoleApplication1
                     // 处理客户端发送的消息
                     Console.WriteLine($"Message from {client.Client.RemoteEndPoint}: {message}");
                 })
-                .Signal<bool>("D2816", false, (server, client, oldValue, newValue) =>
+                .Signal("D2816", false, (server, client, oldValue, newValue) =>
                 {
                     // 处理信号变化，服务器维护一份信号表，所有客户端都操作同一份信号表
                     Console.WriteLine($"Signal D2816 from {oldValue} changed to {newValue}");
@@ -152,7 +151,7 @@ namespace ConsoleApplication1
 
             serverHandle.Run(); // 启动服务器，这会占用当前线程，所以实际使用中都需要额外创建一个线程
             serverHandle.Broadcast("Hello, clients!"); // 广播消息给所有连接的客户端
-            serverHandle.Signal<bool>("D2816", true); // 设置信号D2816为true
+            serverHandle.Signal("D2816", true); // 设置信号D2816为true
             serverHandle.Command("OP124"); // 执行命令OP124
             serverHandle.Close(serverHandle.Clients[0]); // 关闭与服务器链接的某客户端
             serverHandle.Stop(); // 停止服务器，关闭所有客户端，拒绝新的连接
@@ -167,7 +166,7 @@ namespace ConsoleApplication1
                     // 处理服务器发送的消息
                     Console.WriteLine($"Message from server: {message}");
                 })
-                .Signal<bool>("D2816", false, (client, oldValue, newValue) =>
+                .Signal("D2816", false, (client, oldValue, newValue) =>
                 {
                     // 监听信号变化，连接服务器的时候进行首次同步，与默认值不同时也会触发信号变换
                     Console.WriteLine($"Signal D2816 from {oldValue} changed to {newValue}");
@@ -183,7 +182,7 @@ namespace ConsoleApplication1
             
             clientHandle.Run(); // 连接到服务器，这也会占用当前线程，所以实际使用中都需要额外创建一个线程
             clientHandle.Send("Hello, server!"); // 发送消息给服务器
-            clientHandle.Signal<bool>("D2816", true); // 设置信号D2816为true
+            clientHandle.Signal("D2816", true); // 设置信号D2816为true
             clientHandle.Command("OP124"); // 执行命令
             clientHandle.GetSignal<bool>("D2816", out var value); // 获取信号D2816的值
             Console.WriteLine($"Signal D2816 value: {value}");
