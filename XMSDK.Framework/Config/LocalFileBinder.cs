@@ -10,8 +10,15 @@ namespace XMSDK.Framework.Config
     public static class LocalFileBinder
     {
         // 存储已绑定的类型和文件路径的映射
-        private static readonly Dictionary<Type, string> _boundTypes = new Dictionary<Type, string>();
+        private static readonly Dictionary<Type, string> BoundTypes = new Dictionary<Type, string>();
 
+        /// <summary>
+        /// 扫描所有已加载的程序集，查找带有 BindLocalFileAttribute 的静态类，并绑定到对应的本地文件。
+        /// 如果文件不存在，则创建一个默认的配置文件。
+        /// 如果文件存在，则从文件中加载配置到静态类的属性中。
+        /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
         public static void BindAll()
         {
             // 扫描所有已加载的程序集，而不仅仅是当前执行的程序集
@@ -33,21 +40,47 @@ namespace XMSDK.Framework.Config
             
             foreach (var type in types)
             {
-                var attr = type.GetCustomAttribute<BindLocalFileAttribute>();
-                var filePath = Path.Combine(AppContext.BaseDirectory, attr.FileName);
-                
-                // 记录绑定的类型和文件路径
-                _boundTypes[type] = filePath;
-                
-                if (File.Exists(filePath))
-                {
-                    LoadFromFile(type, filePath);
-                }
-                else
-                {
-                    SaveToFile(type, filePath);
-                }
+                Bind(type);
             }
+        }
+
+        /// <summary>
+        /// 从文件读取配置并绑定到静态类的属性。
+        /// 如果文件不存在，则创建一个默认的配置文件。
+        /// 如果类型没有 BindLocalFileAttribute，则抛出异常。
+        /// </summary>
+        /// <param name="type"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        public static void Bind(Type type)
+        {
+            var attr = type.GetCustomAttribute<BindLocalFileAttribute>();
+            if (attr == null)
+            {
+                throw new ArgumentException($"Type {type.Name} is not decorated with BindLocalFileAttribute.");
+            }
+            var filePath = Path.Combine(AppContext.BaseDirectory, attr.FileName);
+            if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException(nameof(filePath));
+            if (!type.IsClass || !type.IsAbstract || !type.IsSealed)
+            {
+                throw new ArgumentException("Only static classes can be bound.");
+            }
+            
+            BoundTypes[type] = filePath;
+            
+            if (File.Exists(filePath))
+            {
+                LoadFromFile(type, filePath);
+            }
+            else
+            {
+                SaveToFile(type, filePath);
+            }
+        }
+        
+        public static void Bind<T>() where T : class
+        {
+            Bind(typeof(T));
         }
 
         /// <summary>
@@ -55,7 +88,7 @@ namespace XMSDK.Framework.Config
         /// </summary>
         public static void Save(Type configType)
         {
-            if (_boundTypes.TryGetValue(configType, out var filePath))
+            if (BoundTypes.TryGetValue(configType, out var filePath))
             {
                 SaveToFile(configType, filePath);
                 Console.WriteLine($"Saved {configType.Name} to {Path.GetFileName(filePath)}");
@@ -79,7 +112,7 @@ namespace XMSDK.Framework.Config
         /// </summary>
         public static void SaveAll()
         {
-            foreach (var kvp in _boundTypes)
+            foreach (var kvp in BoundTypes)
             {
                 SaveToFile(kvp.Key, kvp.Value);
                 Console.WriteLine($"Saved {kvp.Key.Name} to {Path.GetFileName(kvp.Value)}");
