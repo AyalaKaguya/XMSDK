@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using XMSDK.Framework.Communication;
 using XMSDK.Framework.Logger;
 using XMSDK.Framework.Config;
+using XMSDK.Framework.Crypt;
 
 namespace ConsoleApplication1
 {
@@ -108,6 +109,32 @@ namespace ConsoleApplication1
             Task.Delay(1000).Wait(); // 等待信号处理
 
             CommandTransmissionTest.TestCommandTransmission();
+            
+            Console.WriteLine("\n=== 测试加密 ===");
+            
+            const string originalText = "Hello, World!";
+            
+            Console.WriteLine(originalText);
+            Console.WriteLine("MD5 哈希值：");
+            Console.WriteLine(originalText.Md5Upper32());
+            Console.WriteLine(originalText.Md5Lower32());
+            Console.WriteLine(originalText.Md5Upper16());
+            Console.WriteLine(originalText.Md5Lower16());
+            
+            Console.WriteLine("Base64 编码：");
+            Console.WriteLine(originalText.EncodeBase64());
+            Console.WriteLine(originalText.EncodeBase64().DecodeBase64());
+            
+            Console.WriteLine("DES 加密：");
+            // 注意：DES加密需要8字节的密钥，这里使用MD5哈希值的前8个字符作为密钥
+            const string key = "MySecretKey";
+            Console.WriteLine(originalText.EncryptDes(key));
+            Console.WriteLine(originalText.EncryptDes(key).DecryptDes(key));
+            
+            Console.WriteLine("AES 加密：");
+            // 注意：AES加密需要16字节的密钥，这里使用MD5哈希值的前16个字符作为密钥
+            Console.WriteLine(originalText.EncryptAes(key));
+            Console.WriteLine(originalText.EncryptAes(key).DecryptAes(key));
             
             Console.WriteLine("=== 测试完成 ===");
         }

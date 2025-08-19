@@ -122,6 +122,11 @@
         <Compile Include="Config\BindLocalFileAttribute.cs" />
         <Compile Include="Config\LocalFileBinder.cs" />
         <Compile Include="Config\PrivateProfileSetting.cs" />
+        <Compile Include="Crypt\AesCryptHelper.cs" />
+        <Compile Include="Crypt\Base64CodeHelper.cs" />
+        <Compile Include="Crypt\DesCryptHelper.cs" />
+        <Compile Include="Crypt\Md5HashHelper.cs" />
+        <Compile Include="Crypt\ShaHashHelper.cs" />
         <Compile Include="Logger\ITraceMessageProcesser.cs" />
         <Compile Include="Logger\LogToConsoleProcesser.cs" />
         <Compile Include="Logger\LogToFileProcesser.cs" />
@@ -131,7 +136,6 @@
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Crypt\" />
       <Folder Include="License\" />
     </ItemGroup>
     <ItemGroup>
