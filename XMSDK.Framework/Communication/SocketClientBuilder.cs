@@ -29,6 +29,12 @@ namespace XMSDK.Framework.Communication
             return this;
         }
 
+        public SocketClientBuilder Command(string name, Action<SocketClient> onCommandExecuted)
+        {
+            _commands[name] = new CommandHandler(onCommandExecuted);
+            return this;
+        }
+
         public SocketClient Build()
         {
             return new SocketClient(_host, _port, _onMessage, _signals, _commands);
