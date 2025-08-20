@@ -52,6 +52,9 @@ namespace XMSDK.Framework.Communication
             _commands = commands ?? new Dictionary<string, CommandHandler>();
         }
 
+        /// <summary>
+        /// 启动服务器
+        /// </summary>
         public void Run()
         {
             if (_isRunning)
@@ -77,6 +80,9 @@ namespace XMSDK.Framework.Communication
             heartbeatThread.Start();
         }
 
+        /// <summary>
+        /// 关闭服务器
+        /// </summary>
         public void Stop()
         {
             _isRunning = false;
@@ -89,6 +95,10 @@ namespace XMSDK.Framework.Communication
             }
         }
 
+        /// <summary>
+        /// 向所有客户端广播消息
+        /// </summary>
+        /// <param name="message"></param>
         public void Broadcast(string message)
         {
             var clients = _clients.Keys.ToList();
@@ -98,6 +108,11 @@ namespace XMSDK.Framework.Communication
             }
         }
 
+        /// <summary>
+        /// 向除指定客户端外的所有客户端广播消息
+        /// </summary>
+        /// <param name="excludeClient"></param>
+        /// <param name="message"></param>
         public void BroadcastExclude(TcpClient excludeClient, string message)
         {
             var clients = _clients.Keys.Where(c => c != excludeClient).ToList();
@@ -107,6 +122,12 @@ namespace XMSDK.Framework.Communication
             }
         }
 
+        /// <summary>
+        /// 设定信号的值并广播给所有客户端
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        /// <typeparam name="T"></typeparam>
         public void Signal<T>(string name, T value)
         {
             lock (_signalLock)
@@ -116,20 +137,23 @@ namespace XMSDK.Framework.Communication
                 var oldValue = handler.GetValue();
                 
                 // 只有在值真正发生变化时才处理
-                if (!Equals(oldValue, value))
-                {
-                    handler.SetValue(value);
+                if (Equals(oldValue, value)) return;
+                
+                handler.SetValue(value);
 
-                    // 通知所有客户端信号变化
-                    var message = MessageProtocol.FormatSignalMessage(name, value);
-                    Broadcast(message);
+                // 通知所有客户端信号变化
+                var message = MessageProtocol.FormatSignalMessage(name, value);
+                Broadcast(message);
 
-                    // 触发信号变化回调
-                    handler.InvokeChanged(this, null, oldValue, value);
-                }
+                // 触发信号变化回调
+                handler.InvokeChanged(this, null, oldValue, value);
             }
         }
 
+        /// <summary>
+        /// 执行命令并广播给所有客户端
+        /// </summary>
+        /// <param name="name"></param>
         public void Command(string name)
         {
             if (_commands.TryGetValue(name, out var handler))
@@ -140,14 +164,18 @@ namespace XMSDK.Framework.Communication
             }
         }
 
+        /// <summary>
+        /// 关闭并移除一个客户端连接
+        /// </summary>
+        /// <param name="client"></param>
         public void Close(TcpClient client)
         {
             if (!_clients.TryRemove(client, out var clientInfo)) return;
             try
             {
-                clientInfo.CancellationTokenSource?.Cancel();
-                client.Close();
                 _onClientDisconnected?.Invoke(this, client);
+                clientInfo.CancellationTokenSource.Cancel();
+                client.Close();
             }
             catch (Exception ex)
             {

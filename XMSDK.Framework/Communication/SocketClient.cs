@@ -32,6 +32,10 @@ namespace XMSDK.Framework.Communication
             _commands = commands ?? new Dictionary<string, CommandHandler>();
         }
 
+        /// <summary>
+        /// 启动客户端并连接到服务器
+        /// </summary>
+        /// <exception cref="InvalidOperationException"></exception>
         public void Run()
         {
             if (_isRunning)
@@ -56,7 +60,10 @@ namespace XMSDK.Framework.Communication
                 throw new InvalidOperationException($"Failed to connect to server: {ex.Message}", ex);
             }
         }
-
+        
+        /// <summary>
+        /// 关闭客户端连接
+        /// </summary>
         public void Stop()
         {
             _isRunning = false;
@@ -73,6 +80,11 @@ namespace XMSDK.Framework.Communication
             }
         }
 
+        /// <summary>
+        /// 向服务器发送消息，消息不会被广播，除非服务器的OnMessage回调中有相应的处理
+        /// </summary>
+        /// <param name="message"></param>
+        /// <exception cref="InvalidOperationException"></exception>
         public void Send(string message)
         {
             if (!IsConnected)
@@ -89,6 +101,12 @@ namespace XMSDK.Framework.Communication
             }
         }
 
+        /// <summary>
+        /// 定义一个信号量，并发送信号到服务器
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        /// <typeparam name="T"></typeparam>
         public void Signal<T>(string name, T value)
         {
             lock (_signalLock)
@@ -113,6 +131,10 @@ namespace XMSDK.Framework.Communication
             }
         }
 
+        /// <summary>
+        /// 定义一个命令
+        /// </summary>
+        /// <param name="name"></param>
         public void Command(string name)
         {
             if (_commands.TryGetValue(name, out var handler))
@@ -123,20 +145,23 @@ namespace XMSDK.Framework.Communication
             }
         }
 
+        /// <summary>
+        /// 获取信号的当前值
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="value"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public bool GetSignal<T>(string name, out T value)
         {
             value = default(T);
 
             lock (_signalLock)
             {
-                if (_signals.TryGetValue(name, out var handler) && handler is SignalHandler<T>)
-                {
-                    value = (T)handler.GetValue();
-                    return true;
-                }
+                if (!_signals.TryGetValue(name, out var handler) || !(handler is SignalHandler<T>)) return false;
+                value = (T)handler.GetValue();
+                return true;
             }
-
-            return false;
         }
 
         private void ReceiveMessages()

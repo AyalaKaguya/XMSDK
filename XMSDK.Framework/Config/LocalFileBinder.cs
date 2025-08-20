@@ -91,7 +91,6 @@ namespace XMSDK.Framework.Config
             if (BoundTypes.TryGetValue(configType, out var filePath))
             {
                 SaveToFile(configType, filePath);
-                Console.WriteLine($"Saved {configType.Name} to {Path.GetFileName(filePath)}");
             }
             else
             {
