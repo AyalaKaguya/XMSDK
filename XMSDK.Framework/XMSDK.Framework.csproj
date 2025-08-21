@@ -12,6 +12,7 @@
         <FileAlignment>512</FileAlignment>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <Deterministic>true</Deterministic>
+        <LangVersion>8</LangVersion>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -94,6 +95,9 @@
         <Reference Include="System.Text.Json, Version=9.0.0.8, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
           <HintPath>..\packages\System.Text.Json.9.0.8\lib\net462\System.Text.Json.dll</HintPath>
         </Reference>
+        <Reference Include="System.Threading.Channels, Version=9.0.0.8, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+          <HintPath>..\packages\System.Threading.Channels.9.0.8\lib\net462\System.Threading.Channels.dll</HintPath>
+        </Reference>
         <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
           <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
         </Reference>
@@ -127,6 +131,9 @@
         <Compile Include="Crypt\DesCryptHelper.cs" />
         <Compile Include="Crypt\Md5HashHelper.cs" />
         <Compile Include="Crypt\ShaHashHelper.cs" />
+        <Compile Include="EventBus\AsyncBus.cs" />
+        <Compile Include="EventBus\DirectBus.cs" />
+        <Compile Include="EventBus\EventContext.cs" />
         <Compile Include="Logger\ITraceMessageProcesser.cs" />
         <Compile Include="Logger\LogToConsoleProcesser.cs" />
         <Compile Include="Logger\LogToFileProcesser.cs" />

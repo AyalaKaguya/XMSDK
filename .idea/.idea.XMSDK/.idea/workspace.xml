@@ -9,7 +9,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="00f5f9fb-06c8-40bc-b2d3-3cf4e7adcd61" name="更改" comment="" />
+    <list default="true" id="00f5f9fb-06c8-40bc-b2d3-3cf4e7adcd61" name="更改" comment="">
+      <change afterPath="$PROJECT_DIR$/XMSDK.Framework/EventBus/AsyncBus.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/XMSDK.Framework/EventBus/DirectBus.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/XMSDK.Framework/EventBus/EventContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.XMSDK/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.XMSDK/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/XMSDK.Framework.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/XMSDK.Framework.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/packages.config" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/packages.config" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -43,6 +51,11 @@
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Crypt/DesCryptHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Crypt/Md5HashHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Crypt/ShaHashHelper.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/XMSDK.Framework/EventBus/AsyncBus.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/XMSDK.Framework/EventBus/DirectBus.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/XMSDK.Framework/EventBus/EventBusTestProgram.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/XMSDK.Framework/EventBus/EventContext.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/XMSDK.Framework/EventBus/IEvent.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectColorInfo">{
@@ -53,30 +66,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET 项目.ConsoleApplication1.executor": "Run",
-    ".NET 项目.WindowsFormsApp1.executor": "Run",
-    ".NET 项目.XMSDK.Framework.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "editor.preferences.smartKeys_rider",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET 项目.ConsoleApplication1.executor&quot;: &quot;Run&quot;,
+    &quot;.NET 项目.WindowsFormsApp1.executor&quot;: &quot;Run&quot;,
+    &quot;.NET 项目.XMSDK.Framework.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;editor.preferences.smartKeys_rider&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="ConsoleApplication1" type="DotNetProject" factoryName=".NET Project">
-      <option name="EXE_PATH" value="" />
+      <option name="EXE_PATH" value="$PROJECT_DIR$/ConsoleApplication1/bin/Debug/ConsoleApplication1.exe" />
       <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/ConsoleApplication1/bin/Debug" />
       <option name="PASS_PARENT_ENVS" value="1" />
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
       <option name="ENV_FILE_PATHS" value="" />
@@ -91,7 +104,7 @@
       <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
       <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
       <option name="PROJECT_KIND" value="Console" />
-      <option name="PROJECT_TFM" value="" />
+      <option name="PROJECT_TFM" value=".NETFramework,Version=v4.6.2" />
       <method v="2">
         <option name="Build" />
       </method>
@@ -111,7 +124,8 @@
       <workItem from="1755564333043" duration="11626000" />
       <workItem from="1755576058320" duration="11016000" />
       <workItem from="1755654318451" duration="1290000" />
-      <workItem from="1755655938748" duration="5564000" />
+      <workItem from="1755655938748" duration="9779000" />
+      <workItem from="1755761136916" duration="6689000" />
     </task>
     <task id="LOCAL-00001" summary="feat: 日志类，暂时开放供参考">
       <option name="closed" value="true" />
@@ -177,7 +191,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755661052106</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="vcs: 优化版本管理涉及的文件">
+      <option name="closed" value="true" />
+      <created>1755661830753</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1755661830753</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -195,7 +217,8 @@
     <MESSAGE value="doc: 更新文档" />
     <MESSAGE value="feat: 新增加密帮助类，实现几套基础的加密算法" />
     <MESSAGE value="doc: 针对Socket通信模块新增说明文档并稍微优化了下通信逻辑" />
-    <option name="LAST_COMMIT_MESSAGE" value="doc: 针对Socket通信模块新增说明文档并稍微优化了下通信逻辑" />
+    <MESSAGE value="vcs: 优化版本管理涉及的文件" />
+    <option name="LAST_COMMIT_MESSAGE" value="vcs: 优化版本管理涉及的文件" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
