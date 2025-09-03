@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XMSDK.Framework", "XMSDK.Fr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.csproj", "{395D8656-29E8-4323-9C17-11F7D1D4CD1F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XMSDK.Tests", "XMSDK.Tests\XMSDK.Tests.csproj", "{28799320-02C9-45A5-A0F8-5DB4836BFC33}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{395D8656-29E8-4323-9C17-11F7D1D4CD1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{395D8656-29E8-4323-9C17-11F7D1D4CD1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{395D8656-29E8-4323-9C17-11F7D1D4CD1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28799320-02C9-45A5-A0F8-5DB4836BFC33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28799320-02C9-45A5-A0F8-5DB4836BFC33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28799320-02C9-45A5-A0F8-5DB4836BFC33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28799320-02C9-45A5-A0F8-5DB4836BFC33}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

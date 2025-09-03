@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Json;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace XMSDK.Framework.Config
 {
@@ -114,7 +115,7 @@ namespace XMSDK.Framework.Config
             foreach (var kvp in BoundTypes)
             {
                 SaveToFile(kvp.Key, kvp.Value);
-                Console.WriteLine($"Saved {kvp.Key.Name} to {Path.GetFileName(kvp.Value)}");
+                Trace.WriteLine($"Saved {kvp.Key.Name} to {Path.GetFileName(kvp.Value)}");
             }
         }
 
@@ -128,7 +129,7 @@ namespace XMSDK.Framework.Config
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error loading {type.Name} from {filePath}: {ex.Message}");
+                Trace.WriteLine($"Error loading {type.Name} from {filePath}: {ex.Message}");
                 // 如果加载失败，保存当前默认值
                 SaveToFile(type, filePath);
             }
@@ -149,7 +150,7 @@ namespace XMSDK.Framework.Config
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Error setting property {prop.Name}: {ex.Message}");
+                        Trace.WriteLine($"Error setting property {prop.Name}: {ex.Message}");
                     }
                 }
             }
@@ -207,12 +208,12 @@ namespace XMSDK.Framework.Config
                 // 只在初始创建时显示消息，保存时不显示
                 if (!File.Exists(filePath))
                 {
-                    Console.WriteLine($"Created default config file: {filePath}");
+                    Trace.WriteLine($"Created default config file: {filePath}");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error saving {type.Name} to {filePath}: {ex.Message}");
+                Trace.WriteLine($"Error saving {type.Name} to {filePath}: {ex.Message}");
             }
         }
 

@@ -36,11 +36,6 @@ namespace XMSDK.Framework.EventBus
         public bool ContinueSubscription { get; set; } = true;
 
         /// <summary>
-        /// 是否已被处理标记
-        /// </summary>
-        public bool IsHandled { get; private set; }
-
-        /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="payload">事件负载</param>
@@ -51,14 +46,6 @@ namespace XMSDK.Framework.EventBus
             RouteKey = routeKey ?? "";
             EventId = Guid.NewGuid().ToString();
             CreatedAt = DateTime.Now;
-        }
-
-        /// <summary>
-        /// 标记事件为已处理
-        /// </summary>
-        public void MarkAsHandled()
-        {
-            IsHandled = true;
         }
 
         /// <summary>

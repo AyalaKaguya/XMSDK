@@ -124,6 +124,9 @@
         <Compile Include="Communication\SocketServer.cs" />
         <Compile Include="Communication\SocketServerBuilder.cs" />
         <Compile Include="Config\BindLocalFileAttribute.cs" />
+        <Compile Include="Config\DataClassAttribute.cs" />
+        <Compile Include="Config\DefaultValueAttribute.cs" />
+        <Compile Include="Config\JsonConfig.cs" />
         <Compile Include="Config\LocalFileBinder.cs" />
         <Compile Include="Config\PrivateProfileSetting.cs" />
         <Compile Include="Crypt\AesCryptHelper.cs" />
