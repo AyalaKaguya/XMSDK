@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
@@ -14,8 +12,9 @@ namespace XMSDK.Framework.EventBus
     /// 适用于大量且需等待的事件处理，
     /// 通过异步队列处理事件，
     /// 可以提高性能和响应速度。
+    /// 继承自 DirectBus 以复用订阅管理和路由匹配功能。
     /// </summary>
-    public class AsyncBus : IDisposable
+    public class AsyncBus : DirectBus, IDisposable
     {
         /// <summary>
         /// 异步事件处理委托
@@ -25,17 +24,13 @@ namespace XMSDK.Framework.EventBus
         public delegate Task AsyncEventHandler<T>(EventContext<T> context);
 
         /// <summary>
-        /// 路由信息
+        /// 异步异常处理回调委托
         /// </summary>
-        private class RouteInfo
-        {
-            public Type PayloadType { get; set; }
-            public string Pattern { get; set; }
-            public Delegate Handler { get; set; }
-            public bool IsRegex { get; set; }
-            public int SubscriptionOrder { get; set; }
-            public string SubscriptionId { get; set; } = Guid.NewGuid().ToString();
-        }
+        /// <param name="context">事件上下文（object类型以支持泛型）</param>
+        /// <param name="exception">发生的异常</param>
+        /// <param name="handler">出错的处理器</param>
+        /// <returns>是否继续抛出异常，true表示重新抛出，false表示忽略异常</returns>
+        public delegate bool AsyncExceptionHandler(object context, Exception exception, Delegate handler);
 
         /// <summary>
         /// 事件队列项
@@ -45,13 +40,9 @@ namespace XMSDK.Framework.EventBus
             public object Context { get; set; }
             public Type PayloadType { get; set; }
             public TaskCompletionSource<int> CompletionSource { get; set; }
+            public AsyncExceptionHandler AsyncExceptionHandler { get; set; }
         }
 
-        private readonly ConcurrentDictionary<string, List<RouteInfo>> _routes =
-            new ConcurrentDictionary<string, List<RouteInfo>>();
-
-        private readonly object _lockObject = new object();
-        private int _globalSubscriptionCounter;
         private readonly ChannelWriter<EventQueueItem> _writer;
         private readonly ChannelReader<EventQueueItem> _reader;
         private readonly CancellationTokenSource _cancellationTokenSource;
@@ -76,78 +67,80 @@ namespace XMSDK.Framework.EventBus
             _processingTask = Task.Run(ProcessEventsAsync);
         }
 
-        #region 订阅方法
+        #region 异步订阅方法
 
         /// <summary>
-        /// 订阅事件（基于事件负载类型）
+        /// 订阅异步事件（基于事件负载类型）
         /// </summary>
         /// <typeparam name="T">事件负载类型</typeparam>
         /// <param name="handler">异步事件处理器</param>
         /// <returns>订阅ID，可用于取消订阅</returns>
-        public string Subscribe<T>(AsyncEventHandler<T> handler)
+        public string SubscribeAsync<T>(AsyncEventHandler<T> handler)
         {
-            return Subscribe(typeof(T), "*", handler, false);
+            return Subscribe<T>(ctx => ConvertToAsyncHandler(handler, ctx));
         }
 
         /// <summary>
-        /// 订阅事件（基于路由键精确匹配）
+        /// 订阅异步事件（基于路由键精确匹配）
         /// </summary>
         /// <typeparam name="T">事件负载类型</typeparam>
         /// <param name="routeKey">路由键</param>
         /// <param name="handler">异步事件处理器</param>
         /// <returns>订阅ID，可用于取消订阅</returns>
-        public string Subscribe<T>(string routeKey, AsyncEventHandler<T> handler)
+        public string SubscribeAsync<T>(string routeKey, AsyncEventHandler<T> handler)
         {
-            return Subscribe(typeof(T), routeKey, handler, false);
+            return Subscribe<T>(routeKey, ctx => ConvertToAsyncHandler(handler, ctx));
         }
 
         /// <summary>
-        /// 订阅事件（基于路由键模式匹配）
+        /// 订阅异步事件（基于路由键模式匹配）
         /// </summary>
         /// <typeparam name="T">事件负载类型</typeparam>
         /// <param name="routePattern">路由模式（支持通配符*和?，或正则表达式）</param>
         /// <param name="handler">异步事件处理器</param>
         /// <param name="isRegex">是否使用正则表达式匹配</param>
         /// <returns>订阅ID，可用于取消订阅</returns>
-        public string Subscribe<T>(string routePattern, AsyncEventHandler<T> handler, bool isRegex)
+        public string SubscribeAsync<T>(string routePattern, AsyncEventHandler<T> handler, bool isRegex)
         {
-            return Subscribe(typeof(T), routePattern, handler, isRegex);
+            return Subscribe<T>(routePattern, ctx => ConvertToAsyncHandler(handler, ctx), isRegex);
         }
 
-        private string Subscribe(Type payloadType, string routePattern, Delegate handler, bool isRegex)
+        /// <summary>
+        /// 将异步处理器转换为同步处理器（用于存储）
+        /// </summary>
+        private static void ConvertToAsyncHandler<T>(AsyncEventHandler<T> asyncHandler, EventContext<T> context)
         {
-            if (payloadType == null) throw new ArgumentNullException(nameof(payloadType));
-            if (string.IsNullOrWhiteSpace(routePattern)) throw new ArgumentNullException(nameof(routePattern));
-            if (handler == null) throw new ArgumentNullException(nameof(handler));
-
-            var routeInfo = new RouteInfo
-            {
-                PayloadType = payloadType,
-                Pattern = routePattern,
-                Handler = handler,
-                IsRegex = isRegex,
-                SubscriptionOrder = Interlocked.Increment(ref _globalSubscriptionCounter)
-            };
-
-            lock (_lockObject)
-            {
-                var key = payloadType.FullName;
-                if (key != null && !_routes.ContainsKey(key))
-                {
-                    _routes[key] = new List<RouteInfo>();
-                }
-
-                if (key == null) return routeInfo.SubscriptionId;
-                _routes[key].Add(routeInfo);
-                _routes[key] = _routes[key].OrderBy(r => r.SubscriptionOrder).ToList();
-            }
-
-            return routeInfo.SubscriptionId;
+            // 在同步上下文中启动异步任务，但不等待（Fire-and-forget）
+            // 实际的异步执行将在队列处理中进行
+            Task.Run(async () => await asyncHandler(context));
         }
 
         #endregion
 
-        #region 发布方法
+        #region 异步发布方法
+        
+        /// <summary>
+        /// 异步发布事件
+        /// </summary>
+        /// <typeparam name="T">事件负载类型</typeparam>
+        /// <param name="payload">事件负载</param>
+        /// <returns>处理该事件的处理器数量</returns>
+        public async Task<int> PublishAsync<T>(T payload)
+        {
+            return await PublishAsync(payload, typeof(T).FullName);
+        }
+
+        /// <summary>
+        /// 异步发布事件（带异常处理）
+        /// </summary>
+        /// <typeparam name="T">事件负载类型</typeparam>
+        /// <param name="payload">事件负载</param>
+        /// <param name="onException">异常处理回调</param>
+        /// <returns>处理该事件的处理器数量</returns>
+        public async Task<int> PublishAsync<T>(T payload, AsyncExceptionHandler onException)
+        {
+            return await PublishAsync(payload, typeof(T).FullName, onException);
+        }
 
         /// <summary>
         /// 异步发布事件
@@ -156,7 +149,20 @@ namespace XMSDK.Framework.EventBus
         /// <param name="payload">事件负载</param>
         /// <param name="routeKey">路由键</param>
         /// <returns>处理该事件的处理器数量</returns>
-        public async Task<int> PublishAsync<T>(T payload, string routeKey = "")
+        public async Task<int> PublishAsync<T>(T payload, string routeKey)
+        {
+            return await PublishAsync(payload, routeKey, null);
+        }
+
+        /// <summary>
+        /// 异步发布事件（带异常处理）
+        /// </summary>
+        /// <typeparam name="T">事件负载类型</typeparam>
+        /// <param name="payload">事件负载</param>
+        /// <param name="routeKey">路由键</param>
+        /// <param name="onException">异常处理回调</param>
+        /// <returns>处理该事件的处理器数量</returns>
+        public async Task<int> PublishAsync<T>(T payload, string routeKey, AsyncExceptionHandler onException)
         {
             if (payload == null) throw new ArgumentNullException(nameof(payload));
             if (_disposed) throw new ObjectDisposedException(nameof(AsyncBus));
@@ -168,7 +174,8 @@ namespace XMSDK.Framework.EventBus
             {
                 Context = context,
                 PayloadType = typeof(T),
-                CompletionSource = completionSource
+                CompletionSource = completionSource,
+                AsyncExceptionHandler = onException
             };
 
             await _writer.WriteAsync(queueItem, _cancellationTokenSource.Token);
@@ -180,9 +187,20 @@ namespace XMSDK.Framework.EventBus
         /// </summary>
         /// <typeparam name="T">事件负载类型</typeparam>
         /// <param name="payload">事件负载</param>
+        /// <returns>是否成功加入队列</returns>
+        public bool PublishFireAndForget<T>(T payload)
+        {
+            return PublishFireAndForget(payload, typeof(T).FullName);
+        }
+
+        /// <summary>
+        /// 同步发布事件（非阻塞）
+        /// </summary>
+        /// <typeparam name="T">事件负载类型</typeparam>
+        /// <param name="payload">事件负载</param>
         /// <param name="routeKey">路由键</param>
         /// <returns>是否成功加入队列</returns>
-        public bool Publish<T>(T payload, string routeKey = "")
+        public bool PublishFireAndForget<T>(T payload, string routeKey)
         {
             if (payload == null) throw new ArgumentNullException(nameof(payload));
             if (_disposed) return false;
@@ -194,7 +212,8 @@ namespace XMSDK.Framework.EventBus
             {
                 Context = context,
                 PayloadType = typeof(T),
-                CompletionSource = completionSource
+                CompletionSource = completionSource,
+                AsyncExceptionHandler = null
             };
 
             return _writer.TryWrite(queueItem);
@@ -238,13 +257,13 @@ namespace XMSDK.Framework.EventBus
             var routeKeyProperty = context.GetType().GetProperty("RouteKey");
             var routeKey = routeKeyProperty?.GetValue(context)?.ToString() ?? "";
 
-            // 获取匹配的路由
+            // 直接使用继承的 protected 方法
             var matchingRoutes = GetMatchingRoutes(payloadType, routeKey);
 
             var tasks = new List<Task>();
 
             // 并行执行所有匹配的处理器
-            foreach (var task in matchingRoutes.Select(route => InvokeHandlerAsync(route.Handler, context)))
+            foreach (var task in matchingRoutes.Select(route => InvokeHandlerAsync(route.Handler, context, item.AsyncExceptionHandler)))
             {
                 tasks.Add(task);
                 handledCount++;
@@ -256,7 +275,7 @@ namespace XMSDK.Framework.EventBus
             return handledCount;
         }
 
-        private static async Task InvokeHandlerAsync(Delegate handler, object context)
+        private static async Task InvokeHandlerAsync(Delegate handler, object context, AsyncExceptionHandler exceptionHandler)
         {
             try
             {
@@ -268,135 +287,17 @@ namespace XMSDK.Framework.EventBus
             }
             catch (Exception ex)
             {
-                // 可以添加日志记录
+                // 如果有异常处理回调，则调用它
+                if (exceptionHandler?.Invoke(context, ex, handler) == true)
+                {
+                    // 重新抛出异常
+                    throw;
+                }
+                // 否则记录日志但不抛出异常
                 Console.WriteLine($"异步事件处理器执行异常: {ex.Message}");
             }
         }
 
-        #endregion
-
-        #region 路由匹配
-
-        private List<RouteInfo> GetMatchingRoutes(Type payloadType, string routeKey)
-        {
-            var matchingRoutes = new List<RouteInfo>();
-
-            lock (_lockObject)
-            {
-                var typesToCheck = GetPayloadTypeHierarchy(payloadType);
-
-                matchingRoutes.AddRange(from type in typesToCheck
-                    select type.FullName
-                    into key
-                    where _routes.ContainsKey(key)
-                    from route in _routes[key]
-                    where IsRouteMatch(route.Pattern, routeKey, route.IsRegex)
-                    select route);
-            }
-
-            return matchingRoutes.OrderBy(r => r.SubscriptionOrder).ToList();
-        }
-
-        private static IEnumerable<Type> GetPayloadTypeHierarchy(Type payloadType)
-        {
-            var types = new List<Type> { payloadType };
-
-            var baseType = payloadType.BaseType;
-            while (baseType != null && baseType != typeof(object))
-            {
-                types.Add(baseType);
-                baseType = baseType.BaseType;
-            }
-
-            var interfaces = payloadType.GetInterfaces();
-            types.AddRange(interfaces);
-
-            return types;
-        }
-
-        private static bool IsRouteMatch(string pattern, string routeKey, bool isRegex)
-        {
-            if (pattern == "*") return true;
-
-            if (isRegex)
-            {
-                try
-                {
-                    return Regex.IsMatch(routeKey, pattern);
-                }
-                catch
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                return WildcardMatch(pattern, routeKey);
-            }
-        }
-
-        private static bool WildcardMatch(string pattern, string text)
-        {
-            if (string.IsNullOrEmpty(pattern) && string.IsNullOrEmpty(text))
-                return true;
-
-            if (string.IsNullOrEmpty(pattern))
-                return false;
-
-            if (string.IsNullOrEmpty(text))
-                return pattern == "*";
-
-            var regexPattern = "^" + Regex.Escape(pattern)
-                .Replace("\\*", ".*")
-                .Replace("\\?", ".") + "$";
-
-            return Regex.IsMatch(text, regexPattern);
-        }
-
-        #endregion
-
-        #region 取消订阅
-
-        public bool Unsubscribe(string subscriptionId)
-        {
-            if (string.IsNullOrEmpty(subscriptionId)) return false;
-
-            lock (_lockObject)
-            {
-                foreach (var kvp in _routes)
-                {
-                    var routesToRemove = kvp.Value.Where(r => r.SubscriptionId == subscriptionId).ToList();
-                    if (routesToRemove.Any())
-                    {
-                        foreach (var route in routesToRemove)
-                        {
-                            kvp.Value.Remove(route);
-                        }
-
-                        if (kvp.Value.Count == 0)
-                        {
-                            _routes.TryRemove(kvp.Key, out _);
-                        }
-
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        public int UnsubscribeAll<T>()
-        {
-            lock (_lockObject)
-            {
-                var key = typeof(T).FullName;
-                if (key == null || !_routes.TryGetValue(key, out var route)) return 0;
-                var count = route.Count;
-                _routes.TryRemove(key, out _);
-                return count;
-            }
-        }
 
         #endregion
 

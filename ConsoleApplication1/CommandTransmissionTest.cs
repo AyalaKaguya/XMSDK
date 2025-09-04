@@ -27,14 +27,14 @@ namespace ConsoleApplication1
 
             // 创建第一个客户端
             var client1 = SocketBuilder.Client("127.0.0.1", 9000)
-                .Command("RESET_SYSTEM", (client) => { Console.WriteLine("[客户端1] 执行RESET_SYSTEM命令 - 重置系统状态"); })
-                .Command("UPDATE_CONFIG", (client) => { Console.WriteLine("[客户端1] 执行UPDATE_CONFIG命令 - 更新配置文件"); })
+                .Command("RESET_SYSTEM", client => { Console.WriteLine("[客户端1] 执行RESET_SYSTEM命令 - 重置系统状态"); })
+                .Command("UPDATE_CONFIG", client => { Console.WriteLine("[客户端1] 执行UPDATE_CONFIG命令 - 更新配置文件"); })
                 .Build();
 
             // 创建第二个客户端
             var client2 = SocketBuilder.Client("127.0.0.1", 9000)
-                .Command("RESET_SYSTEM", (client) => { Console.WriteLine("[客户端2] 执行RESET_SYSTEM命令 - 清理缓存数据"); })
-                .Command("UPDATE_CONFIG", (client) => { Console.WriteLine("[客户端2] 执行UPDATE_CONFIG命令 - 重新加载配置"); })
+                .Command("RESET_SYSTEM", client => { Console.WriteLine("[客户端2] 执行RESET_SYSTEM命令 - 清理缓存数据"); })
+                .Command("UPDATE_CONFIG", client => { Console.WriteLine("[客户端2] 执行UPDATE_CONFIG命令 - 重新加载配置"); })
                 .Build();
 
             // 创建第三个客户端（不注册命令处理器）
@@ -136,13 +136,13 @@ namespace ConsoleApplication1
                     Console.WriteLine($"Client：Signal D2816 from {oldValue} changed to {newValue}");
                     client.Command("OP125"); // 执行命令
                 })
-                .Command("OP124", (client) =>
+                .Command("OP124", client =>
                 {
                     // 处理命令执行, 如果任意客户端或者服务器发布了命令OP124，则会触发这个回调
                     // 服务端的透传是先服务端的实现进行的
                     Console.WriteLine($"Command OP124 executed on client");
                 })
-                .Command("OP125", (client) =>
+                .Command("OP125", client =>
                 {
                     // 处理命令执行, 如果任意客户端或者服务器发布了命令OP124，则会触发这个回调
                     // 服务端的透传是先服务端的实现进行的
@@ -170,7 +170,7 @@ namespace ConsoleApplication1
         {
             // 测试网络通信
             Console.WriteLine("\n=== 测试网络通信信号量 ===");
-            var serverHandle = SocketBuilder.Server("0.0.0.0", TestConfig.ServerPort)
+            var serverHandle = SocketBuilder.Server("0.0.0.0", 8000)
                 .Signal("D2816", false, (server, client, oldValue, newValue) =>
                 {
                     Console.WriteLine($"Signal D2816 changed from {oldValue} to {newValue}");
@@ -186,7 +186,7 @@ namespace ConsoleApplication1
 
             Task.Delay(1000).Wait(); // 等待服务器启动
 
-            var clientHandle = SocketBuilder.Client("127.0.0.1", TestConfig.ServerPort)
+            var clientHandle = SocketBuilder.Client("127.0.0.1", 8000)
                 .Signal("D2816", false,
                     (client, oldValue, newValue) =>
                     {

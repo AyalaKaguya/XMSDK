@@ -46,6 +46,7 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="TestAsyncBus.cs" />
         <Compile Include="TestCryptHelper.cs" />
         <Compile Include="TestEventBus.cs" />
         <Compile Include="TestJsonConfig.cs" />

@@ -29,7 +29,7 @@ namespace XMSDK.Framework.Logger
             _logQueue.Enqueue(msg);
         }
 
-        private Func<string, string> _logFileNameGenerator  = (folderPath) => Path.Combine(folderPath, $"{DateTime.Now:yyyyMMdd}.log");
+        private Func<string, string> _logFileNameGenerator  = folderPath => Path.Combine(folderPath, $"{DateTime.Now:yyyyMMdd}.log");
         
         /// <summary>
         /// 自定义日志文件名生成器，参数为日志文件夹路径，返回值为完整的日志文件路径

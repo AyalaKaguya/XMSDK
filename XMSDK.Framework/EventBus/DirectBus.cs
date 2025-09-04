@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 
@@ -24,9 +25,18 @@ namespace XMSDK.Framework.EventBus
         public delegate void EventHandler<T>(EventContext<T> context);
 
         /// <summary>
+        /// 异常处理回调委托
+        /// </summary>
+        /// <param name="context">事件上下文（object类型以支持泛型）</param>
+        /// <param name="exception">发生的异常</param>
+        /// <param name="handler">出错的处理器</param>
+        /// <returns>是否继续抛出异常，true表示重新抛出，false表示忽略异常</returns>
+        public delegate bool ExceptionHandler(object context, Exception exception, Delegate handler);
+
+        /// <summary>
         /// 路由信息
         /// </summary>
-        private class RouteInfo
+        protected class RouteInfo
         {
             public Type PayloadType { get; set; }
             public string Pattern { get; set; }
@@ -41,6 +51,8 @@ namespace XMSDK.Framework.EventBus
 
         private readonly object _lockObject = new object();
         private int _globalSubscriptionCounter; // 全局订阅计数器，用于确定订阅顺序
+
+        #region 订阅方法
 
         /// <summary>
         /// 订阅事件（基于事件负载类型）
@@ -115,6 +127,33 @@ namespace XMSDK.Framework.EventBus
             return routeInfo.SubscriptionId;
         }
 
+        #endregion
+
+        #region 发布方法
+
+        /// <summary>
+        /// 发布事件
+        /// </summary>
+        /// <typeparam name="T">事件负载类型</typeparam>
+        /// <param name="payload">事件负载</param>
+        /// <returns>处理该事件的处理器数量</returns>
+        public int Publish<T>(T payload)
+        {
+            return Publish(payload, typeof(T).FullName);
+        }
+
+        /// <summary>
+        /// 发布事件（带异常处理）
+        /// </summary>
+        /// <typeparam name="T">事件负载类型</typeparam>
+        /// <param name="payload">事件负载</param>
+        /// <param name="onException">异常处理回调</param>
+        /// <returns>处理该事件的处理器数量</returns>
+        public int Publish<T>(T payload, ExceptionHandler onException)
+        {
+            return Publish(payload, typeof(T).FullName, onException);
+        }
+
         /// <summary>
         /// 发布事件
         /// </summary>
@@ -122,7 +161,20 @@ namespace XMSDK.Framework.EventBus
         /// <param name="payload">事件负载</param>
         /// <param name="routeKey">路由键</param>
         /// <returns>处理该事件的处理器数量</returns>
-        public int Publish<T>(T payload, string routeKey = "")
+        public int Publish<T>(T payload, string routeKey)
+        {
+            return Publish(payload, routeKey, null);
+        }
+
+        /// <summary>
+        /// 发布事件（带异常处理）
+        /// </summary>
+        /// <typeparam name="T">事件负载类型</typeparam>
+        /// <param name="payload">事件负载</param>
+        /// <param name="routeKey">路由键</param>
+        /// <param name="onException">异常处理回调</param>
+        /// <returns>处理该事件的处理器数量</returns>
+        public int Publish<T>(T payload, string routeKey, ExceptionHandler onException)
         {
             if (payload == null) throw new ArgumentNullException(nameof(payload));
 
@@ -130,7 +182,7 @@ namespace XMSDK.Framework.EventBus
 
             try
             {
-                return PublishContext(context);
+                return PublishContext(context, onException);
             }
             finally
             {
@@ -139,13 +191,17 @@ namespace XMSDK.Framework.EventBus
             }
         }
 
+        #endregion
+
+
         /// <summary>
         /// 发布事件上下文
         /// </summary>
         /// <typeparam name="T">事件负载类型</typeparam>
         /// <param name="context">事件上下文</param>
+        /// <param name="onException">异常处理回调</param>
         /// <returns>处理该事件的处理器数量</returns>
-        private int PublishContext<T>(EventContext<T> context)
+        private int PublishContext<T>(EventContext<T> context, ExceptionHandler onException = null)
         {
             if (context == null) throw new ArgumentNullException(nameof(context));
 
@@ -165,18 +221,31 @@ namespace XMSDK.Framework.EventBus
                 {
                     // 多对多订阅，直接调用
                     route.Handler.DynamicInvoke(context);
-                    handledCount++;
-                    // 检查是否需要停止订阅
-                    if (context.ContinueSubscription) continue;
-                    routesToRemove.Add(route);
-                    // 重置标记，以便其他订阅者继续处理
-                    context.ContinueSubscription = true;
                 }
-                catch (Exception ex)
+                catch (TargetInvocationException ex)
                 {
-                    // 可以添加日志记录
-                    Console.WriteLine($"事件处理器执行异常: {ex.Message}");
+                    // 如果没有异常处理回调，默认重新抛出异常
+                    if (onException == null)
+                    {
+                        if (ex.InnerException != null)
+                            throw ex.InnerException;
+                        throw;
+                    }
+
+                    // 触发异常处理回调
+                    if (onException.Invoke(context, ex.InnerException, route.Handler))
+                    {
+                        // 用户选择重新抛出异常
+                        if (ex.InnerException != null) throw ex.InnerException;
+                    }
                 }
+
+                handledCount++;
+                // 检查是否需要停止订阅
+                if (context.ContinueSubscription) continue;
+                routesToRemove.Add(route);
+                // 重置标记，以便其他订阅者继续处理
+                context.ContinueSubscription = true;
             }
 
             // 移除标记为需要移除的路由
@@ -188,23 +257,17 @@ namespace XMSDK.Framework.EventBus
         /// <summary>
         /// 获取匹配的路由（按订阅顺序）
         /// </summary>
-        private List<RouteInfo> GetMatchingRoutes(Type payloadType, string routeKey)
+        protected List<RouteInfo> GetMatchingRoutes(Type payloadType, string routeKey)
         {
             var matchingRoutes = new List<RouteInfo>();
 
             lock (_lockObject)
             {
-                // 检查当前类型及其基类和接口
-                var typesToCheck = GetPayloadTypeHierarchy(payloadType);
-
-                foreach (var type in typesToCheck)
+                var key = payloadType.FullName;
+                if (key != null && _routes.TryGetValue(key, out var routes))
                 {
-                    var key = type.FullName;
-                    if (key != null && _routes.TryGetValue(key, out var route1))
-                    {
-                        matchingRoutes.AddRange(route1.Where(route =>
-                            IsRouteMatch(route.Pattern, routeKey, route.IsRegex)));
-                    }
+                    matchingRoutes.AddRange(routes.Where(route =>
+                        IsRouteMatch(route.Pattern, routeKey, route.IsRegex)));
                 }
             }
 
@@ -213,50 +276,13 @@ namespace XMSDK.Framework.EventBus
         }
 
         /// <summary>
-        /// 获取负载类型层次结构
-        /// </summary>
-        private static IEnumerable<Type> GetPayloadTypeHierarchy(Type payloadType)
-        {
-            var types = new List<Type> { payloadType };
-
-            // 添加基类
-            var baseType = payloadType.BaseType;
-            while (baseType != null && baseType != typeof(object))
-            {
-                types.Add(baseType);
-                baseType = baseType.BaseType;
-            }
-
-            // 添加接口
-            var interfaces = payloadType.GetInterfaces();
-            types.AddRange(interfaces);
-
-            return types;
-        }
-
-        /// <summary>
         /// 检查路由是否匹配
         /// </summary>
-        private static bool IsRouteMatch(string pattern, string routeKey, bool isRegex)
+        protected static bool IsRouteMatch(string pattern, string routeKey, bool isRegex)
         {
             if (pattern == "*") return true;
 
-            if (isRegex)
-            {
-                try
-                {
-                    return Regex.IsMatch(routeKey, pattern);
-                }
-                catch
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                // 支持通配符匹配
-                return WildcardMatch(pattern, routeKey);
-            }
+            return isRegex ? Regex.IsMatch(routeKey, pattern) : WildcardMatch(pattern, routeKey);
         }
 
         /// <summary>
@@ -351,6 +377,5 @@ namespace XMSDK.Framework.EventBus
                 return count;
             }
         }
-        
     }
 }

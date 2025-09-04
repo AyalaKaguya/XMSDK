@@ -53,7 +53,7 @@ namespace XMSDK.Framework.Config
         /// <summary>
         /// 获取原型类的默认值实例（优先使用静态成员，其次属性注解）
         /// </summary>
-        private T GetDefaultInstance()
+        private static T GetDefaultInstance()
         {
             var type = typeof(T);
             // 优先查找 public static T GetDefault() 方法
@@ -84,7 +84,10 @@ namespace XMSDK.Framework.Config
                         {
                             value = Convert.ChangeType(value, prop.PropertyType);
                         }
-                        catch { }
+                        catch
+                        {
+                            // ignored
+                        }
                     }
                     prop.SetValue(instance, value);
                 }

@@ -9,23 +9,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="00f5f9fb-06c8-40bc-b2d3-3cf4e7adcd61" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/XMSDK.Framework/Config/DataClassAttribute.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/XMSDK.Framework/Config/DefaultValueAttribute.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/XMSDK.Framework/Config/JsonConfig.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/XMSDK.Tests/App.config" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/XMSDK.Tests/Properties/AssemblyInfo.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/XMSDK.Tests/TestCryptHelper.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/XMSDK.Tests/TestEventBus.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/XMSDK.Tests/TestJsonConfig.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/XMSDK.Tests/TestLocalFileBinder.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/XMSDK.Tests/XMSDK.Tests.csproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/XMSDK.Tests/packages.config" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/XMSDK.Tests/TestAsyncBus.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.XMSDK/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.XMSDK/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ConsoleApplication1/CommandTransmissionTest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ConsoleApplication1/CommandTransmissionTest.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ConsoleApplication1/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ConsoleApplication1/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Config/LocalFileBinder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Config/LocalFileBinder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/EventBus/EventContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/EventBus/EventContext.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/XMSDK.Framework.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/XMSDK.Framework.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.sln" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Config/JsonConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Config/JsonConfig.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/EventBus/AsyncBus.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/EventBus/AsyncBus.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/EventBus/DirectBus.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/EventBus/DirectBus.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Logger/LogToFolderProcesser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Logger/LogToFolderProcesser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Tests/TestEventBus.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Tests/TestEventBus.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Tests/XMSDK.Tests.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Tests/XMSDK.Tests.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.sln.DotSettings.user" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -40,7 +33,14 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2465977aa5d94ef79e534c432288152117abd0/58/93365b3b/Enumerable.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3020f90f960f433086d545c4e07afdfd531820/0f/f21e3251/Task`1.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3020f90f960f433086d545c4e07afdfd531820/19/4d2aaa9b/RuntimeMethodInfo.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3020f90f960f433086d545c4e07afdfd531820/34/74019b66/Task.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3020f90f960f433086d545c4e07afdfd531820/8d/06101ca7/UnwrapPromise`1.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3020f90f960f433086d545c4e07afdfd531820/8f/7ecbddf4/List`1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3020f90f960f433086d545c4e07afdfd531820/e6/d512323b/Dictionary`2.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3020f90f960f433086d545c4e07afdfd531820/ff/9cba3f9f/ExecutionContextSwitcher.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3789ee403a53437cbb6b5d9ab6311f51573620/04/10d1145b/ThreadHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3789ee403a53437cbb6b5d9ab6311f51573620/a0/5aeacd8a/ThrowHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3789ee403a53437cbb6b5d9ab6311f51573620/de/b429b78f/ExecutionContext.cs" root0="FORCE_HIGHLIGHTING" />
@@ -68,7 +68,9 @@
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Crypt/ShaHashHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/EventBus/AsyncBus.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/EventBus/DirectBus.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/ayala/RiderProjects/XMSDK/XMSDK.Framework/EventBus/DirectBus.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/EventBus/EventContext.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/XMSDK.Tests/TestAsyncBus.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Tests/TestCryptHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Tests/TestEventBus.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Tests/TestJsonConfig.cs" root0="FORCE_HIGHLIGHTING" />
@@ -89,7 +91,7 @@
     ".NET 项目.ConsoleApplication1.executor": "Run",
     ".NET 项目.WindowsFormsApp1.executor": "Run",
     ".NET 项目.XMSDK.Framework.executor": "Run",
-    "1a74a003-a833-4aa5-a8a4-1fa2631fd6f6.executor": "Run",
+    "1a74a003-a833-4aa5-a8a4-1fa2631fd6f6.executor": "Debug",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
@@ -100,7 +102,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "editor.preferences.smartKeys_rider",
+    "settings.editor.selected.configurable": "terminal",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -146,7 +148,8 @@
       <workItem from="1755655938748" duration="9779000" />
       <workItem from="1755761136916" duration="6739000" />
       <workItem from="1756437216934" duration="725000" />
-      <workItem from="1756888106305" duration="3743000" />
+      <workItem from="1756888106305" duration="3866000" />
+      <workItem from="1756945966313" duration="10908000" />
     </task>
     <task id="LOCAL-00001" summary="feat: 日志类，暂时开放供参考">
       <option name="closed" value="true" />
@@ -228,7 +231,15 @@
       <option name="project" value="LOCAL" />
       <updated>1755768310584</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="feat&amp;test: 添加Json配置工具，为配置、加解密、直接总线添加测试">
+      <option name="closed" value="true" />
+      <created>1756891950176</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1756891950176</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -248,7 +259,8 @@
     <MESSAGE value="doc: 针对Socket通信模块新增说明文档并稍微优化了下通信逻辑" />
     <MESSAGE value="vcs: 优化版本管理涉及的文件" />
     <MESSAGE value="feat: EventBus" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: EventBus" />
+    <MESSAGE value="feat&amp;test: 添加Json配置工具，为配置、加解密、直接总线添加测试" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat&amp;test: 添加Json配置工具，为配置、加解密、直接总线添加测试" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -270,6 +282,12 @@
             <option name="internal" value="false" />
           </properties>
           <option name="timeStamp" value="9" />
+        </breakpoint>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.Reflection.TargetInvocationException" breakIfHandledByUserCode="true" isInternal="false" displayValue="TargetInvocationException" namespaceName="System.Reflection">
+            <option name="internal" value="false" />
+          </properties>
+          <option name="timeStamp" value="13" />
         </breakpoint>
       </breakpoints>
     </breakpoint-manager>
