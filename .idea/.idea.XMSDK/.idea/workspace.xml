@@ -9,17 +9,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="00f5f9fb-06c8-40bc-b2d3-3cf4e7adcd61" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/XMSDK.Tests/TestAsyncBus.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ConsoleApplication1/packages.config" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/XMSDK.Framework/Demo/LoggerDemoForm.Designer.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/XMSDK.Framework/Demo/LoggerDemoForm.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/XMSDK.Framework/Forms/ColorfulLoggerList.Designer.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/XMSDK.Framework/Forms/ColorfulLoggerList.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/XMSDK.Framework/Logger/ListViewLoggerProvider.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/XMSDK.Framework/Logger/LoggingBuilderExtensions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.XMSDK/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.XMSDK/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ConsoleApplication1/CommandTransmissionTest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ConsoleApplication1/CommandTransmissionTest.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ConsoleApplication1/ConsoleApplication1.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/ConsoleApplication1/ConsoleApplication1.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ConsoleApplication1/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ConsoleApplication1/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Config/JsonConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Config/JsonConfig.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/EventBus/AsyncBus.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/EventBus/AsyncBus.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Communication/SocketBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Communication/SocketBuilder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Config/PrivateProfileSetting.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Config/PrivateProfileSetting.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Crypt/DesCryptHelper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Crypt/DesCryptHelper.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/EventBus/DirectBus.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/EventBus/DirectBus.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Logger/LogToFolderProcesser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Logger/LogToFolderProcesser.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Tests/TestEventBus.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Tests/TestEventBus.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Tests/XMSDK.Tests.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Tests/XMSDK.Tests.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.sln.DotSettings.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Logger/LogToFileProcesser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Logger/LogToFileProcesser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Logger/LogToListBoxProcesser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Logger/LogToListBoxProcesser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Logger/TraceMessageReceiver.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Logger/TraceMessageReceiver.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Properties/AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Properties/AssemblyInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/XMSDK.Framework.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/XMSDK.Framework.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/packages.config" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/packages.config" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Tests/TestAsyncBus.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Tests/TestAsyncBus.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Tests/TestCryptHelper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Tests/TestCryptHelper.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,6 +62,7 @@
     <setting file="file://$PROJECT_DIR$/.vs/XMSDK/v17/DocumentLayout.backup.json" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/.vs/XMSDK/v17/DocumentLayout.json" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ConsoleApplication1/CommandTransmissionTest.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/ConsoleApplication1/packages.config" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Communication/MessageProtocol.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Communication/SignalHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Communication/SocketBuilder.cs" root0="FORCE_HIGHLIGHTING" />
@@ -61,15 +73,22 @@
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Config/DataClassAttribute.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Config/DefaultValueAttribute.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Config/JsonConfig.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/ayala/RiderProjects/XMSDK/XMSDK.Framework/Config/JsonConfig.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Crypt/AesCryptHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Crypt/Base64CodeHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Crypt/DesCryptHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Crypt/Md5HashHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Crypt/ShaHashHelper.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Demo/LoggerDemoForm.Designer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Demo/LoggerDemoForm.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/EventBus/AsyncBus.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/ayala/RiderProjects/XMSDK/XMSDK.Framework/EventBus/AsyncBus.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/EventBus/DirectBus.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock://C:/Users/ayala/RiderProjects/XMSDK/XMSDK.Framework/EventBus/DirectBus.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/EventBus/EventContext.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Forms/ColorfulLoggerList.Designer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Forms/ColorfulLoggerList.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Logger/ListViewLoggerProvider.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Tests/TestAsyncBus.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Tests/TestCryptHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Tests/TestEventBus.cs" root0="FORCE_HIGHLIGHTING" />
@@ -106,7 +125,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="1a74a003-a833-4aa5-a8a4-1fa2631fd6f6">
+  <component name="RunManager" selected=".NET 项目.ConsoleApplication1">
     <configuration name="ConsoleApplication1" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="$PROJECT_DIR$/ConsoleApplication1/bin/Debug/ConsoleApplication1.exe" />
       <option name="PROGRAM_PARAMETERS" value="" />
@@ -149,7 +168,7 @@
       <workItem from="1755761136916" duration="6739000" />
       <workItem from="1756437216934" duration="725000" />
       <workItem from="1756888106305" duration="3866000" />
-      <workItem from="1756945966313" duration="10908000" />
+      <workItem from="1756945966313" duration="27072000" />
     </task>
     <task id="LOCAL-00001" summary="feat: 日志类，暂时开放供参考">
       <option name="closed" value="true" />
@@ -239,7 +258,15 @@
       <option name="project" value="LOCAL" />
       <updated>1756891950176</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="feat&amp;test: 添加异步事件总线及相关测试用例">
+      <option name="closed" value="true" />
+      <created>1756957384169</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1756957384169</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -260,7 +287,8 @@
     <MESSAGE value="vcs: 优化版本管理涉及的文件" />
     <MESSAGE value="feat: EventBus" />
     <MESSAGE value="feat&amp;test: 添加Json配置工具，为配置、加解密、直接总线添加测试" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat&amp;test: 添加Json配置工具，为配置、加解密、直接总线添加测试" />
+    <MESSAGE value="feat&amp;test: 添加异步事件总线及相关测试用例" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat&amp;test: 添加异步事件总线及相关测试用例" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

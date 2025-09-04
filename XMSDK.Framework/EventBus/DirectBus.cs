@@ -278,7 +278,7 @@ namespace XMSDK.Framework.EventBus
         /// <summary>
         /// 检查路由是否匹配
         /// </summary>
-        protected static bool IsRouteMatch(string pattern, string routeKey, bool isRegex)
+        private static bool IsRouteMatch(string pattern, string routeKey, bool isRegex)
         {
             if (pattern == "*") return true;
 

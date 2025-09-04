@@ -45,7 +45,7 @@ namespace XMSDK.Framework.Crypt
         {
             var des = new DESCryptoServiceProvider();
             var inputBytes = new byte[text.Length / 2];
-            for (int i = 0; i < inputBytes.Length; i++)
+            for (var i = 0; i < inputBytes.Length; i++)
             {
                 inputBytes[i] = Convert.ToByte(text.Substring(i * 2, 2), 16);
             }

@@ -1,33 +1,21 @@
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using XMSDK.Framework.Logger;
+using XMSDK.Framework.Demo;
 
 namespace ConsoleApplication1
 {
     internal static class Program
     {
+        [STAThread]
         public static void Main(string[] args)
         {
-            // 测试日志记录
-            Console.WriteLine("\n=== 测试 Trace 和 Debug 输出 ===");
-            new TraceMessageReceiver()
-                // .AddToDebug() // 只输出到Debug
-                .AddToTrace() // 同时输出到Trace和Debug
-                .AddProcesser(new LogToConsoleProcesser())
-                .AddProcesser(new LogToFolderProcesser(@"D:\logs"));
-            
-            Trace.WriteLine("This is a test message for Trace.");
-            Debug.WriteLine("This is a test message for Debug."); // Release模式下不会输出
-            
-            
-            TransmissionTest.TestTransmissionCreate();
-            TransmissionTest.TestSignalTransmission();
-            TransmissionTest.TestCommandTransmission();
-            
-            Console.WriteLine("=== 测试完成 ===");
+            // 启用Windows Forms应用程序的视觉样式
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new LoggerDemoForm());
         }
-        
-        
     }
 }

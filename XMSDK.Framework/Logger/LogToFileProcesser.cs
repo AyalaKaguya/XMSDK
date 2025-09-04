@@ -35,7 +35,7 @@ namespace XMSDK.Framework.Logger
                     var logsToWrite = new List<string>();
 
                     // 批量获取日志消息
-                    while (_logQueue.TryDequeue(out string logMessage) && logsToWrite.Count < 100)
+                    while (_logQueue.TryDequeue(out var logMessage) && logsToWrite.Count < 100)
                     {
                         logsToWrite.Add(logMessage);
                     }

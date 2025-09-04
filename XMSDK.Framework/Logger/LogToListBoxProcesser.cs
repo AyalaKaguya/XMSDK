@@ -14,7 +14,7 @@ namespace XMSDK.Framework.Logger
 
         public void OnMessage(string msg)
         {
-            string fullMessage = $"{DateTime.Now:HH:mm:ss}-->  {msg}";
+            var fullMessage = $"{DateTime.Now:HH:mm:ss}-->  {msg}";
 
             UpdateListBox(fullMessage);
         }
@@ -33,7 +33,7 @@ namespace XMSDK.Framework.Logger
                 if (_listBox.Items.Count > 1000)
                 {
                     // 批量删除，提高性能
-                    for (int i = 0; i < 100; i++)
+                    for (var i = 0; i < 100; i++)
                     {
                         if (_listBox.Items.Count > 0)
                             _listBox.Items.RemoveAt(0);

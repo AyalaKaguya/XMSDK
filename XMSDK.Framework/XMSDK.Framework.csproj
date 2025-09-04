@@ -55,6 +55,12 @@
         <Reference Include="Microsoft.Extensions.Configuration.Json, Version=9.0.0.8, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
           <HintPath>..\packages\Microsoft.Extensions.Configuration.Json.9.0.8\lib\net462\Microsoft.Extensions.Configuration.Json.dll</HintPath>
         </Reference>
+        <Reference Include="Microsoft.Extensions.DependencyInjection, Version=9.0.0.8, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+          <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.9.0.8\lib\net462\Microsoft.Extensions.DependencyInjection.dll</HintPath>
+        </Reference>
+        <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=9.0.0.8, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+          <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.9.0.8\lib\net462\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+        </Reference>
         <Reference Include="Microsoft.Extensions.FileProviders.Abstractions, Version=9.0.0.8, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
           <HintPath>..\packages\Microsoft.Extensions.FileProviders.Abstractions.9.0.8\lib\net462\Microsoft.Extensions.FileProviders.Abstractions.dll</HintPath>
         </Reference>
@@ -63,6 +69,15 @@
         </Reference>
         <Reference Include="Microsoft.Extensions.FileSystemGlobbing, Version=9.0.0.8, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
           <HintPath>..\packages\Microsoft.Extensions.FileSystemGlobbing.9.0.8\lib\net462\Microsoft.Extensions.FileSystemGlobbing.dll</HintPath>
+        </Reference>
+        <Reference Include="Microsoft.Extensions.Logging, Version=9.0.0.8, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+          <HintPath>..\packages\Microsoft.Extensions.Logging.9.0.8\lib\net462\Microsoft.Extensions.Logging.dll</HintPath>
+        </Reference>
+        <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=9.0.0.8, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+          <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.9.0.8\lib\net462\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+        </Reference>
+        <Reference Include="Microsoft.Extensions.Options, Version=9.0.0.8, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+          <HintPath>..\packages\Microsoft.Extensions.Options.9.0.8\lib\net462\Microsoft.Extensions.Options.dll</HintPath>
         </Reference>
         <Reference Include="Microsoft.Extensions.Primitives, Version=9.0.0.8, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
           <HintPath>..\packages\Microsoft.Extensions.Primitives.9.0.8\lib\net462\Microsoft.Extensions.Primitives.dll</HintPath>
@@ -75,7 +90,11 @@
         <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
           <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
         </Reference>
+        <Reference Include="System.ComponentModel.DataAnnotations" />
         <Reference Include="System.Core"/>
+        <Reference Include="System.Diagnostics.DiagnosticSource, Version=9.0.0.8, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+          <HintPath>..\packages\System.Diagnostics.DiagnosticSource.9.0.8\lib\net462\System.Diagnostics.DiagnosticSource.dll</HintPath>
+        </Reference>
         <Reference Include="System.IO.Pipelines, Version=9.0.0.8, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
           <HintPath>..\packages\System.IO.Pipelines.9.0.8\lib\net462\System.IO.Pipelines.dll</HintPath>
         </Reference>
@@ -134,10 +153,24 @@
         <Compile Include="Crypt\DesCryptHelper.cs" />
         <Compile Include="Crypt\Md5HashHelper.cs" />
         <Compile Include="Crypt\ShaHashHelper.cs" />
+        <Compile Include="Demo\LoggerDemoForm.cs">
+          <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="Demo\LoggerDemoForm.Designer.cs">
+          <DependentUpon>LoggerDemoForm.cs</DependentUpon>
+        </Compile>
         <Compile Include="EventBus\AsyncBus.cs" />
         <Compile Include="EventBus\DirectBus.cs" />
         <Compile Include="EventBus\EventContext.cs" />
+        <Compile Include="Forms\ColorfulLoggerList.cs">
+          <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Include="Forms\ColorfulLoggerList.Designer.cs">
+          <DependentUpon>ColorfulLoggerList.cs</DependentUpon>
+        </Compile>
         <Compile Include="Logger\ITraceMessageProcesser.cs" />
+        <Compile Include="Logger\ListViewLoggerProvider.cs" />
+        <Compile Include="Logger\LoggingBuilderExtensions.cs" />
         <Compile Include="Logger\LogToConsoleProcesser.cs" />
         <Compile Include="Logger\LogToFileProcesser.cs" />
         <Compile Include="Logger\LogToFolderProcesser.cs" />
@@ -151,6 +184,11 @@
     <ItemGroup>
       <None Include="App.config" />
       <None Include="packages.config" />
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="Demo\LoggerDemoForm.resx">
+        <DependentUpon>LoggerDemoForm.cs</DependentUpon>
+      </EmbeddedResource>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
 </Project>
