@@ -185,10 +185,5 @@
       <None Include="App.config" />
       <None Include="packages.config" />
     </ItemGroup>
-    <ItemGroup>
-      <EmbeddedResource Include="Demo\LoggerDemoForm.resx">
-        <DependentUpon>LoggerDemoForm.cs</DependentUpon>
-      </EmbeddedResource>
-    </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
 </Project>
