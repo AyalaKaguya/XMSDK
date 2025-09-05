@@ -142,12 +142,12 @@
         <Compile Include="Communication\SocketClientBuilder.cs" />
         <Compile Include="Communication\SocketServer.cs" />
         <Compile Include="Communication\SocketServerBuilder.cs" />
-        <Compile Include="Config\BindLocalFileAttribute.cs" />
         <Compile Include="Config\DataClassAttribute.cs" />
         <Compile Include="Config\DefaultValueAttribute.cs" />
         <Compile Include="Config\JsonConfig.cs" />
-        <Compile Include="Config\LocalFileBinder.cs" />
         <Compile Include="Config\PrivateProfileSetting.cs" />
+        <Compile Include="Config\Singleton\BindLocalFileAttribute.cs" />
+        <Compile Include="Config\Singleton\LocalFileBinder.cs" />
         <Compile Include="Crypt\AesCryptHelper.cs" />
         <Compile Include="Crypt\Base64CodeHelper.cs" />
         <Compile Include="Crypt\DesCryptHelper.cs" />
@@ -162,20 +162,27 @@
         <Compile Include="EventBus\AsyncBus.cs" />
         <Compile Include="EventBus\DirectBus.cs" />
         <Compile Include="EventBus\EventContext.cs" />
-        <Compile Include="Forms\ColorfulLoggerList.cs">
+        <Compile Include="Forms\LoggerList.cs">
           <SubType>UserControl</SubType>
         </Compile>
-        <Compile Include="Forms\ColorfulLoggerList.Designer.cs">
-          <DependentUpon>ColorfulLoggerList.cs</DependentUpon>
+        <Compile Include="Forms\LoggerList.Designer.cs">
+          <DependentUpon>LoggerList.cs</DependentUpon>
         </Compile>
-        <Compile Include="Logger\ITraceMessageProcesser.cs" />
+        <Compile Include="Forms\SplashScreen\SplashItem.cs" />
+        <Compile Include="Forms\SplashScreen\SplashWindow.cs">
+          <SubType>Form</SubType>
+        </Compile>
+        <Compile Include="Forms\SplashScreen\SplashWindow.Designer.cs">
+          <DependentUpon>SplashWindow.cs</DependentUpon>
+        </Compile>
         <Compile Include="Logger\ListViewLoggerProvider.cs" />
         <Compile Include="Logger\LoggingBuilderExtensions.cs" />
-        <Compile Include="Logger\LogToConsoleProcesser.cs" />
-        <Compile Include="Logger\LogToFileProcesser.cs" />
-        <Compile Include="Logger\LogToFolderProcesser.cs" />
-        <Compile Include="Logger\LogToListBoxProcesser.cs" />
-        <Compile Include="Logger\TraceMessageReceiver.cs" />
+        <Compile Include="Logger\TraceMessage\ITraceMessageProcesser.cs" />
+        <Compile Include="Logger\TraceMessage\LogToConsoleProcesser.cs" />
+        <Compile Include="Logger\TraceMessage\LogToFileProcesser.cs" />
+        <Compile Include="Logger\TraceMessage\LogToFolderProcesser.cs" />
+        <Compile Include="Logger\TraceMessage\LogToListBoxProcesser.cs" />
+        <Compile Include="Logger\TraceMessage\TraceMessageReceiver.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>
     <ItemGroup>
@@ -184,6 +191,11 @@
     <ItemGroup>
       <None Include="App.config" />
       <None Include="packages.config" />
+    </ItemGroup>
+    <ItemGroup>
+      <Content Include="..\README.md">
+        <Link>README.md</Link>
+      </Content>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
 </Project>

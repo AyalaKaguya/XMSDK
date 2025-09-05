@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace XMSDK.Framework.Forms
 {
-    partial class ColorfulLoggerList
+    partial class LoggerList
     {
         /// <summary> 
         /// Required designer variable.
@@ -172,7 +172,7 @@ namespace XMSDK.Framework.Forms
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.listViewLogs);
-            this.Name = "ColorfulLoggerList";
+            this.Name = "LoggerList";
             this.Size = new System.Drawing.Size(800, 600);
             this.contextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XMSDK.Framework.Logger
+namespace XMSDK.Framework.Logger.TraceMessage
 {
     public class LogToConsoleProcesser: ITraceMessageProcesser
     {

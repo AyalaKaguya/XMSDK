@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace XMSDK.Framework.Forms
 {
-    public partial class ColorfulLoggerList : UserControl
+    public partial class LoggerList : UserControl
     {
         private readonly List<LogEntry> _pendingLogEntries = new List<LogEntry>();
         private readonly object _pendingLockObject = new object();
@@ -21,7 +21,7 @@ namespace XMSDK.Framework.Forms
             { LogLevel.Error, new LogLevelColorConfig { ForeColor = Color.Red, BackColor = Color.Transparent } }
         };
 
-        public ColorfulLoggerList()
+        public LoggerList()
         {
             InitializeComponent();
             InitializeListView();
@@ -159,7 +159,7 @@ namespace XMSDK.Framework.Forms
             if (_maxLogCount <= 0) return;
             var remove = listViewLogs.Items.Count - _maxLogCount;
             if (remove <= 0) return;
-            for (int i = 0; i < remove; i++)
+            for (var i = 0; i < remove; i++)
             {
                 listViewLogs.Items.RemoveAt(0);
             }

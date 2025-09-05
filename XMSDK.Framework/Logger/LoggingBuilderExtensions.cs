@@ -15,7 +15,7 @@ namespace XMSDK.Framework.Logger
         /// <param name="builder">日志构建器</param>
         /// <param name="loggerList">ColorfulLoggerList控件实例</param>
         /// <returns></returns>
-        public static ILoggingBuilder AddListView(this ILoggingBuilder builder, ColorfulLoggerList loggerList)
+        public static ILoggingBuilder AddListView(this ILoggingBuilder builder, LoggerList loggerList)
         {
             builder.Services.AddSingleton<ILoggerProvider>(new ListViewLoggerProvider(loggerList));
             return builder;

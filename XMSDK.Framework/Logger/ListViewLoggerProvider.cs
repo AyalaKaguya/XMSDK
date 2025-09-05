@@ -10,9 +10,9 @@ namespace XMSDK.Framework.Logger
         private readonly ConcurrentDictionary<string, ListViewLogger> _loggers =
             new ConcurrentDictionary<string, ListViewLogger>();
 
-        private readonly ColorfulLoggerList _loggerList;
+        private readonly LoggerList _loggerList;
 
-        public ListViewLoggerProvider(ColorfulLoggerList loggerList)
+        public ListViewLoggerProvider(LoggerList loggerList)
         {
             _loggerList = loggerList ?? throw new ArgumentNullException(nameof(loggerList));
         }
@@ -31,9 +31,9 @@ namespace XMSDK.Framework.Logger
     public class ListViewLogger : ILogger
     {
         private readonly string _name;
-        private readonly ColorfulLoggerList _loggerList;
+        private readonly LoggerList _loggerList;
 
-        public ListViewLogger(string name, ColorfulLoggerList loggerList)
+        public ListViewLogger(string name, LoggerList loggerList)
         {
             _name = name;
             _loggerList = loggerList;

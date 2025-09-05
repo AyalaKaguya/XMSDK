@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace XMSDK.Framework.Logger
+namespace XMSDK.Framework.Logger.TraceMessage
 {
     public class LogToListBoxProcesser : ITraceMessageProcesser
     {

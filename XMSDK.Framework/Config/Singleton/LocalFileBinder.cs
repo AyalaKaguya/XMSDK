@@ -1,12 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json;
-using System.Collections.Generic;
-using System.Diagnostics;
 
-namespace XMSDK.Framework.Config
+namespace XMSDK.Framework.Config.Singleton
 {
     public static class LocalFileBinder
     {

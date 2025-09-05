@@ -1,35 +1,24 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using XMSDK.Framework.Logger;
 using XMSDK.Framework.Logger;
 
 namespace XMSDK.Framework.Demo
 {
     public partial class LoggerDemoForm : Form
     {
-        private ILogger<LoggerDemoForm> _logger;
+        private readonly ILogger<LoggerDemoForm> _logger;
         private readonly Random _random = new Random();
 
-        public LoggerDemoForm()
+        // 首选构造：由 DI 提供 ILoggerFactory
+        public LoggerDemoForm(ILoggerFactory logger)
         {
+            // 向 LoggerList 添加日志处理器
             InitializeComponent();
-            SetupLogging();
-        }
-
-        private void SetupLogging()
-        {
-            var serviceCollection = new ServiceCollection();
-            serviceCollection.AddLogging(builder =>
-            {
-                builder.AddListView(loggerList)
-                       .SetMinimumLevel(LogLevel.Trace);
-            });
-
-            var serviceProvider = serviceCollection.BuildServiceProvider();
-            _logger = serviceProvider.GetRequiredService<ILogger<LoggerDemoForm>>();
-
+            logger.AddProvider(new ListViewLoggerProvider(loggerList));
+            _logger = logger.CreateLogger<LoggerDemoForm>();
             // 添加欢迎日志
             _logger.LogInformation("欢迎使用日志查看器演示程序V2！");
             _logger.LogInformation("功能特性:");
@@ -125,7 +114,7 @@ namespace XMSDK.Framework.Demo
                 
                 if (inputForm.ShowDialog() == DialogResult.OK)
                 {
-                    if (int.TryParse(textBox.Text, out int maxCount) && maxCount > 0)
+                    if (int.TryParse(textBox.Text, out var maxCount) && maxCount > 0)
                     {
                         loggerList.MaxLogCount = maxCount;
                         _logger.LogInformation($"最大日志条数已设置为: {maxCount}");
@@ -162,7 +151,7 @@ namespace XMSDK.Framework.Demo
                 _logger.LogInformation($"开始性能测试 - {startTime:HH:mm:ss.fff}");
                 
                 // 生成1000条不同级别的日志
-                for (int i = 1; i <= 1000; i++)
+                for (var i = 1; i <= 1000; i++)
                 {
                     var logLevel = (LogLevel)(i % 6 + 1); // 循环使用不同级别
                     _logger.Log(logLevel, $"性能测试日志 #{i:D4} - 测试ListView优化效果");

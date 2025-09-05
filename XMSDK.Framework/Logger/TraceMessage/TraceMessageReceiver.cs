@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace XMSDK.Framework.Logger
+namespace XMSDK.Framework.Logger.TraceMessage
 {
     public class TraceMessageReceiver: IDisposable
     {

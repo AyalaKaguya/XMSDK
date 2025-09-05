@@ -1,6 +1,6 @@
 using System;
 
-namespace XMSDK.Framework.Config
+namespace XMSDK.Framework.Config.Singleton
 {
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
     public sealed class BindLocalFileAttribute : Attribute

@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using NUnit.Framework;
 using XMSDK.Framework.Config;
+using XMSDK.Framework.Config.Singleton;
 
 namespace XMSDK.Tests
 {

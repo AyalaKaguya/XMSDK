@@ -13,7 +13,7 @@ namespace XMSDK.Framework.Demo
         private IContainer components = null;
 
         // 控件声明
-        private XMSDK.Framework.Forms.ColorfulLoggerList loggerList;
+        private XMSDK.Framework.Forms.LoggerList loggerList;
         private Panel buttonPanel;
         private Button btnTrace;
         private Button btnDebug;
@@ -40,7 +40,7 @@ namespace XMSDK.Framework.Demo
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.loggerList = new XMSDK.Framework.Forms.ColorfulLoggerList();
+            this.loggerList = new XMSDK.Framework.Forms.LoggerList();
             this.buttonPanel = new System.Windows.Forms.Panel();
             this.btnTrace = new System.Windows.Forms.Button();
             this.btnDebug = new System.Windows.Forms.Button();

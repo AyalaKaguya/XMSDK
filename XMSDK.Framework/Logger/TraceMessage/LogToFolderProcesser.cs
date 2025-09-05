@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace XMSDK.Framework.Logger
+namespace XMSDK.Framework.Logger.TraceMessage
 {
     /// <summary>
     /// 将日志记录到指定文件夹中，默认按天生成日志文件

@@ -9,12 +9,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="00f5f9fb-06c8-40bc-b2d3-3cf4e7adcd61" name="更改" comment="">
+      <change afterPath="$PROJECT_DIR$/ConsoleApplication1/App.config" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/XMSDK.Framework/Forms/SplashScreen/SplashItem.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/XMSDK.Framework/Forms/SplashScreen/SplashWindow.Designer.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/XMSDK.Framework/Forms/SplashScreen/SplashWindow.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.XMSDK/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.XMSDK/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ConsoleApplication1/ConsoleApplication1.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/ConsoleApplication1/ConsoleApplication1.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ConsoleApplication1/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ConsoleApplication1/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ConsoleApplication1/packages.config" beforeDir="false" afterPath="$PROJECT_DIR$/ConsoleApplication1/packages.config" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Config/BindLocalFileAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Config/Singleton/BindLocalFileAttribute.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Config/LocalFileBinder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Config/Singleton/LocalFileBinder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Demo/LoggerDemoForm.Designer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Demo/LoggerDemoForm.Designer.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Demo/LoggerDemoForm.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Demo/LoggerDemoForm.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Demo/LoggerDemoForm.resx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Forms/ColorfulLoggerList.Designer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Forms/ColorfulLoggerList.Designer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Forms/ColorfulLoggerList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Forms/ColorfulLoggerList.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Forms/ColorfulLoggerList.Designer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Forms/LoggerList.Designer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Forms/ColorfulLoggerList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Forms/LoggerList.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Logger/ITraceMessageProcesser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Logger/TraceMessage/ITraceMessageProcesser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Logger/ListViewLoggerProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Logger/ListViewLoggerProvider.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Logger/LogToConsoleProcesser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Logger/TraceMessage/LogToConsoleProcesser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Logger/LogToFileProcesser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Logger/TraceMessage/LogToFileProcesser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Logger/LogToFolderProcesser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Logger/TraceMessage/LogToFolderProcesser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Logger/LogToListBoxProcesser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Logger/TraceMessage/LogToListBoxProcesser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Logger/LoggingBuilderExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Logger/LoggingBuilderExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Logger/TraceMessageReceiver.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Logger/TraceMessage/TraceMessageReceiver.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/XMSDK.Framework.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/XMSDK.Framework.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Tests/TestLocalFileBinder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Tests/TestLocalFileBinder.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.sln.DotSettings.user" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -33,10 +52,12 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3020f90f960f433086d545c4e07afdfd531820/0f/f21e3251/Task`1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3020f90f960f433086d545c4e07afdfd531820/19/4d2aaa9b/RuntimeMethodInfo.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3020f90f960f433086d545c4e07afdfd531820/34/74019b66/Task.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3020f90f960f433086d545c4e07afdfd531820/3f/0f1dec52/Func`2.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3020f90f960f433086d545c4e07afdfd531820/8d/06101ca7/UnwrapPromise`1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3020f90f960f433086d545c4e07afdfd531820/8f/7ecbddf4/List`1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3020f90f960f433086d545c4e07afdfd531820/e6/d512323b/Dictionary`2.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3020f90f960f433086d545c4e07afdfd531820/ff/9cba3f9f/ExecutionContextSwitcher.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/32c22f7c1b7049ccad5f07031bb43bf35b8590/72/bf793159/Application.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3789ee403a53437cbb6b5d9ab6311f51573620/04/10d1145b/ThreadHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3789ee403a53437cbb6b5d9ab6311f51573620/a0/5aeacd8a/ThrowHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/3789ee403a53437cbb6b5d9ab6311f51573620/de/b429b78f/ExecutionContext.cs" root0="FORCE_HIGHLIGHTING" />
@@ -64,14 +85,16 @@
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Crypt/Md5HashHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Crypt/ShaHashHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Demo/LoggerDemoForm.Designer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/ayala/RiderProjects/XMSDK/XMSDK.Framework/Demo/LoggerDemoForm.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/ayala/RiderProjects/XMSDK/XMSDK.Framework/Demo/LoggerDemoForm.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Demo/LoggerDemoForm.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock://C:/Users/ayala/RiderProjects/XMSDK/XMSDK.Framework/Demo/LoggerDemoForm.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/ayala/RiderProjects/XMSDK/XMSDK.Framework/Demo/LoggerDemoForm.resx" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/EventBus/AsyncBus.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/EventBus/DirectBus.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/EventBus/EventContext.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Forms/ColorfulLoggerList.Designer.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/ayala/RiderProjects/XMSDK/XMSDK.Framework/Forms/ColorfulLoggerList.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Forms/LoggerList.Designer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Forms/SplashScreen/SplashWindow.Designer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Forms/SplashScreen/SplashWindow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Logger/ListViewLoggerProvider.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Tests/TestAsyncBus.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Tests/TestCryptHelper.cs" root0="FORCE_HIGHLIGHTING" />
@@ -153,7 +176,8 @@
       <workItem from="1756437216934" duration="725000" />
       <workItem from="1756888106305" duration="3866000" />
       <workItem from="1756945966313" duration="28315000" />
-      <workItem from="1757055772713" duration="6611000" />
+      <workItem from="1757055772713" duration="6922000" />
+      <workItem from="1757062748460" duration="7346000" />
     </task>
     <task id="LOCAL-00001" summary="feat: 日志类，暂时开放供参考">
       <option name="closed" value="true" />
@@ -259,7 +283,15 @@
       <option name="project" value="LOCAL" />
       <updated>1756977224685</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="refactor: 优化LoggerDemoForm中的日志记录逻辑，提升性能和可读性">
+      <option name="closed" value="true" />
+      <created>1757062639699</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1757062639699</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -282,7 +314,8 @@
     <MESSAGE value="feat&amp;test: 添加Json配置工具，为配置、加解密、直接总线添加测试" />
     <MESSAGE value="feat&amp;test: 添加异步事件总线及相关测试用例" />
     <MESSAGE value="feat: 添加日志查看器演示程序及相关日志功能" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: 添加日志查看器演示程序及相关日志功能" />
+    <MESSAGE value="refactor: 优化LoggerDemoForm中的日志记录逻辑，提升性能和可读性" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor: 优化LoggerDemoForm中的日志记录逻辑，提升性能和可读性" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

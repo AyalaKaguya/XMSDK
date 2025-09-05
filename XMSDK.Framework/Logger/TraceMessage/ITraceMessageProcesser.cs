@@ -1,4 +1,4 @@
-﻿namespace XMSDK.Framework.Logger
+﻿namespace XMSDK.Framework.Logger.TraceMessage
 {
     public interface ITraceMessageProcesser
     {

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace XMSDK.Framework.Logger
+namespace XMSDK.Framework.Logger.TraceMessage
 {
     public class LogToFileProcesser : ITraceMessageProcesser, IDisposable
     {
