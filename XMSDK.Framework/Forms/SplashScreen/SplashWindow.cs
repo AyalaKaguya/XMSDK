@@ -1,19 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Timer = System.Windows.Forms.Timer; // 新增
+using Timer = System.Windows.Forms.Timer;
 
 namespace XMSDK.Framework.Forms.SplashScreen
 {
     public sealed partial class SplashWindow : Form
     {
         /// <summary>
-        /// Splash 任务项
+        /// Splash 任务项状态
         /// </summary>
         internal class SplashProgressState
         {
@@ -23,6 +22,7 @@ namespace XMSDK.Framework.Forms.SplashScreen
             public int Percent { get; set; }
             public Exception Error { get; set; }
             public bool CompletedAll { get; set; }
+            public bool Aborted { get; set; }
         }
 
         private readonly List<SplashItem> _items = new List<SplashItem>();
@@ -30,7 +30,11 @@ namespace XMSDK.Framework.Forms.SplashScreen
         private int _totalWeight;
         private int _doneWeight;
         private bool _started;
-        private Timer _topMostTimer; // 保持置顶
+        private bool _aborted;
+        private Timer _topMostTimer;
+        
+        private int _lastProgressIndex = -1;
+        private readonly SplashContext _context; // 上下文供任务使用
 
         /// <summary>
         /// 应用名称
@@ -42,7 +46,7 @@ namespace XMSDK.Framework.Forms.SplashScreen
         }
 
         /// <summary>
-        /// 描述
+        /// 应用描述
         /// </summary>
         public string AppDescription
         {
@@ -51,7 +55,7 @@ namespace XMSDK.Framework.Forms.SplashScreen
         }
 
         /// <summary>
-        /// 作者(可选)
+        /// 作者信息
         /// </summary>
         public string Author
         {
@@ -64,7 +68,7 @@ namespace XMSDK.Framework.Forms.SplashScreen
         }
 
         /// <summary>
-        /// 版权(可选)
+        /// 版权信息
         /// </summary>
         public string Copyright
         {
@@ -82,7 +86,7 @@ namespace XMSDK.Framework.Forms.SplashScreen
         public Func<SplashItem, Exception, bool> OnItemError { get; set; }
 
         /// <summary>
-        /// 当启动应用失败时的回调，代表着启动过程遇到了致命错误并中断
+        /// 致命错误回调
         /// </summary>
         public Action<Exception> OnFatalError { get; set; }
 
@@ -92,9 +96,14 @@ namespace XMSDK.Framework.Forms.SplashScreen
         public Action OnAllCompleted { get; set; }
 
         /// <summary>
-        /// 是否在全部完成后自动关闭窗口 (延迟1秒)
+        /// 是否在全部完成后自动关闭窗口
         /// </summary>
         public bool AutoClose { get; set; } = true;
+
+        /// <summary>
+        /// 错误中止时是否也自动关闭
+        /// </summary>
+        public bool AutoCloseOnAbort { get; set; } = false;
 
         /// <summary>
         /// 关闭前延迟毫秒
@@ -102,26 +111,27 @@ namespace XMSDK.Framework.Forms.SplashScreen
         public int CloseDelayMs { get; set; } = 1000;
 
         /// <summary>
-        /// 允许外部取消
+        /// 取消令牌源
         /// </summary>
         public CancellationTokenSource CancelSource { get; } = new CancellationTokenSource();
 
         /// <summary>
-        /// 是否强制保持窗口置顶 (默认启用)
+        /// 是否强制保持窗口置顶
         /// </summary>
         public bool ForceAlwaysOnTop { get; set; } = true;
 
         public SplashWindow()
         {
             InitializeComponent();
-
-            // 初始化额外UI属性
+            
+            // 初始化窗口属性
             FormBorderStyle = FormBorderStyle.None;
             StartPosition = FormStartPosition.CenterScreen;
-            ShowInTaskbar = true; // 需要显示在任务栏以显示进度
+            ShowInTaskbar = true;
             DoubleBuffered = true;
-            TopMost = true; // 初始置顶
+            TopMost = true;
 
+            // 初始化BackgroundWorker
             _worker = new BackgroundWorker
             {
                 WorkerReportsProgress = true,
@@ -131,22 +141,23 @@ namespace XMSDK.Framework.Forms.SplashScreen
             _worker.ProgressChanged += Worker_ProgressChanged;
             _worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
 
-            // 定时器保持置顶
+            // 保持置顶的定时器
             _topMostTimer = new Timer { Interval = 1500 };
             _topMostTimer.Tick += (s, e) =>
             {
                 if (!ForceAlwaysOnTop) return;
                 if (!TopMost) TopMost = true;
-                // BringToFront 可以防止偶发被遮挡
                 if (Visible) BringToFront();
             };
             _topMostTimer.Start();
+
+            // 初始化上下文（标签现在由设计器创建）
+            _context = new SplashContext(SetDetailInternal);
         }
 
         /// <summary>
-        /// 设置背景图片（拉伸填充）
+        /// 设置背景图片
         /// </summary>
-        /// <param name="img"></param>
         public void SetBackgroundImage(Image img)
         {
             BackgroundImage = img;
@@ -154,55 +165,54 @@ namespace XMSDK.Framework.Forms.SplashScreen
         }
 
         /// <summary>
-        /// 添加Splash任务项
+        /// 添加启动项
         /// </summary>
-        /// <param name="item"></param>
-        /// <exception cref="InvalidOperationException"></exception>
         public void AddItem(SplashItem item)
         {
+            if (item == null) throw new ArgumentNullException(nameof(item));
             if (_started) throw new InvalidOperationException("加载已开始，无法再添加");
             _items.Add(item);
             _totalWeight += item.Weight;
         }
 
+        /// <summary>
+        /// 开始加载
+        /// </summary>
         public void StartLoading()
         {
             if (_started) return;
             _started = true;
-            // 预填充步骤列表（UI 线程）
-            if (listBoxSteps != null)
-            {
-                listBoxSteps.BeginUpdate();
-                listBoxSteps.Items.Clear();
-                foreach (var it in _items)
-                {
-                    listBoxSteps.Items.Add("[ ] " + it.Description);
-                }
-
-                listBoxSteps.EndUpdate();
-            }
-
-            lblStepCounter.Text = $"(0/{_items.Count})";
-            _worker.RunWorkerAsync(_items.Count == 0 ? new List<SplashItem>() : _items);
+            _worker.RunWorkerAsync(_items);
         }
 
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
             var list = (List<SplashItem>)e.Argument;
-            var index = 0;
+            int index = 0;
+            
             foreach (var item in list)
             {
                 if (_worker.CancellationPending || CancelSource.Token.IsCancellationRequested)
                 {
+                    _aborted = true;
                     break;
                 }
+
+                // 报告开始处理当前项
+                _worker.ReportProgress(0, new SplashProgressState
+                {
+                    Index = index,
+                    Total = list.Count,
+                    Description = item.Description,
+                    Percent = CalcPercent(0, false),
+                    CompletedAll = false,
+                    Aborted = false
+                });
 
                 Exception error = null;
                 try
                 {
-                    var sw = Stopwatch.StartNew();
-                    item.Action();
-                    sw.Stop();
+                    item.Action(_context);
                 }
                 catch (Exception ex)
                 {
@@ -211,15 +221,13 @@ namespace XMSDK.Framework.Forms.SplashScreen
 
                 if (error != null)
                 {
-                    var cont = false;
-                    try
-                    {
-                        cont = OnItemError?.Invoke(item, error) ?? false;
-                    }
-                    catch
-                    {
-                        /* 用户回调异常忽略 */
-                    }
+                    bool cont = false;
+                    try 
+                    { 
+                        if (OnItemError != null) 
+                            cont = OnItemError(item, error); 
+                    } 
+                    catch { /* 忽略回调异常 */ }
 
                     // 报告错误状态
                     _worker.ReportProgress(0, new SplashProgressState
@@ -227,121 +235,136 @@ namespace XMSDK.Framework.Forms.SplashScreen
                         Index = index,
                         Total = list.Count,
                         Description = item.Description,
-                        Percent = CalcPercent(item.Weight, advanceWeight: false),
+                        Percent = CalcPercent(0, false),
                         Error = error,
-                        CompletedAll = false
+                        CompletedAll = false,
+                        Aborted = false
                     });
-                    if (!cont) break; // 中断
+
+                    if (!cont)
+                    {
+                        _aborted = true;
+                        break;
+                    }
                 }
                 else
                 {
+                    // 成功完成当前项
                     _doneWeight += item.Weight;
                     _worker.ReportProgress(0, new SplashProgressState
                     {
                         Index = index,
                         Total = list.Count,
                         Description = item.Description,
-                        Percent = CalcPercent(item.Weight, advanceWeight: true),
-                        CompletedAll = false
+                        Percent = CalcPercent(item.Weight, false),
+                        CompletedAll = false,
+                        Aborted = false
                     });
                 }
-
+                
                 index++;
             }
 
-            // 结束
+            // 报告最终状态
+            var finalDesc = list.Count > 0 ? list[list.Count - 1].Description : string.Empty;
             _worker.ReportProgress(0, new SplashProgressState
             {
-                Index = list.Count - 1,
+                Index = Math.Max(0, list.Count - 1),
                 Total = list.Count,
-                Description = list.Count == 0 ? "" : list[list.Count - 1].Description,
-                Percent = 100,
-                CompletedAll = true
+                Description = finalDesc,
+                Percent = _aborted ? CalcPercent(0, false) : 100,
+                CompletedAll = !_aborted,
+                Aborted = _aborted
             });
         }
 
-        private int CalcPercent(int currentWeight, bool advanceWeight)
+        private int CalcPercent(int weight, bool advance)
         {
-            var done = _doneWeight + (advanceWeight ? currentWeight : 0);
+            var currentDone = _doneWeight;
+            if (advance) currentDone += weight;
+            
             if (_totalWeight <= 0) return 100;
-            var percent = (int)Math.Min(100, Math.Round(done * 100.0 / _totalWeight));
-            return percent;
+            
+            double ratio = (double)currentDone * 100 / _totalWeight;
+            return Math.Min(100, (int)Math.Round(ratio));
         }
 
         private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             if (!(e.UserState is SplashProgressState state)) return;
+            if (lblItemDesc == null || lblItemDetail == null) return;
 
-            // 更新当前项文本
+            // 切换到新项时清空详细信息
+            if (state.Index != _lastProgressIndex)
+            {
+                _lastProgressIndex = state.Index;
+                SetDetailInternal(string.Empty);
+                lblItemDesc.ForeColor = Color.White; // 重置颜色
+            }
+
+            // 错误时改变颜色
             if (state.Error != null)
             {
-                lblCurrentItem.Text =
-                    $"({state.Index + 1}/{state.Total}) {state.Description} 失败: {state.Error.Message}";
+                lblItemDesc.ForeColor = Color.OrangeRed;
             }
-            else if (!state.CompletedAll)
+
+            // 更新描述文本
+            if (state.CompletedAll || state.Aborted)
             {
-                lblCurrentItem.Text = $"({state.Index + 1}/{state.Total}) {state.Description}...";
+                lblItemDesc.Text = state.Aborted 
+                    ? $"已中止 ({state.Percent}%)" 
+                    : $"完成 ({state.Percent}%)";
             }
-
-            // 步骤计数标签 (x/n)
-            if (state.Total > 0 && !state.CompletedAll)
+            else
             {
-                lblStepCounter.Text = $"({Math.Min(state.Index + 1, state.Total)}/{state.Total})";
+                int idxDisplay = state.Total > 0 ? state.Index + 1 : 0;
+                lblItemDesc.Text = $"[{idxDisplay}/{state.Total}] {state.Description}  {state.Percent}%";
             }
 
-            if (state.CompletedAll)
+            // 更新窗口标题
+            try
             {
-                lblStepCounter.Text = $"({state.Total}/{state.Total})";
+                Text = state.Aborted 
+                    ? $"{AppTitle} - 已中止" 
+                    : $"{AppTitle} - {state.Percent}%";
             }
-
-            // 更新步骤列表状态
-            if (listBoxSteps != null && state.Total > 0 && state.Index >= 0 && state.Index < listBoxSteps.Items.Count)
-            {
-                // 将已完成的步骤标记
-                for (int i = 0; i <= state.Index && i < listBoxSteps.Items.Count; i++)
-                {
-                    var original = _items[i].Description;
-                    var prefix = (i == state.Index && state.Error != null) ? "[X] " : "[✓] ";
-                    listBoxSteps.Items[i] = prefix + original;
-                }
-
-                // 标记下一待处理步骤(如果还没完成)
-                if (!state.CompletedAll && state.Index + 1 < listBoxSteps.Items.Count)
-                {
-                    var nextOriginal = _items[state.Index + 1].Description;
-                    if (!listBoxSteps.Items[state.Index + 1].ToString().StartsWith("[✓] ") &&
-                        !listBoxSteps.Items[state.Index + 1].ToString().StartsWith("[X] "))
-                        listBoxSteps.Items[state.Index + 1] = "[>] " + nextOriginal;
-                }
-            }
-
-            // 进度条
-            progressBar.Value = Math.Min(100, Math.Max(0, state.Percent));
-            lblPercent.Text = progressBar.Value + "%";
-
-
-            if (state.CompletedAll)
-            {
-                lblCurrentItem.Text = "加载完成";
-            }
+            catch { /* 忽略可能的异常 */ }
         }
 
         private async void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             try
             {
-                OnAllCompleted?.Invoke();
+                // 只有在没有中止的情况下才调用完成回调
+                if (!_aborted && OnAllCompleted != null)
+                {
+                    OnAllCompleted();
+                }
             }
             catch (Exception ex)
             {
-                OnFatalError?.DynamicInvoke(ex);
+                try 
+                { 
+                    if (OnFatalError != null) 
+                        OnFatalError(ex); 
+                } 
+                catch { /* 忽略回调异常 */ }
             }
             finally
             {
-                if (AutoClose)
+                // 根据设置决定是否自动关闭
+                if (AutoClose && (!_aborted || AutoCloseOnAbort))
                 {
-                    await Task.Delay(CloseDelayMs, CancelSource.Token);
-                    if (!IsDisposed && !Disposing) Close();
+                    try
+                    {
+                        await Task.Delay(CloseDelayMs, CancelSource.Token);
+                        if (!IsDisposed && !Disposing) 
+                            Close();
+                    }
+                    catch (TaskCanceledException) 
+                    { 
+                        /* 取消时忽略 */ 
+                    }
                 }
             }
         }
@@ -354,7 +377,6 @@ namespace XMSDK.Framework.Forms.SplashScreen
                 _topMostTimer.Dispose();
                 _topMostTimer = null;
             }
-
             base.OnFormClosed(e);
         }
 
@@ -364,7 +386,9 @@ namespace XMSDK.Framework.Forms.SplashScreen
             if (!_started) StartLoading();
         }
 
-        // 允许外部切换保持置顶状态
+        /// <summary>
+        /// 设置是否强制置顶
+        /// </summary>
         public void SetForceAlwaysOnTop(bool enable)
         {
             ForceAlwaysOnTop = enable;
@@ -372,11 +396,37 @@ namespace XMSDK.Framework.Forms.SplashScreen
             if (enable && Visible) BringToFront();
         }
 
+        /// <summary>
+        /// 取消加载
+        /// </summary>
         public void CancelLoading()
         {
             if (!_worker.IsBusy) return;
             CancelSource.Cancel();
             _worker.CancelAsync();
         }
+
+        /// <summary>
+        /// 线程安全设置详细信息文本
+        /// </summary>
+        private void SetDetailInternal(string text)
+        {
+            if (IsDisposed || Disposing) return;
+            if (lblItemDetail == null) return;
+            
+            if (InvokeRequired)
+            {
+                try 
+                { 
+                    BeginInvoke(new Action(() => lblItemDetail.Text = text ?? string.Empty)); 
+                } 
+                catch { /* 忽略可能的异常 */ }
+            }
+            else
+            {
+                lblItemDetail.Text = text ?? string.Empty;
+            }
+        }
     }
 }
+

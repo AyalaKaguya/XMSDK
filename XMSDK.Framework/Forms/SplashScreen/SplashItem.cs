@@ -9,9 +9,9 @@ namespace XMSDK.Framework.Forms.SplashScreen
     {
         public string Description { get; }
         public int Weight { get; }
-        public Action Action { get; }
+        public Action<SplashContext> Action { get; }
 
-        public SplashItem(string description, int weight, Action action)
+        public SplashItem(string description, int weight, Action<SplashContext> action)
         {
             if (weight <= 0) throw new ArgumentOutOfRangeException(nameof(weight));
             Description = description ?? string.Empty;

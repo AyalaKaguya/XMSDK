@@ -168,6 +168,7 @@
         <Compile Include="Forms\LoggerList.Designer.cs">
           <DependentUpon>LoggerList.cs</DependentUpon>
         </Compile>
+        <Compile Include="Forms\SplashScreen\SplashContext.cs" />
         <Compile Include="Forms\SplashScreen\SplashItem.cs" />
         <Compile Include="Forms\SplashScreen\SplashWindow.cs">
           <SubType>Form</SubType>
@@ -196,6 +197,11 @@
       <Content Include="..\README.md">
         <Link>README.md</Link>
       </Content>
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="Forms\SplashScreen\SplashWindow.resx">
+        <DependentUpon>SplashWindow.cs</DependentUpon>
+      </EmbeddedResource>
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
 </Project>

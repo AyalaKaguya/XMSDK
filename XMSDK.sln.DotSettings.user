@@ -33,8 +33,8 @@
 	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=Miscellaneous_0020Files_002FRavuvid/@EntryIndexRemoved">True</s:Boolean>
 	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=XMSDK_002EFramework_002FDemo_002FLoggerDemoForm/@EntryIndexedValue">False</s:Boolean>
 	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=XMSDK_002EFramework_002FDemo_002FLoggerDemoForm/@EntryIndexRemoved">True</s:Boolean>
-	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=XMSDK_002EFramework_002FForms_002FSplashScreen_002FSplashWindow/@EntryIndexedValue">False</s:Boolean>
-	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=XMSDK_002EFramework_002FForms_002FSplashScreen_002FSplashWindow/@EntryIndexRemoved">True</s:Boolean>
+	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=XMSDK_002EFramework_002FForms_002FSplashScreen_002FSplashWindow/@EntryIndexedValue">True</s:Boolean>
+	
 	
 	<s:Boolean x:Key="/Default/ResxEditorPersonal/Initialized/@EntryValue">True</s:Boolean>
 	

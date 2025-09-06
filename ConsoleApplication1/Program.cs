@@ -17,7 +17,6 @@ namespace ConsoleApplication1
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            // 使用自定义 ApplicationContext，避免 Splash 作为主窗体导致关闭后退出
             var appContext = new BootstrapContext();
             Application.Run(appContext);
         }
@@ -37,32 +36,50 @@ namespace ConsoleApplication1
                     Copyright = "© 2025 AyalaKaguya"
                 };
 
-                // 注册启动任务
-                splash.AddItem(new SplashItem("准备服务集合", 1, () =>
+                splash.AddItem(new SplashItem("准备服务集合", 1, ctx =>
                 {
+                    ctx.SetDetail("创建 ServiceCollection...");
                     var services = new ServiceCollection();
                     services.AddLogging(b => b.SetMinimumLevel(LogLevel.Trace));
-                    // 注册主窗体 (Transient 以便每次需要都能重新创建；此处一个实例即可)
+                    ctx.SetDetail("注册主窗体...");
                     services.AddTransient<LoggerDemoForm>();
                     _serviceProvider = services.BuildServiceProvider();
+                    ctx.SetDetail("服务集合构建完成");
                 }));
 
-                splash.AddItem(new SplashItem("加载配置", 3, () =>
+                splash.AddItem(new SplashItem("加载配置", 3, ctx =>
                 {
-                    // 模拟读取配置
-                    System.Threading.Thread.Sleep(300);
+                    ctx.SetDetail("读取 appsettings.json (模拟)...");
+                    System.Threading.Thread.Sleep(1500);
+                    ctx.SetDetail("绑定配置对象 (模拟)...");
+                    System.Threading.Thread.Sleep(1500);
+                    ctx.SetDetail("配置加载完成");
                 }));
 
-                splash.AddItem(new SplashItem("预热日志系统", 2, () =>
+                splash.AddItem(new SplashItem("预热日志系统", 2, ctx =>
                 {
+                    ctx.SetDetail("获取 LoggerFactory...");
                     var factory = _serviceProvider.GetRequiredService<ILoggerFactory>();
                     var logger = factory.CreateLogger("Bootstrap");
+                    ctx.SetDetail("写入测试日志...");
                     logger.LogInformation("日志系统预热完成");
+                    ctx.SetDetail("日志预热完成");
                 }));
 
-                splash.AddItem(new SplashItem("检查更新 (模拟)", 2, () => { System.Threading.Thread.Sleep(200); }));
+                splash.AddItem(new SplashItem("检查更新 (模拟)", 2, ctx =>
+                {
+                    ctx.SetDetail("连接更新服务器 (模拟)...");
+                    System.Threading.Thread.Sleep(1200);
+                    ctx.SetDetail("已是最新版本");
+                    System.Threading.Thread.Sleep(800);
+                }));
 
-                splash.AddItem(new SplashItem("最终处理", 1, () => { System.Threading.Thread.Sleep(150); }));
+                splash.AddItem(new SplashItem("最终处理", 1, ctx =>
+                {
+                    ctx.SetDetail("执行最终收尾...");
+                    System.Threading.Thread.Sleep(1500);
+                    ctx.SetDetail("启动即将完成");
+                }));
 
                 splash.OnAllCompleted = OnSplashCompleted;
                 splash.OnItemError = (item, ex) =>
@@ -79,11 +96,9 @@ namespace ConsoleApplication1
 
             private void OnSplashCompleted()
             {
-                // 解析主窗体并显示
                 var mainForm = _serviceProvider.GetRequiredService<LoggerDemoForm>();
-                // 设置为主窗体 (关闭主窗体即退出应用)
                 mainForm.FormClosed += (_, __) => ExitThread();
-                MainForm = mainForm; // 设置上下文主窗体
+                MainForm = mainForm;
                 mainForm.Show();
             }
 
