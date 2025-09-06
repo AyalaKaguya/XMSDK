@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -35,6 +36,19 @@ namespace ConsoleApplication1
                     Author = "作者: AyalaKaguya",
                     Copyright = "© 2025 AyalaKaguya"
                 };
+
+                // 设置背景图片（可选）
+                // 方式1：直接设置属性
+                splash.SplashBackgroundImage = Resources.DefaultSplashBackground; // 如果有资源文件
+
+                // 方式2：从文件设置（如果图片文件存在）
+                // splash.SetBackgroundImageFromFile(@"C:\Users\ayala\Downloads\DefaultSplashBackground.png");
+
+                // 方式3：使用内置方法设置
+                // splash.SetBackgroundImage(someImage, ImageLayout.Stretch);
+
+                // 如果没有背景图片，可以设置一个更好看的背景色
+                // splash.BackColor = Color.FromArgb(45, 45, 48); // 深灰色背景
 
                 splash.AddItem(new SplashItem("准备服务集合", 1, ctx =>
                 {

@@ -43,42 +43,29 @@ namespace XMSDK.Framework.Forms.SplashScreen
         private void InitializeComponent()
         {
             this.overlayPanel = new System.Windows.Forms.Panel();
-            this.lblItemDetail = new System.Windows.Forms.Label();
             this.lblAppTitle = new System.Windows.Forms.Label();
             this.lblItemDesc = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
             this.lblAuthor = new System.Windows.Forms.Label();
             this.lblCopyright = new System.Windows.Forms.Label();
+            this.lblItemDetail = new System.Windows.Forms.Label();
             this.overlayPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // overlayPanel
             // 
-            this.overlayPanel.Controls.Add(this.lblItemDetail);
+            this.overlayPanel.BackColor = System.Drawing.Color.Black;
             this.overlayPanel.Controls.Add(this.lblAppTitle);
             this.overlayPanel.Controls.Add(this.lblItemDesc);
             this.overlayPanel.Controls.Add(this.lblDescription);
             this.overlayPanel.Controls.Add(this.lblAuthor);
             this.overlayPanel.Controls.Add(this.lblCopyright);
-            this.overlayPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.overlayPanel.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.overlayPanel.Dock = System.Windows.Forms.DockStyle.Left;
             this.overlayPanel.Location = new System.Drawing.Point(0, 0);
             this.overlayPanel.Name = "overlayPanel";
             this.overlayPanel.Padding = new System.Windows.Forms.Padding(28, 28, 28, 20);
-            this.overlayPanel.Size = new System.Drawing.Size(594, 306);
+            this.overlayPanel.Size = new System.Drawing.Size(356, 300);
             this.overlayPanel.TabIndex = 0;
-            // 
-            // lblItemDetail
-            // 
-            this.lblItemDetail.AutoSize = true;
-            this.lblItemDetail.BackColor = System.Drawing.Color.Transparent;
-            this.lblItemDetail.Font = new System.Drawing.Font("Segoe UI", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblItemDetail.ForeColor = System.Drawing.Color.Gainsboro;
-            this.lblItemDetail.Location = new System.Drawing.Point(31, 262);
-            this.lblItemDetail.Name = "lblItemDetail";
-            this.lblItemDetail.Size = new System.Drawing.Size(22, 12);
-            this.lblItemDetail.TabIndex = 5;
-            this.lblItemDetail.Text = string.Empty;
             // 
             // lblAppTitle
             // 
@@ -87,7 +74,7 @@ namespace XMSDK.Framework.Forms.SplashScreen
             this.lblAppTitle.ForeColor = System.Drawing.Color.White;
             this.lblAppTitle.Location = new System.Drawing.Point(31, 28);
             this.lblAppTitle.Name = "lblAppTitle";
-            this.lblAppTitle.Size = new System.Drawing.Size(150, 41);
+            this.lblAppTitle.Size = new System.Drawing.Size(225, 41);
             this.lblAppTitle.TabIndex = 0;
             this.lblAppTitle.Text = "XMSDK.Splash";
             // 
@@ -99,7 +86,7 @@ namespace XMSDK.Framework.Forms.SplashScreen
             this.lblItemDesc.ForeColor = System.Drawing.Color.Gainsboro;
             this.lblItemDesc.Location = new System.Drawing.Point(31, 247);
             this.lblItemDesc.Name = "lblItemDesc";
-            this.lblItemDesc.Size = new System.Drawing.Size(55, 15);
+            this.lblItemDesc.Size = new System.Drawing.Size(80, 15);
             this.lblItemDesc.TabIndex = 1;
             this.lblItemDesc.Text = "Initialization...";
             this.lblItemDesc.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -111,7 +98,7 @@ namespace XMSDK.Framework.Forms.SplashScreen
             this.lblDescription.ForeColor = System.Drawing.Color.Gainsboro;
             this.lblDescription.Location = new System.Drawing.Point(35, 80);
             this.lblDescription.Name = "lblDescription";
-            this.lblDescription.Size = new System.Drawing.Size(73, 20);
+            this.lblDescription.Size = new System.Drawing.Size(184, 20);
             this.lblDescription.TabIndex = 1;
             this.lblDescription.Text = "XMSDK.Splash.Description";
             // 
@@ -122,7 +109,7 @@ namespace XMSDK.Framework.Forms.SplashScreen
             this.lblAuthor.ForeColor = System.Drawing.Color.LightGray;
             this.lblAuthor.Location = new System.Drawing.Point(35, 108);
             this.lblAuthor.Name = "lblAuthor";
-            this.lblAuthor.Size = new System.Drawing.Size(33, 15);
+            this.lblAuthor.Size = new System.Drawing.Size(123, 15);
             this.lblAuthor.TabIndex = 2;
             this.lblAuthor.Text = "XMSDK.Splash.Author";
             // 
@@ -133,16 +120,27 @@ namespace XMSDK.Framework.Forms.SplashScreen
             this.lblCopyright.ForeColor = System.Drawing.Color.LightGray;
             this.lblCopyright.Location = new System.Drawing.Point(35, 126);
             this.lblCopyright.Name = "lblCopyright";
-            this.lblCopyright.Size = new System.Drawing.Size(58, 13);
+            this.lblCopyright.Size = new System.Drawing.Size(134, 13);
             this.lblCopyright.TabIndex = 3;
             this.lblCopyright.Text = "XMSDK.Splash.Copyright";
+            // 
+            // lblItemDetail
+            // 
+            this.lblItemDetail.AutoSize = true;
+            this.lblItemDetail.BackColor = System.Drawing.Color.Transparent;
+            this.lblItemDetail.Font = new System.Drawing.Font("Segoe UI", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblItemDetail.ForeColor = System.Drawing.Color.Gainsboro;
+            this.lblItemDetail.Location = new System.Drawing.Point(31, 262);
+            this.lblItemDetail.Name = "lblItemDetail";
+            this.lblItemDetail.Size = new System.Drawing.Size(22, 12);
+            this.lblItemDetail.TabIndex = 5;
             // 
             // SplashWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(594, 306);
+            this.ClientSize = new System.Drawing.Size(540, 300);
             this.Controls.Add(this.overlayPanel);
             this.DoubleBuffered = true;
             this.Name = "SplashWindow";

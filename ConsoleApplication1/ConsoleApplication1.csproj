@@ -73,6 +73,11 @@
         <Compile Include="CommandTransmissionTest.cs" />
         <Compile Include="Program.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
+        <Compile Include="Resources.Designer.cs">
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+          <DependentUpon>Resources.resx</DependentUpon>
+        </Compile>
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\XMSDK.Framework\XMSDK.Framework.csproj">
@@ -83,6 +88,15 @@
     <ItemGroup>
       <None Include="App.config" />
       <None Include="packages.config" />
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Include="Resources.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+    <ItemGroup>
+      <Content Include="Resources\DefaultSplashBackground.png" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

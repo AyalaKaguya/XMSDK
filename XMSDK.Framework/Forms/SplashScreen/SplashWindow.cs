@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
@@ -103,7 +104,7 @@ namespace XMSDK.Framework.Forms.SplashScreen
         /// <summary>
         /// 错误中止时是否也自动关闭
         /// </summary>
-        public bool AutoCloseOnAbort { get; set; } = false;
+        private bool AutoCloseOnAbort { get; set; } = false;
 
         /// <summary>
         /// 关闭前延迟毫秒
@@ -113,12 +114,34 @@ namespace XMSDK.Framework.Forms.SplashScreen
         /// <summary>
         /// 取消令牌源
         /// </summary>
-        public CancellationTokenSource CancelSource { get; } = new CancellationTokenSource();
+        private CancellationTokenSource CancelSource { get; } = new CancellationTokenSource();
 
         /// <summary>
         /// 是否强制保持窗口置顶
         /// </summary>
         public bool ForceAlwaysOnTop { get; set; } = true;
+
+        /// <summary>
+        /// 背景图片
+        /// </summary>
+        public Image SplashBackgroundImage
+        {
+            get => BackgroundImage;
+            set
+            {
+                BackgroundImage = value;
+                BackgroundImageLayout = value != null ? ImageLayout.Stretch : ImageLayout.None;
+            }
+        }
+
+        /// <summary>
+        /// 背景图片布局方式
+        /// </summary>
+        public ImageLayout SplashBackgroundImageLayout
+        {
+            get => BackgroundImageLayout;
+            set => BackgroundImageLayout = value;
+        }
 
         public SplashWindow()
         {
@@ -158,10 +181,50 @@ namespace XMSDK.Framework.Forms.SplashScreen
         /// <summary>
         /// 设置背景图片
         /// </summary>
-        public void SetBackgroundImage(Image img)
+        /// <param name="img">背景图片</param>
+        /// <param name="layout">图片布局方式，默认为拉伸</param>
+        public void SetBackgroundImage(Image img, ImageLayout layout = ImageLayout.Stretch)
         {
             BackgroundImage = img;
-            BackgroundImageLayout = ImageLayout.Stretch;
+            BackgroundImageLayout = layout;
+        }
+
+        /// <summary>
+        /// 从文件设置背景图片
+        /// </summary>
+        /// <param name="imagePath">图片文件路径</param>
+        /// <param name="layout">图片布局方式，默认为拉伸</param>
+        public void SetBackgroundImageFromFile(string imagePath, ImageLayout layout = ImageLayout.Stretch)
+        {
+            if (string.IsNullOrEmpty(imagePath) || !System.IO.File.Exists(imagePath))
+            {
+                BackgroundImage = null;
+                BackgroundImageLayout = ImageLayout.None;
+                return;
+            }
+
+            try
+            {
+                BackgroundImage = Image.FromFile(imagePath);
+                BackgroundImageLayout = layout;
+            }
+            catch (Exception ex)
+            {
+                // 图片加载失败时的处理
+                Debug.WriteLine($"Failed to load background image: {ex.Message}");
+                BackgroundImage = null;
+                BackgroundImageLayout = ImageLayout.None;
+            }
+        }
+
+        /// <summary>
+        /// 清除背景图片
+        /// </summary>
+        public void ClearBackgroundImage()
+        {
+            BackgroundImage?.Dispose();
+            BackgroundImage = null;
+            BackgroundImageLayout = ImageLayout.None;
         }
 
         /// <summary>
@@ -178,7 +241,7 @@ namespace XMSDK.Framework.Forms.SplashScreen
         /// <summary>
         /// 开始加载
         /// </summary>
-        public void StartLoading()
+        private void StartLoading()
         {
             if (_started) return;
             _started = true;
@@ -188,7 +251,7 @@ namespace XMSDK.Framework.Forms.SplashScreen
         private void Worker_DoWork(object sender, DoWorkEventArgs e)
         {
             var list = (List<SplashItem>)e.Argument;
-            int index = 0;
+            var index = 0;
             
             foreach (var item in list)
             {
@@ -221,7 +284,7 @@ namespace XMSDK.Framework.Forms.SplashScreen
 
                 if (error != null)
                 {
-                    bool cont = false;
+                    var cont = false;
                     try 
                     { 
                         if (OnItemError != null) 
@@ -285,7 +348,7 @@ namespace XMSDK.Framework.Forms.SplashScreen
             
             if (_totalWeight <= 0) return 100;
             
-            double ratio = (double)currentDone * 100 / _totalWeight;
+            var ratio = (double)currentDone * 100 / _totalWeight;
             return Math.Min(100, (int)Math.Round(ratio));
         }
 
@@ -317,8 +380,8 @@ namespace XMSDK.Framework.Forms.SplashScreen
             }
             else
             {
-                int idxDisplay = state.Total > 0 ? state.Index + 1 : 0;
-                lblItemDesc.Text = $"[{idxDisplay}/{state.Total}] {state.Description}  {state.Percent}%";
+                var idxDisplay = state.Total > 0 ? state.Index + 1 : 0;
+                lblItemDesc.Text = $@"[{idxDisplay}/{state.Total}] {state.Description}  {state.Percent}%";
             }
 
             // 更新窗口标题

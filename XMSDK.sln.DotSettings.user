@@ -29,14 +29,21 @@
     &lt;TestId&gt;NUnit3x::28799320-02C9-45A5-A0F8-5DB4836BFC33::.NETFramework,Version=v4.6.2::XMSDK.Tests.TestAsyncBus&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
+	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=ConsoleApplication1_002FProperties_002FResources/@EntryIndexedValue">False</s:Boolean>
+	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=ConsoleApplication1_002FProperties_002FResources/@EntryIndexRemoved">True</s:Boolean>
+	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=ConsoleApplication1_002FResources/@EntryIndexedValue">True</s:Boolean>
+	
+	
 	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=Miscellaneous_0020Files_002FRavuvid/@EntryIndexedValue">False</s:Boolean>
 	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=Miscellaneous_0020Files_002FRavuvid/@EntryIndexRemoved">True</s:Boolean>
 	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=XMSDK_002EFramework_002FDemo_002FLoggerDemoForm/@EntryIndexedValue">False</s:Boolean>
 	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=XMSDK_002EFramework_002FDemo_002FLoggerDemoForm/@EntryIndexRemoved">True</s:Boolean>
-	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=XMSDK_002EFramework_002FForms_002FSplashScreen_002FSplashWindow/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=XMSDK_002EFramework_002FForms_002FSplashScreen_002FSplashWindow/@EntryIndexedValue">False</s:Boolean>
 	
 	
 	<s:Boolean x:Key="/Default/ResxEditorPersonal/Initialized/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/ResxEditorPersonal/OrderByFullPath/@EntryValue">False</s:Boolean>
+	<s:Boolean x:Key="/Default/ResxEditorPersonal/ShowComments/@EntryValue">False</s:Boolean>
 	
 	
 	
