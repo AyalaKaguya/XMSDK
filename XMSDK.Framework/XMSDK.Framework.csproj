@@ -176,7 +176,6 @@
         <Compile Include="Forms\SplashScreen\SplashWindow.Designer.cs">
           <DependentUpon>SplashWindow.cs</DependentUpon>
         </Compile>
-        <Compile Include="License\LicenseInfo.cs" />
         <Compile Include="License\LicenseManager.cs" />
         <Compile Include="Logger\ListViewLoggerProvider.cs" />
         <Compile Include="Logger\LoggingBuilderExtensions.cs" />
