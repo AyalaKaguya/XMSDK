@@ -56,10 +56,11 @@ namespace XMSDK.Framework.Forms.SplashScreen
             // 
             this.overlayPanel.BackColor = System.Drawing.Color.Black;
             this.overlayPanel.Controls.Add(this.lblAppTitle);
-            this.overlayPanel.Controls.Add(this.lblItemDesc);
             this.overlayPanel.Controls.Add(this.lblDescription);
             this.overlayPanel.Controls.Add(this.lblAuthor);
             this.overlayPanel.Controls.Add(this.lblCopyright);
+            this.overlayPanel.Controls.Add(this.lblItemDesc);
+            this.overlayPanel.Controls.Add(this.lblItemDetail);
             this.overlayPanel.Dock = System.Windows.Forms.DockStyle.Left;
             this.overlayPanel.Location = new System.Drawing.Point(0, 0);
             this.overlayPanel.Name = "overlayPanel";
@@ -77,19 +78,6 @@ namespace XMSDK.Framework.Forms.SplashScreen
             this.lblAppTitle.Size = new System.Drawing.Size(225, 41);
             this.lblAppTitle.TabIndex = 0;
             this.lblAppTitle.Text = "XMSDK.Splash";
-            // 
-            // lblItemDesc
-            // 
-            this.lblItemDesc.AutoSize = true;
-            this.lblItemDesc.BackColor = System.Drawing.Color.Transparent;
-            this.lblItemDesc.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lblItemDesc.ForeColor = System.Drawing.Color.Gainsboro;
-            this.lblItemDesc.Location = new System.Drawing.Point(31, 247);
-            this.lblItemDesc.Name = "lblItemDesc";
-            this.lblItemDesc.Size = new System.Drawing.Size(80, 15);
-            this.lblItemDesc.TabIndex = 1;
-            this.lblItemDesc.Text = "Initialization...";
-            this.lblItemDesc.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblDescription
             // 
@@ -124,6 +112,19 @@ namespace XMSDK.Framework.Forms.SplashScreen
             this.lblCopyright.TabIndex = 3;
             this.lblCopyright.Text = "XMSDK.Splash.Copyright";
             // 
+            // lblItemDesc
+            // 
+            this.lblItemDesc.AutoSize = true;
+            this.lblItemDesc.BackColor = System.Drawing.Color.Transparent;
+            this.lblItemDesc.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblItemDesc.ForeColor = System.Drawing.Color.Gainsboro;
+            this.lblItemDesc.Location = new System.Drawing.Point(31, 247);
+            this.lblItemDesc.Name = "lblItemDesc";
+            this.lblItemDesc.Size = new System.Drawing.Size(80, 15);
+            this.lblItemDesc.TabIndex = 1;
+            this.lblItemDesc.Text = "Initialization...";
+            this.lblItemDesc.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // lblItemDetail
             // 
             this.lblItemDetail.AutoSize = true;
@@ -134,6 +135,7 @@ namespace XMSDK.Framework.Forms.SplashScreen
             this.lblItemDetail.Name = "lblItemDetail";
             this.lblItemDetail.Size = new System.Drawing.Size(22, 12);
             this.lblItemDetail.TabIndex = 5;
+            this.lblItemDetail.Text = "初始化";
             // 
             // SplashWindow
             // 

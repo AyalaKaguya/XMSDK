@@ -9,10 +9,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="00f5f9fb-06c8-40bc-b2d3-3cf4e7adcd61" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/License/LicenseInfo.cs" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/XMSDK.Framework/Communication/ExampleOSC.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/XMSDK.Framework/Communication/ObservableSignalCollection.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/XMSDK.Framework/License/LicenseInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.XMSDK/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.XMSDK/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ConsoleApplication1/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ConsoleApplication1/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Forms/SplashScreen/SplashWindow.Designer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Forms/SplashScreen/SplashWindow.Designer.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/License/LicenseManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/License/LicenseManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/XMSDK.Framework.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/XMSDK.Framework.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Tests/TestLicenseManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Tests/TestLicenseManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.sln.DotSettings.user" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,12 +48,15 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/497e7c0354334ae6b2579b219192bcf04a000/9d/25e00938/SetUpTearDownCommand.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/d6e153aa051345dc96d9a55ee3adc812360448/80/7791c633/Socket.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/d6e153aa051345dc96d9a55ee3adc812360448/d1/423570d8/TcpClient.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/d6e153aa051345dc96d9a55ee3adc812360448/e8/a4bfb4a8/BackgroundWorker.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/.vs/XMSDK/v17/DocumentLayout.backup.json" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/.vs/XMSDK/v17/DocumentLayout.json" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ConsoleApplication1/CommandTransmissionTest.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ConsoleApplication1/Resources.Designer.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ConsoleApplication1/Resources.resx" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/ConsoleApplication1/packages.config" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Communication/ExampleOSC.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Communication/ObservableSignalCollection.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/MessageProtocol.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/SignalHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/SocketBuilder.cs" root0="FORCE_HIGHLIGHTING" />
@@ -111,7 +119,7 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager" selected="1a74a003-a833-4aa5-a8a4-1fa2631fd6f6">
+  <component name="RunManager">
     <configuration name="ConsoleApplication1" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="$PROJECT_DIR$/ConsoleApplication1/bin/Debug/ConsoleApplication1.exe" />
       <option name="PROGRAM_PARAMETERS" value="" />
@@ -166,7 +174,8 @@
       <workItem from="1757131537618" duration="157000" />
       <workItem from="1757131722891" duration="10547000" />
       <workItem from="1757241255913" duration="3251000" />
-      <workItem from="1757291159371" duration="3880000" />
+      <workItem from="1757291159371" duration="7219000" />
+      <workItem from="1757311101055" duration="3201000" />
     </task>
     <task id="LOCAL-00001" summary="feat: 日志类，暂时开放供参考">
       <option name="closed" value="true" />
@@ -320,7 +329,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757296316981</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="feat: 更新授权管理器逻辑，简化验证流程并添加相关测试">
+      <option name="closed" value="true" />
+      <created>1757296793731</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1757296793731</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -349,7 +366,8 @@
     <MESSAGE value="feat: 添加背景图片支持和相关功能到 SplashWindow" />
     <MESSAGE value="refactor: 重命名通信相关类并更新项目文件路径" />
     <MESSAGE value="feat: 添加授权管理器及相关测试用例" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: 添加授权管理器及相关测试用例" />
+    <MESSAGE value="feat: 更新授权管理器逻辑，简化验证流程并添加相关测试" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: 更新授权管理器逻辑，简化验证流程并添加相关测试" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

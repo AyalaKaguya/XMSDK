@@ -3,7 +3,9 @@ using System.Windows.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using XMSDK.Framework.Demo;
+using XMSDK.Framework.Forms;
 using XMSDK.Framework.Forms.SplashScreen;
+using XMSDK.Framework.Logger;
 
 namespace ConsoleApplication1
 {
@@ -79,12 +81,24 @@ namespace ConsoleApplication1
                     ctx.SetDetail("日志预热完成");
                 }));
 
-                splash.AddItem(new SplashItem("检查更新 (模拟)", 2, ctx =>
+                splash.AddItem(new SplashItem("测试日志控件", 2, ctx =>
                 {
-                    ctx.SetDetail("连接更新服务器 (模拟)...");
-                    System.Threading.Thread.Sleep(1200);
+                    ctx.SetDetail("创建日志控件...");
+                    var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
+                    var loggerList = new LoggerList();
+                    loggerFactory.AddProvider(new ListViewLoggerProvider(loggerList));
+                    var logger = _serviceProvider.GetRequiredService<ILogger<BootstrapContext>>();
+                    logger.LogTrace("这是跟踪日志消息");
+                    ctx.SetDetail("发送测试日志...");
+                    System.Threading.Thread.Sleep(200);
+                    ctx.SetDetail("测试日志控件释放");
+                    loggerList.Dispose();
+                    System.Threading.Thread.Sleep(200);
+                    logger.LogTrace("这是第二条跟踪日志消息");
+                    System.Threading.Thread.Sleep(200);
+                    ctx.SetDetail("日志控件测试完成");
                     ctx.SetDetail("已是最新版本");
-                    System.Threading.Thread.Sleep(800);
+                    System.Threading.Thread.Sleep(200);
                 }));
 
                 splash.AddItem(new SplashItem("最终处理", 1, ctx =>
