@@ -51,6 +51,7 @@
         <Compile Include="TestEventBus.cs" />
         <Compile Include="TestJsonConfig.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>
+        <Compile Include="TestLicenseManager.cs" />
         <Compile Include="TestLocalFileBinder.cs" />
     </ItemGroup>
     <ItemGroup>

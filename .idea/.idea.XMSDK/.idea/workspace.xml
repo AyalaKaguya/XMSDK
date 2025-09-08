@@ -9,17 +9,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="00f5f9fb-06c8-40bc-b2d3-3cf4e7adcd61" name="更改" comment="">
+      <change afterPath="$PROJECT_DIR$/XMSDK.Framework/License/LicenseInfo.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/XMSDK.Framework/License/LicenseManager.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/XMSDK.Tests/TestLicenseManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.XMSDK/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.XMSDK/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ConsoleApplication1/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ConsoleApplication1/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Communication/CommandHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/CommandHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Communication/MessageProtocol.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/MessageProtocol.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Communication/SignalHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/SignalHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Communication/SocketBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/SocketBuilder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Communication/SocketClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/SocketClient.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Communication/SocketClientBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/SocketClientBuilder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Communication/SocketServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/SocketServer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Communication/SocketServerBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/SocketServerBuilder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Demo/LoggerDemoForm.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Demo/LoggerDemoForm.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/XMSDK.Framework.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/XMSDK.Framework.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Tests/XMSDK.Tests.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Tests/XMSDK.Tests.csproj" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,6 +81,7 @@
     <setting file="file://$PROJECT_DIR$/XMSDK.Tests/TestCryptHelper.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Tests/TestEventBus.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Tests/TestJsonConfig.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/XMSDK.Tests/TestLicenseManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Tests/TestLocalFileBinder.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/XMSDK.Tests/packages.config" root0="FORCE_HIGHLIGHTING" />
   </component>
@@ -117,7 +114,7 @@
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RunManager">
+  <component name="RunManager" selected=".NET 项目.ConsoleApplication1">
     <configuration name="ConsoleApplication1" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="$PROJECT_DIR$/ConsoleApplication1/bin/Debug/ConsoleApplication1.exe" />
       <option name="PROGRAM_PARAMETERS" value="" />
@@ -172,7 +169,7 @@
       <workItem from="1757131537618" duration="157000" />
       <workItem from="1757131722891" duration="10547000" />
       <workItem from="1757241255913" duration="3251000" />
-      <workItem from="1757291159371" duration="324000" />
+      <workItem from="1757291159371" duration="3404000" />
     </task>
     <task id="LOCAL-00001" summary="feat: 日志类，暂时开放供参考">
       <option name="closed" value="true" />
@@ -310,7 +307,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757148073119</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="refactor: 重命名通信相关类并更新项目文件路径">
+      <option name="closed" value="true" />
+      <created>1757291501137</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1757291501137</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -337,7 +342,8 @@
     <MESSAGE value="refactor: 重构日志处理器和相关类，优化命名和结构" />
     <MESSAGE value="feat: 添加 SplashContext 和改进 SplashWindow 以支持详细信息显示" />
     <MESSAGE value="feat: 添加背景图片支持和相关功能到 SplashWindow" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: 添加背景图片支持和相关功能到 SplashWindow" />
+    <MESSAGE value="refactor: 重命名通信相关类并更新项目文件路径" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor: 重命名通信相关类并更新项目文件路径" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

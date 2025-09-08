@@ -176,6 +176,8 @@
         <Compile Include="Forms\SplashScreen\SplashWindow.Designer.cs">
           <DependentUpon>SplashWindow.cs</DependentUpon>
         </Compile>
+        <Compile Include="License\LicenseInfo.cs" />
+        <Compile Include="License\LicenseManager.cs" />
         <Compile Include="Logger\ListViewLoggerProvider.cs" />
         <Compile Include="Logger\LoggingBuilderExtensions.cs" />
         <Compile Include="Logger\TraceMessage\ITraceMessageProcesser.cs" />
@@ -185,9 +187,6 @@
         <Compile Include="Logger\TraceMessage\LogToListBoxProcesser.cs" />
         <Compile Include="Logger\TraceMessage\TraceMessageReceiver.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="License\" />
     </ItemGroup>
     <ItemGroup>
       <None Include="App.config" />

@@ -3,7 +3,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using Microsoft.Extensions.Logging;
 using XMSDK.Framework.Logger;
-using XMSDK.Framework.Logger;
 
 namespace XMSDK.Framework.Demo
 {
