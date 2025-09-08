@@ -1,7 +1,6 @@
-﻿namespace XMSDK.Framework.Logger.TraceMessage
+﻿namespace XMSDK.Framework.Logger.TraceMessage;
+
+public interface ITraceMessageProcesser
 {
-    public interface ITraceMessageProcesser
-    {
-        void OnMessage(string msg);
-    }
+    void OnMessage(string msg);
 }

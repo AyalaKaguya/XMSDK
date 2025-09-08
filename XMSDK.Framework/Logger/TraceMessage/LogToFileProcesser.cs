@@ -6,73 +6,72 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace XMSDK.Framework.Logger.TraceMessage
+namespace XMSDK.Framework.Logger.TraceMessage;
+
+public class LogToFileProcesser : ITraceMessageProcesser, IDisposable
 {
-    public class LogToFileProcesser : ITraceMessageProcesser, IDisposable
+    private readonly string _logFilePath;
+    private readonly ConcurrentQueue<string> _logQueue = new();
+    private readonly CancellationTokenSource _logCancellationTokenSource = new();
+    private readonly Task _logWriterTask;
+
+    public LogToFileProcesser(string logFilePath)
     {
-        private readonly string _logFilePath;
-        private readonly ConcurrentQueue<string> _logQueue = new ConcurrentQueue<string>();
-        private readonly CancellationTokenSource _logCancellationTokenSource = new CancellationTokenSource();
-        private readonly Task _logWriterTask;
+        _logFilePath = logFilePath;
+        _logWriterTask = Task.Run(WriteLogToFileTask, _logCancellationTokenSource.Token);
+    }
 
-        public LogToFileProcesser(string logFilePath)
-        {
-            _logFilePath = logFilePath;
-            _logWriterTask = Task.Run(WriteLogToFileTask, _logCancellationTokenSource.Token);
-        }
+    public void OnMessage(string msg)
+    {
+        _logQueue.Enqueue(msg);
+    }
 
-        public void OnMessage(string msg)
+    private async Task WriteLogToFileTask()
+    {
+        while (!_logCancellationTokenSource.Token.IsCancellationRequested)
         {
-            _logQueue.Enqueue(msg);
-        }
-
-        private async Task WriteLogToFileTask()
-        {
-            while (!_logCancellationTokenSource.Token.IsCancellationRequested)
+            try
             {
-                try
+                var logsToWrite = new List<string>();
+
+                // 批量获取日志消息
+                while (_logQueue.TryDequeue(out var logMessage) && logsToWrite.Count < 100)
                 {
-                    var logsToWrite = new List<string>();
+                    logsToWrite.Add(logMessage);
+                }
 
-                    // 批量获取日志消息
-                    while (_logQueue.TryDequeue(out var logMessage) && logsToWrite.Count < 100)
+                if (logsToWrite.Count > 0)
+                {
+                    using (var sw = new StreamWriter(_logFilePath, true, Encoding.UTF8))
                     {
-                        logsToWrite.Add(logMessage);
-                    }
-
-                    if (logsToWrite.Count > 0)
-                    {
-                        using (var sw = new StreamWriter(_logFilePath, true, Encoding.UTF8))
+                        foreach (var log in logsToWrite)
                         {
-                            foreach (var log in logsToWrite)
-                            {
-                                await sw.WriteLineAsync(log);
-                            }
-
-                            await sw.FlushAsync();
+                            await sw.WriteLineAsync(log);
                         }
-                    }
 
-                    await Task.Delay(100, _logCancellationTokenSource.Token); // 如果没有日志，稍作等待
+                        await sw.FlushAsync();
+                    }
                 }
-                catch (OperationCanceledException)
-                {
-                    break;
-                }
-                catch (Exception ex)
-                {
-                    // 避免日志记录异常导致程序崩溃
-                    Console.WriteLine($"日志记录异常: {ex.Message}");
-                }
+
+                await Task.Delay(100, _logCancellationTokenSource.Token); // 如果没有日志，稍作等待
+            }
+            catch (OperationCanceledException)
+            {
+                break;
+            }
+            catch (Exception ex)
+            {
+                // 避免日志记录异常导致程序崩溃
+                Console.WriteLine($"日志记录异常: {ex.Message}");
             }
         }
+    }
 
-        public void Dispose()
-        {
-            _logCancellationTokenSource.Cancel();
-            _logWriterTask.Wait();
-            _logCancellationTokenSource?.Dispose();
-            _logWriterTask?.Dispose();
-        }
+    public void Dispose()
+    {
+        _logCancellationTokenSource.Cancel();
+        _logWriterTask.Wait();
+        _logCancellationTokenSource?.Dispose();
+        _logWriterTask?.Dispose();
     }
 }

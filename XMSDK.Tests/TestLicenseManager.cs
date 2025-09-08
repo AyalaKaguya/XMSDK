@@ -3,66 +3,65 @@ using System.Text.RegularExpressions;
 using NUnit.Framework;
 using XMSDK.Framework.License;
 
-namespace XMSDK.Tests
+namespace XMSDK.Tests;
+
+[TestFixture]
+public class TestLicenseManager
 {
-    [TestFixture]
-    public class TestLicenseManager
+    private const string LicenseKey = "USER-KEY-001"; // 开发者私有，不下发
+    private static readonly Regex MachineCodeRegex = new("^[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}$", RegexOptions.Compiled);
+    private static string VerifyKey => LicenseManager.DeriveVerifyKey(LicenseKey);
+
+    [Test]
+    public void TestGenerateMachineCode_FormatAndStability()
     {
-        private const string LicenseKey = "USER-KEY-001"; // 开发者私有，不下发
-        private static readonly Regex MachineCodeRegex = new Regex("^[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}$", RegexOptions.Compiled);
-        private static string VerifyKey => LicenseManager.DeriveVerifyKey(LicenseKey);
+        var mc1 = LicenseManager.GenerateMachineCode();
+        var mc2 = LicenseManager.GenerateMachineCode();
+        Assert.IsTrue(MachineCodeRegex.IsMatch(mc1));
+        Assert.AreEqual(mc1, mc2, "同一环境应生成稳定机器码");
+    }
 
-        [Test]
-        public void TestGenerateMachineCode_FormatAndStability()
-        {
-            var mc1 = LicenseManager.GenerateMachineCode();
-            var mc2 = LicenseManager.GenerateMachineCode();
-            Assert.IsTrue(MachineCodeRegex.IsMatch(mc1));
-            Assert.AreEqual(mc1, mc2, "同一环境应生成稳定机器码");
-        }
+    [Test]
+    public void TestGenerateAndValidate_Permanent()
+    {
+        var machineCode = LicenseManager.GenerateMachineCode();
+        var licenseCode = LicenseManager.GenerateLicense(machineCode, LicenseKey, VerifyKey, null);
+        var ok = LicenseManager.TryValidate(licenseCode, VerifyKey, out var info, out var error);
+        Assert.IsTrue(ok, error);
+        Assert.NotNull(info);
+        Assert.IsTrue(info.IsPermanent);
+        Assert.IsFalse(info.IsExpired);
+        Assert.AreEqual(machineCode, info.MachineCode);
+    }
 
-        [Test]
-        public void TestGenerateAndValidate_Permanent()
-        {
-            var machineCode = LicenseManager.GenerateMachineCode();
-            var licenseCode = LicenseManager.GenerateLicense(machineCode, LicenseKey, VerifyKey, null);
-            var ok = LicenseManager.TryValidate(licenseCode, VerifyKey, out var info, out var error);
-            Assert.IsTrue(ok, error);
-            Assert.NotNull(info);
-            Assert.IsTrue(info.IsPermanent);
-            Assert.IsFalse(info.IsExpired);
-            Assert.AreEqual(machineCode, info.MachineCode);
-        }
+    [Test]
+    public void TestGenerateAndValidate_Expired()
+    {
+        var machineCode = LicenseManager.GenerateMachineCode();
+        var expiredAt = DateTime.UtcNow.AddSeconds(-5);
+        var licenseCode = LicenseManager.GenerateLicense(machineCode, LicenseKey, VerifyKey, expiredAt);
+        var ok = LicenseManager.TryValidate(licenseCode, VerifyKey, out var info, out var error);
+        Assert.IsFalse(ok, "应该过期");
+        Assert.IsNull(info);
+        Assert.AreEqual("授权已过期", error);
+    }
 
-        [Test]
-        public void TestGenerateAndValidate_Expired()
-        {
-            var machineCode = LicenseManager.GenerateMachineCode();
-            var expiredAt = DateTime.UtcNow.AddSeconds(-5);
-            var licenseCode = LicenseManager.GenerateLicense(machineCode, LicenseKey, VerifyKey, expiredAt);
-            var ok = LicenseManager.TryValidate(licenseCode, VerifyKey, out var info, out var error);
-            Assert.IsFalse(ok, "应该过期");
-            Assert.IsNull(info);
-            Assert.AreEqual("授权已过期", error);
-        }
-
-        [Test]
-        public void TestValidate_TamperedSignature()
-        {
-            var machineCode = LicenseManager.GenerateMachineCode();
-            var licenseCode = LicenseManager.GenerateLicense(machineCode, LicenseKey, VerifyKey, DateTime.UtcNow.AddMinutes(5));
-            var decoded = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(licenseCode));
-            var parts = decoded.Split('|');
-            Assert.AreEqual(3, parts.Length);
-            var sign = parts[2];
-            var newFirst = sign[0] == 'A' ? 'B' : 'A';
-            parts[2] = newFirst + sign.Substring(1);
-            var tampered = string.Join("|", parts);
-            var tamperedCode = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(tampered));
-            var ok = LicenseManager.TryValidate(tamperedCode, VerifyKey, out var info, out var error);
-            Assert.IsFalse(ok);
-            Assert.IsNull(info);
-            Assert.AreEqual("签名不匹配", error);
-        }
+    [Test]
+    public void TestValidate_TamperedSignature()
+    {
+        var machineCode = LicenseManager.GenerateMachineCode();
+        var licenseCode = LicenseManager.GenerateLicense(machineCode, LicenseKey, VerifyKey, DateTime.UtcNow.AddMinutes(5));
+        var decoded = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(licenseCode));
+        var parts = decoded.Split('|');
+        Assert.AreEqual(3, parts.Length);
+        var sign = parts[2];
+        var newFirst = sign[0] == 'A' ? 'B' : 'A';
+        parts[2] = newFirst + sign.Substring(1);
+        var tampered = string.Join("|", parts);
+        var tamperedCode = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(tampered));
+        var ok = LicenseManager.TryValidate(tamperedCode, VerifyKey, out var info, out var error);
+        Assert.IsFalse(ok);
+        Assert.IsNull(info);
+        Assert.AreEqual("签名不匹配", error);
     }
 }

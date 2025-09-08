@@ -2,63 +2,62 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace XMSDK.Framework.Logger.TraceMessage
+namespace XMSDK.Framework.Logger.TraceMessage;
+
+public class TraceMessageReceiver: IDisposable
 {
-    public class TraceMessageReceiver: IDisposable
+    private class CustomTraceListener : TraceListener
     {
-        private class CustomTraceListener : TraceListener
+        public event Action<string> OnMessage;
+
+        public override void Write(string message)
         {
-            public event Action<string> OnMessage;
-
-            public override void Write(string message)
-            {
-                OnMessage?.Invoke(message);
-            }
-
-            public override void WriteLine(string message)
-            {
-                OnMessage?.Invoke(message);
-            }
+            OnMessage?.Invoke(message);
         }
+
+        public override void WriteLine(string message)
+        {
+            OnMessage?.Invoke(message);
+        }
+    }
         
-        private readonly CustomTraceListener _diagnosticsListener = new CustomTraceListener();
-        private List<IDisposable> _disposables = new List<IDisposable>();
+    private readonly CustomTraceListener _diagnosticsListener = new();
+    private List<IDisposable> _disposables = new();
 
-        public TraceMessageReceiver AddToDebug()
+    public TraceMessageReceiver AddToDebug()
+    {
+        Trace.Listeners.Add(_diagnosticsListener);
+        Trace.AutoFlush = true;
+        return this;
+    }
+
+    public TraceMessageReceiver AddToTrace()
+    {
+        Debug.Listeners.Add(_diagnosticsListener);
+        Debug.AutoFlush = true;
+        return this;
+    }
+
+    public TraceMessageReceiver AddProcesser(ITraceMessageProcesser processer)
+    {
+        _diagnosticsListener.OnMessage += processer.OnMessage;
+
+        if (processer is IDisposable disposableProcesser)
         {
-            Trace.Listeners.Add(_diagnosticsListener);
-            Trace.AutoFlush = true;
-            return this;
+            _disposables.Add(disposableProcesser);
         }
 
-        public TraceMessageReceiver AddToTrace()
+        return this;
+    }
+
+    public void Dispose()
+    {
+        Trace.Listeners.Remove(_diagnosticsListener);
+        Debug.Listeners.Remove(_diagnosticsListener);
+        foreach (var disposable in _disposables)
         {
-            Debug.Listeners.Add(_diagnosticsListener);
-            Debug.AutoFlush = true;
-            return this;
+            disposable.Dispose();
         }
-
-        public TraceMessageReceiver AddProcesser(ITraceMessageProcesser processer)
-        {
-            _diagnosticsListener.OnMessage += processer.OnMessage;
-
-            if (processer is IDisposable disposableProcesser)
-            {
-                _disposables.Add(disposableProcesser);
-            }
-
-            return this;
-        }
-
-        public void Dispose()
-        {
-            Trace.Listeners.Remove(_diagnosticsListener);
-            Debug.Listeners.Remove(_diagnosticsListener);
-            foreach (var disposable in _disposables)
-            {
-                disposable.Dispose();
-            }
-            _diagnosticsListener.Dispose();
-        }
+        _diagnosticsListener.Dispose();
     }
 }

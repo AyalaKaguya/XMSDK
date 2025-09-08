@@ -1,31 +1,30 @@
 ﻿using System;
 using System.Net.Sockets;
 
-namespace XMSDK.Framework.Communication
+namespace XMSDK.Framework.Communication.SimpleTCP;
+
+public class CommandHandler
 {
-    public class CommandHandler
+    private readonly Action<SocketServer, TcpClient>? _onServerCommandExecuted;
+    private readonly Action<SocketClient>? _onClientCommandExecuted;
+
+    public CommandHandler(Action<SocketServer, TcpClient> onServerCommandExecuted)
     {
-        private readonly Action<SocketServer, TcpClient> _onServerCommandExecuted;
-        private readonly Action<SocketClient> _onClientCommandExecuted;
+        _onServerCommandExecuted = onServerCommandExecuted;
+    }
 
-        public CommandHandler(Action<SocketServer, TcpClient> onServerCommandExecuted)
-        {
-            _onServerCommandExecuted = onServerCommandExecuted;
-        }
+    public CommandHandler(Action<SocketClient> onClientCommandExecuted)
+    {
+        _onClientCommandExecuted = onClientCommandExecuted;
+    }
 
-        public CommandHandler(Action<SocketClient> onClientCommandExecuted)
-        {
-            _onClientCommandExecuted = onClientCommandExecuted;
-        }
+    public void InvokeServer(SocketServer server, TcpClient client)
+    {
+        _onServerCommandExecuted?.Invoke(server, client);
+    }
 
-        public void InvokeServer(SocketServer server, TcpClient client)
-        {
-            _onServerCommandExecuted?.Invoke(server, client);
-        }
-
-        public void InvokeClient(SocketClient client)
-        {
-            _onClientCommandExecuted?.Invoke(client);
-        }
+    public void InvokeClient(SocketClient client)
+    {
+        _onClientCommandExecuted?.Invoke(client);
     }
 }

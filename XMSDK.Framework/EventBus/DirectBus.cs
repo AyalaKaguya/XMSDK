@@ -6,376 +6,374 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 
-namespace XMSDK.Framework.EventBus
+namespace XMSDK.Framework.EventBus;
+
+/// <summary>
+/// 直接事件总线，
+/// 调用者直接调用事件处理方法，
+/// 不经过异步队列或其他处理。
+/// 支持路由功能，可基于路由键进行事件分发。
+/// 支持多对多订阅模式，按订阅顺序执行。
+/// </summary>
+public class DirectBus
 {
     /// <summary>
-    /// 直接事件总线，
-    /// 调用者直接调用事件处理方法，
-    /// 不经过异步队列或其他处理。
-    /// 支持路由功能，可基于路由键进行事件分发。
-    /// 支持多对多订阅模式，按订阅顺序执行。
+    /// 事件处理委托
     /// </summary>
-    public class DirectBus
+    /// <typeparam name="T">事件负载类型</typeparam>
+    /// <param name="context">事件上下文</param>
+    public delegate void EventHandler<T>(EventContext<T> context);
+
+    /// <summary>
+    /// 异常处理回调委托
+    /// </summary>
+    /// <param name="context">事件上下文（object类型以支持泛型）</param>
+    /// <param name="exception">发生的异常</param>
+    /// <param name="handler">出错的处理器</param>
+    /// <returns>是否继续抛出异常，true表示重新抛出，false表示忽略异常</returns>
+    public delegate bool ExceptionHandler(object context, Exception exception, Delegate handler);
+
+    /// <summary>
+    /// 路由信息
+    /// </summary>
+    protected class RouteInfo
     {
-        /// <summary>
-        /// 事件处理委托
-        /// </summary>
-        /// <typeparam name="T">事件负载类型</typeparam>
-        /// <param name="context">事件上下文</param>
-        public delegate void EventHandler<T>(EventContext<T> context);
+        public Type PayloadType { get; set; }
+        public string Pattern { get; set; }
+        public Delegate Handler { get; set; }
+        public bool IsRegex { get; set; }
+        public int SubscriptionOrder { get; set; } // 订阅顺序，替代优先级
+        public string SubscriptionId { get; set; } = Guid.NewGuid().ToString(); // 订阅唯一标识
+    }
 
-        /// <summary>
-        /// 异常处理回调委托
-        /// </summary>
-        /// <param name="context">事件上下文（object类型以支持泛型）</param>
-        /// <param name="exception">发生的异常</param>
-        /// <param name="handler">出错的处理器</param>
-        /// <returns>是否继续抛出异常，true表示重新抛出，false表示忽略异常</returns>
-        public delegate bool ExceptionHandler(object context, Exception exception, Delegate handler);
+    private readonly ConcurrentDictionary<string, List<RouteInfo>> _routes = new();
 
-        /// <summary>
-        /// 路由信息
-        /// </summary>
-        protected class RouteInfo
+    private readonly object _lockObject = new();
+    private int _globalSubscriptionCounter; // 全局订阅计数器，用于确定订阅顺序
+
+    #region 订阅方法
+
+    /// <summary>
+    /// 订阅事件（基于事件负载类型）
+    /// </summary>
+    /// <typeparam name="T">事件负载类型</typeparam>
+    /// <param name="handler">事件处理器</param>
+    /// <returns>订阅ID，可用于取消订阅</returns>
+    public string Subscribe<T>(EventHandler<T> handler)
+    {
+        return Subscribe(typeof(T), "*", handler, false);
+    }
+
+    /// <summary>
+    /// 订阅事件（基于路由键精确匹配）
+    /// </summary>
+    /// <typeparam name="T">事件负载类型</typeparam>
+    /// <param name="routeKey">路由键</param>
+    /// <param name="handler">事件处理器</param>
+    /// <returns>订阅ID，可用于取消订阅</returns>
+    public string Subscribe<T>(string routeKey, EventHandler<T> handler)
+    {
+        return Subscribe(typeof(T), routeKey, handler, false);
+    }
+
+    /// <summary>
+    /// 订阅事件（基于路由键模式匹配）
+    /// </summary>
+    /// <typeparam name="T">事件负载类型</typeparam>
+    /// <param name="routePattern">路由模式（支持通配符*和?，或正则表达式）</param>
+    /// <param name="handler">事件处理器</param>
+    /// <param name="isRegex">是否使用正则表达式匹配</param>
+    /// <returns>订阅ID，可用于取消订阅</returns>
+    public string Subscribe<T>(string routePattern, EventHandler<T> handler, bool isRegex)
+    {
+        return Subscribe(typeof(T), routePattern, handler, isRegex);
+    }
+
+    /// <summary>
+    /// 通用订阅方法
+    /// </summary>
+    private string Subscribe(Type payloadType, string routePattern, Delegate handler, bool isRegex)
+    {
+        if (payloadType == null) throw new ArgumentNullException(nameof(payloadType));
+        if (string.IsNullOrWhiteSpace(routePattern)) throw new ArgumentNullException(nameof(routePattern));
+        if (handler == null) throw new ArgumentNullException(nameof(handler));
+
+        var routeInfo = new RouteInfo
         {
-            public Type PayloadType { get; set; }
-            public string Pattern { get; set; }
-            public Delegate Handler { get; set; }
-            public bool IsRegex { get; set; }
-            public int SubscriptionOrder { get; set; } // 订阅顺序，替代优先级
-            public string SubscriptionId { get; set; } = Guid.NewGuid().ToString(); // 订阅唯一标识
-        }
+            PayloadType = payloadType,
+            Pattern = routePattern,
+            Handler = handler,
+            IsRegex = isRegex,
+            SubscriptionOrder = Interlocked.Increment(ref _globalSubscriptionCounter)
+        };
 
-        private readonly ConcurrentDictionary<string, List<RouteInfo>> _routes =
-            new ConcurrentDictionary<string, List<RouteInfo>>();
-
-        private readonly object _lockObject = new object();
-        private int _globalSubscriptionCounter; // 全局订阅计数器，用于确定订阅顺序
-
-        #region 订阅方法
-
-        /// <summary>
-        /// 订阅事件（基于事件负载类型）
-        /// </summary>
-        /// <typeparam name="T">事件负载类型</typeparam>
-        /// <param name="handler">事件处理器</param>
-        /// <returns>订阅ID，可用于取消订阅</returns>
-        public string Subscribe<T>(EventHandler<T> handler)
+        lock (_lockObject)
         {
-            return Subscribe(typeof(T), "*", handler, false);
-        }
-
-        /// <summary>
-        /// 订阅事件（基于路由键精确匹配）
-        /// </summary>
-        /// <typeparam name="T">事件负载类型</typeparam>
-        /// <param name="routeKey">路由键</param>
-        /// <param name="handler">事件处理器</param>
-        /// <returns>订阅ID，可用于取消订阅</returns>
-        public string Subscribe<T>(string routeKey, EventHandler<T> handler)
-        {
-            return Subscribe(typeof(T), routeKey, handler, false);
-        }
-
-        /// <summary>
-        /// 订阅事件（基于路由键模式匹配）
-        /// </summary>
-        /// <typeparam name="T">事件负载类型</typeparam>
-        /// <param name="routePattern">路由模式（支持通配符*和?，或正则表达式）</param>
-        /// <param name="handler">事件处理器</param>
-        /// <param name="isRegex">是否使用正则表达式匹配</param>
-        /// <returns>订阅ID，可用于取消订阅</returns>
-        public string Subscribe<T>(string routePattern, EventHandler<T> handler, bool isRegex)
-        {
-            return Subscribe(typeof(T), routePattern, handler, isRegex);
-        }
-
-        /// <summary>
-        /// 通用订阅方法
-        /// </summary>
-        private string Subscribe(Type payloadType, string routePattern, Delegate handler, bool isRegex)
-        {
-            if (payloadType == null) throw new ArgumentNullException(nameof(payloadType));
-            if (string.IsNullOrWhiteSpace(routePattern)) throw new ArgumentNullException(nameof(routePattern));
-            if (handler == null) throw new ArgumentNullException(nameof(handler));
-
-            var routeInfo = new RouteInfo
+            var key = payloadType.FullName;
+            if (key != null && !_routes.ContainsKey(key))
             {
-                PayloadType = payloadType,
-                Pattern = routePattern,
-                Handler = handler,
-                IsRegex = isRegex,
-                SubscriptionOrder = Interlocked.Increment(ref _globalSubscriptionCounter)
-            };
-
-            lock (_lockObject)
-            {
-                var key = payloadType.FullName;
-                if (key != null && !_routes.ContainsKey(key))
-                {
-                    _routes[key] = new List<RouteInfo>();
-                }
-
-                if (key != null)
-                {
-                    _routes[key].Add(routeInfo);
-                    // 按订阅顺序排序
-                    _routes[key] = _routes[key].OrderBy(r => r.SubscriptionOrder).ToList();
-                }
+                _routes[key] = new List<RouteInfo>();
             }
 
-            return routeInfo.SubscriptionId;
+            if (key != null)
+            {
+                _routes[key].Add(routeInfo);
+                // 按订阅顺序排序
+                _routes[key] = _routes[key].OrderBy(r => r.SubscriptionOrder).ToList();
+            }
         }
 
-        #endregion
+        return routeInfo.SubscriptionId;
+    }
 
-        #region 发布方法
+    #endregion
 
-        /// <summary>
-        /// 发布事件
-        /// </summary>
-        /// <typeparam name="T">事件负载类型</typeparam>
-        /// <param name="payload">事件负载</param>
-        /// <returns>处理该事件的处理器数量</returns>
-        public int Publish<T>(T payload)
+    #region 发布方法
+
+    /// <summary>
+    /// 发布事件
+    /// </summary>
+    /// <typeparam name="T">事件负载类型</typeparam>
+    /// <param name="payload">事件负载</param>
+    /// <returns>处理该事件的处理器数量</returns>
+    public int Publish<T>(T payload)
+    {
+        return Publish(payload, typeof(T).FullName);
+    }
+
+    /// <summary>
+    /// 发布事件（带异常处理）
+    /// </summary>
+    /// <typeparam name="T">事件负载类型</typeparam>
+    /// <param name="payload">事件负载</param>
+    /// <param name="onException">异常处理回调</param>
+    /// <returns>处理该事件的处理器数量</returns>
+    public int Publish<T>(T payload, ExceptionHandler onException)
+    {
+        return Publish(payload, typeof(T).FullName, onException);
+    }
+
+    /// <summary>
+    /// 发布事件
+    /// </summary>
+    /// <typeparam name="T">事件负载类型</typeparam>
+    /// <param name="payload">事件负载</param>
+    /// <param name="routeKey">路由键</param>
+    /// <returns>处理该事件的处理器数量</returns>
+    public int Publish<T>(T payload, string routeKey)
+    {
+        return Publish(payload, routeKey, null);
+    }
+
+    /// <summary>
+    /// 发布事件（带异常处理）
+    /// </summary>
+    /// <typeparam name="T">事件负载类型</typeparam>
+    /// <param name="payload">事件负载</param>
+    /// <param name="routeKey">路由键</param>
+    /// <param name="onException">异常处理回调</param>
+    /// <returns>处理该事件的处理器数量</returns>
+    public int Publish<T>(T payload, string routeKey, ExceptionHandler onException)
+    {
+        if (payload == null) throw new ArgumentNullException(nameof(payload));
+
+        var context = new EventContext<T>(payload, routeKey);
+
+        try
         {
-            return Publish(payload, typeof(T).FullName);
+            return PublishContext(context, onException);
         }
-
-        /// <summary>
-        /// 发布事件（带异常处理）
-        /// </summary>
-        /// <typeparam name="T">事件负载类型</typeparam>
-        /// <param name="payload">事件负载</param>
-        /// <param name="onException">异常处理回调</param>
-        /// <returns>处理该事件的处理器数量</returns>
-        public int Publish<T>(T payload, ExceptionHandler onException)
+        finally
         {
-            return Publish(payload, typeof(T).FullName, onException);
+            // 由事件发布者负责释放资源
+            context.Dispose();
         }
+    }
 
-        /// <summary>
-        /// 发布事件
-        /// </summary>
-        /// <typeparam name="T">事件负载类型</typeparam>
-        /// <param name="payload">事件负载</param>
-        /// <param name="routeKey">路由键</param>
-        /// <returns>处理该事件的处理器数量</returns>
-        public int Publish<T>(T payload, string routeKey)
+    #endregion
+
+
+    /// <summary>
+    /// 发布事件上下文
+    /// </summary>
+    /// <typeparam name="T">事件负载类型</typeparam>
+    /// <param name="context">事件上下文</param>
+    /// <param name="onException">异常处理回调</param>
+    /// <returns>处理该事件的处理器数量</returns>
+    private int PublishContext<T>(EventContext<T> context, ExceptionHandler? onException = null)
+    {
+        if (context == null) throw new ArgumentNullException(nameof(context));
+
+        var handledCount = 0;
+        var payloadType = typeof(T);
+        var routeKey = context.RouteKey ?? "";
+
+        // 获取匹配的路由（按订阅顺序）
+        var matchingRoutes = GetMatchingRoutes(payloadType, routeKey);
+
+        var routesToRemove = new List<RouteInfo>();
+
+        // 按订阅顺序执行每个处理器
+        foreach (var route in matchingRoutes)
         {
-            return Publish(payload, routeKey, null);
-        }
-
-        /// <summary>
-        /// 发布事件（带异常处理）
-        /// </summary>
-        /// <typeparam name="T">事件负载类型</typeparam>
-        /// <param name="payload">事件负载</param>
-        /// <param name="routeKey">路由键</param>
-        /// <param name="onException">异常处理回调</param>
-        /// <returns>处理该事件的处理器数量</returns>
-        public int Publish<T>(T payload, string routeKey, ExceptionHandler onException)
-        {
-            if (payload == null) throw new ArgumentNullException(nameof(payload));
-
-            var context = new EventContext<T>(payload, routeKey);
-
             try
             {
-                return PublishContext(context, onException);
+                // 多对多订阅，直接调用
+                route.Handler.DynamicInvoke(context);
             }
-            finally
+            catch (TargetInvocationException ex)
             {
-                // 由事件发布者负责释放资源
-                context.Dispose();
-            }
-        }
-
-        #endregion
-
-
-        /// <summary>
-        /// 发布事件上下文
-        /// </summary>
-        /// <typeparam name="T">事件负载类型</typeparam>
-        /// <param name="context">事件上下文</param>
-        /// <param name="onException">异常处理回调</param>
-        /// <returns>处理该事件的处理器数量</returns>
-        private int PublishContext<T>(EventContext<T> context, ExceptionHandler onException = null)
-        {
-            if (context == null) throw new ArgumentNullException(nameof(context));
-
-            var handledCount = 0;
-            var payloadType = typeof(T);
-            var routeKey = context.RouteKey ?? "";
-
-            // 获取匹配的路由（按订阅顺序）
-            var matchingRoutes = GetMatchingRoutes(payloadType, routeKey);
-
-            var routesToRemove = new List<RouteInfo>();
-
-            // 按订阅顺序执行每个处理器
-            foreach (var route in matchingRoutes)
-            {
-                try
+                // 如果没有异常处理回调，默认重新抛出异常
+                if (onException == null)
                 {
-                    // 多对多订阅，直接调用
-                    route.Handler.DynamicInvoke(context);
-                }
-                catch (TargetInvocationException ex)
-                {
-                    // 如果没有异常处理回调，默认重新抛出异常
-                    if (onException == null)
-                    {
-                        if (ex.InnerException != null)
-                            throw ex.InnerException;
-                        throw;
-                    }
-
-                    // 触发异常处理回调
-                    if (onException.Invoke(context, ex.InnerException, route.Handler))
-                    {
-                        // 用户选择重新抛出异常
-                        if (ex.InnerException != null) throw ex.InnerException;
-                    }
+                    if (ex.InnerException != null)
+                        throw ex.InnerException;
+                    throw;
                 }
 
-                handledCount++;
-                // 检查是否需要停止订阅
-                if (context.ContinueSubscription) continue;
-                routesToRemove.Add(route);
-                // 重置标记，以便其他订阅者继续处理
-                context.ContinueSubscription = true;
-            }
-
-            // 移除标记为需要移除的路由
-            RemoveRoutes(routesToRemove);
-
-            return handledCount;
-        }
-
-        /// <summary>
-        /// 获取匹配的路由（按订阅顺序）
-        /// </summary>
-        protected List<RouteInfo> GetMatchingRoutes(Type payloadType, string routeKey)
-        {
-            var matchingRoutes = new List<RouteInfo>();
-
-            lock (_lockObject)
-            {
-                var key = payloadType.FullName;
-                if (key != null && _routes.TryGetValue(key, out var routes))
+                // 触发异常处理回调
+                if (onException.Invoke(context, ex.InnerException, route.Handler))
                 {
-                    matchingRoutes.AddRange(routes.Where(route =>
-                        IsRouteMatch(route.Pattern, routeKey, route.IsRegex)));
+                    // 用户选择重新抛出异常
+                    if (ex.InnerException != null) throw ex.InnerException;
                 }
             }
 
-            // 按订阅顺序排序，确保按注册顺序执行
-            return matchingRoutes.OrderBy(r => r.SubscriptionOrder).ToList();
+            handledCount++;
+            // 检查是否需要停止订阅
+            if (context.ContinueSubscription) continue;
+            routesToRemove.Add(route);
+            // 重置标记，以便其他订阅者继续处理
+            context.ContinueSubscription = true;
         }
 
-        /// <summary>
-        /// 检查路由是否匹配
-        /// </summary>
-        private static bool IsRouteMatch(string pattern, string routeKey, bool isRegex)
+        // 移除标记为需要移除的路由
+        RemoveRoutes(routesToRemove);
+
+        return handledCount;
+    }
+
+    /// <summary>
+    /// 获取匹配的路由（按订阅顺序）
+    /// </summary>
+    protected List<RouteInfo> GetMatchingRoutes(Type payloadType, string routeKey)
+    {
+        var matchingRoutes = new List<RouteInfo>();
+
+        lock (_lockObject)
         {
-            if (pattern == "*") return true;
-
-            return isRegex ? Regex.IsMatch(routeKey, pattern) : WildcardMatch(pattern, routeKey);
-        }
-
-        /// <summary>
-        /// 通配符匹配
-        /// </summary>
-        private static bool WildcardMatch(string pattern, string text)
-        {
-            if (string.IsNullOrEmpty(pattern) && string.IsNullOrEmpty(text))
-                return true;
-
-            if (string.IsNullOrEmpty(pattern))
-                return false;
-
-            if (string.IsNullOrEmpty(text))
-                return pattern == "*";
-
-            // 转换通配符模式为正则表达式
-            var regexPattern = "^" + Regex.Escape(pattern)
-                .Replace("\\*", ".*")
-                .Replace("\\?", ".") + "$";
-
-            return Regex.IsMatch(text, regexPattern);
-        }
-
-        /// <summary>
-        /// 移除路由
-        /// </summary>
-        private void RemoveRoutes(List<RouteInfo> routesToRemove)
-        {
-            if (routesToRemove.Count == 0) return;
-
-            lock (_lockObject)
+            var key = payloadType.FullName;
+            if (key != null && _routes.TryGetValue(key, out var routes))
             {
-                foreach (var routeToRemove in routesToRemove)
-                {
-                    var key = routeToRemove.PayloadType.FullName;
-                    if (key == null || !_routes.TryGetValue(key, out var route)) continue;
-                    route.Remove(routeToRemove);
-                    if (_routes[key].Count == 0)
-                    {
-                        _routes.TryRemove(key, out _);
-                    }
-                }
+                matchingRoutes.AddRange(routes.Where(route =>
+                    IsRouteMatch(route.Pattern, routeKey, route.IsRegex)));
             }
         }
 
-        /// <summary>
-        /// 根据订阅ID取消订阅
-        /// </summary>
-        /// <param name="subscriptionId">订阅ID</param>
-        /// <returns>是否成功取消订阅</returns>
-        public bool Unsubscribe(string subscriptionId)
-        {
-            if (string.IsNullOrEmpty(subscriptionId)) return false;
+        // 按订阅顺序排序，确保按注册顺序执行
+        return matchingRoutes.OrderBy(r => r.SubscriptionOrder).ToList();
+    }
 
-            lock (_lockObject)
-            {
-                foreach (var kvp in _routes)
-                {
-                    var routesToRemove = kvp.Value.Where(r => r.SubscriptionId == subscriptionId).ToList();
-                    if (!routesToRemove.Any()) continue;
-                    foreach (var route in routesToRemove)
-                    {
-                        kvp.Value.Remove(route);
-                    }
+    /// <summary>
+    /// 检查路由是否匹配
+    /// </summary>
+    private static bool IsRouteMatch(string pattern, string routeKey, bool isRegex)
+    {
+        if (pattern == "*") return true;
 
-                    if (kvp.Value.Count == 0)
-                    {
-                        _routes.TryRemove(kvp.Key, out _);
-                    }
+        return isRegex ? Regex.IsMatch(routeKey, pattern) : WildcardMatch(pattern, routeKey);
+    }
 
-                    return true;
-                }
-            }
+    /// <summary>
+    /// 通配符匹配
+    /// </summary>
+    private static bool WildcardMatch(string pattern, string text)
+    {
+        if (string.IsNullOrEmpty(pattern) && string.IsNullOrEmpty(text))
+            return true;
 
+        if (string.IsNullOrEmpty(pattern))
             return false;
+
+        if (string.IsNullOrEmpty(text))
+            return pattern == "*";
+
+        // 转换通配符模式为正则表达式
+        var regexPattern = "^" + Regex.Escape(pattern)
+            .Replace("\\*", ".*")
+            .Replace("\\?", ".") + "$";
+
+        return Regex.IsMatch(text, regexPattern);
+    }
+
+    /// <summary>
+    /// 移除路由
+    /// </summary>
+    private void RemoveRoutes(List<RouteInfo> routesToRemove)
+    {
+        if (routesToRemove.Count == 0) return;
+
+        lock (_lockObject)
+        {
+            foreach (var routeToRemove in routesToRemove)
+            {
+                var key = routeToRemove.PayloadType.FullName;
+                if (key == null || !_routes.TryGetValue(key, out var route)) continue;
+                route.Remove(routeToRemove);
+                if (_routes[key].Count == 0)
+                {
+                    _routes.TryRemove(key, out _);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 根据订阅ID取消订阅
+    /// </summary>
+    /// <param name="subscriptionId">订阅ID</param>
+    /// <returns>是否成功取消订阅</returns>
+    public bool Unsubscribe(string subscriptionId)
+    {
+        if (string.IsNullOrEmpty(subscriptionId)) return false;
+
+        lock (_lockObject)
+        {
+            foreach (var kvp in _routes)
+            {
+                var routesToRemove = kvp.Value.Where(r => r.SubscriptionId == subscriptionId).ToList();
+                if (!routesToRemove.Any()) continue;
+                foreach (var route in routesToRemove)
+                {
+                    kvp.Value.Remove(route);
+                }
+
+                if (kvp.Value.Count == 0)
+                {
+                    _routes.TryRemove(kvp.Key, out _);
+                }
+
+                return true;
+            }
         }
 
-        /// <summary>
-        /// 取消订阅指定类型的所有事件
-        /// </summary>
-        /// <typeparam name="T">事件负载类型</typeparam>
-        /// <returns>取消的订阅数量</returns>
-        public int UnsubscribeAll<T>()
+        return false;
+    }
+
+    /// <summary>
+    /// 取消订阅指定类型的所有事件
+    /// </summary>
+    /// <typeparam name="T">事件负载类型</typeparam>
+    /// <returns>取消的订阅数量</returns>
+    public int UnsubscribeAll<T>()
+    {
+        lock (_lockObject)
         {
-            lock (_lockObject)
-            {
-                var key = typeof(T).FullName;
-                if (key == null || !_routes.TryGetValue(key, out var route)) return 0;
-                var count = route.Count;
-                _routes.TryRemove(key, out _);
-                return count;
-            }
+            var key = typeof(T).FullName;
+            if (key == null || !_routes.TryGetValue(key, out var route)) return 0;
+            var count = route.Count;
+            _routes.TryRemove(key, out _);
+            return count;
         }
     }
 }

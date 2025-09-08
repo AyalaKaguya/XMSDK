@@ -1,12 +1,11 @@
 ﻿using System;
 
-namespace XMSDK.Framework.Logger.TraceMessage
+namespace XMSDK.Framework.Logger.TraceMessage;
+
+public class LogToConsoleProcesser: ITraceMessageProcesser
 {
-    public class LogToConsoleProcesser: ITraceMessageProcesser
+    public void OnMessage(string msg)
     {
-        public void OnMessage(string msg)
-        {
-            Console.WriteLine(msg);
-        }
+        Console.WriteLine(msg);
     }
 }

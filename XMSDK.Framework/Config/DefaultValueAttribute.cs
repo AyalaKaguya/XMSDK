@@ -1,15 +1,13 @@
 using System;
 
-namespace XMSDK.Framework.Config
+namespace XMSDK.Framework.Config;
+
+[AttributeUsage(AttributeTargets.Property)]
+public class DefaultValueAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Property)]
-    public class DefaultValueAttribute : Attribute
+    public object Value { get; }
+    public DefaultValueAttribute(object value)
     {
-        public object Value { get; }
-        public DefaultValueAttribute(object value)
-        {
-            Value = value;
-        }
+        Value = value;
     }
 }
-

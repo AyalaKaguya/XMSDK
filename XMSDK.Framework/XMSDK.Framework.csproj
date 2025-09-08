@@ -12,7 +12,8 @@
         <FileAlignment>512</FileAlignment>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <Deterministic>true</Deterministic>
-        <LangVersion>8</LangVersion>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <PlatformTarget>AnyCPU</PlatformTarget>
@@ -135,7 +136,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Communication\ExampleOSC.cs" />
-        <Compile Include="Communication\ObservableSignalCollection.cs" />
+        <Compile Include="Communication\PollingSignalHost.cs" />
         <Compile Include="Communication\SimpleTCP\CommandHandler.cs" />
         <Compile Include="Communication\SimpleTCP\MessageProtocol.cs" />
         <Compile Include="Communication\SimpleTCP\SignalHandler.cs" />
