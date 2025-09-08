@@ -1,5 +1,4 @@
 using System;
-using System.Drawing;
 using System.Windows.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -63,7 +62,7 @@ namespace ConsoleApplication1
 
                 splash.AddItem(new SplashItem("加载配置", 3, ctx =>
                 {
-                    ctx.SetDetail("读取 appsettings.json (模拟)...");
+                    ctx.SetDetail("读取 app-settings.json (模拟)...");
                     System.Threading.Thread.Sleep(1500);
                     ctx.SetDetail("绑定配置对象 (模拟)...");
                     System.Threading.Thread.Sleep(1500);
