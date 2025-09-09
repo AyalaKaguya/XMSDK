@@ -32,10 +32,17 @@ namespace XMSDK.Framework.Demo
                 // 设置信号源
                 signalList.SetSignalSource(_enhancedSignalDemo);
                 
+                // 配置显示列 - 展示所有ObservableSignal特性
+                signalList.VisibleColumns = SignalList.DisplayColumns.Default | 
+                                           SignalList.DisplayColumns.Description | 
+                                           SignalList.DisplayColumns.Unit | 
+                                           SignalList.DisplayColumns.Format |
+                                           SignalList.DisplayColumns.ReadOnlyStatus;
+                
                 // 监听信号变化事件
                 signalList.SignalValueChanged += OnSignalValueChanged;
                 
-                lblStatus.Text = "状态: 演示系统已启动 - 包含6个不同类型的信号";
+                lblStatus.Text = "状态: 演示系统已启动 - 显示完整的信号特性描述";
                 lblStatus.ForeColor = Color.Green;
             }
             catch (Exception ex)

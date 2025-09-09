@@ -9,6 +9,7 @@ namespace XMSDK.Framework.Forms;
 
 /// <summary>
 /// 可观测信号列表控件，用于显示和管理信号集合。
+/// 支持完整的ObservableSignal特性描述展示和可配置的列显示选项。
 /// 所有刷新都由SignalSource的事件触发，不提供自动刷新功能。
 /// </summary>
 public partial class SignalList : UserControl
@@ -21,6 +22,42 @@ public partial class SignalList : UserControl
     /// 信号值变化时触发的事件
     /// </summary>
     public event Action<string, object?, object?>? SignalValueChanged;
+
+    /// <summary>
+    /// 可配置的显示列选项
+    /// </summary>
+    [Flags]
+    public enum DisplayColumns
+    {
+        None = 0,
+        Name = 1 << 0,
+        Address = 1 << 1,
+        Value = 1 << 2,
+        UpdateTime = 1 << 3,
+        Type = 1 << 4,
+        Group = 1 << 5,
+        Description = 1 << 6,
+        Unit = 1 << 7,
+        Format = 1 << 8,
+        ReadOnlyStatus = 1 << 9,
+        Default = Name | Address | Value | UpdateTime | Type | Group
+    }
+
+    private DisplayColumns _visibleColumns = DisplayColumns.Default;
+
+    /// <summary>
+    /// 获取或设置要显示的列
+    /// </summary>
+    public DisplayColumns VisibleColumns
+    {
+        get => _visibleColumns;
+        set
+        {
+            _visibleColumns = value;
+            UpdateColumnVisibility();
+            UpdateContextMenuState();
+        }
+    }
 
     public SignalList()
     {
@@ -74,7 +111,46 @@ public partial class SignalList : UserControl
             RefreshSignalList();
         }
     }
+    private void UpdateColumnVisibility()
+    {
+        listViewSignals.BeginUpdate();
+        try
+        {
+            listViewSignals.Columns.Clear();
 
+            void AddColumn(string text, int width, DisplayColumns columnFlag)
+            {
+                if ((_visibleColumns & columnFlag) != 0)
+                {
+                    var column = new ColumnHeader
+                    {
+                        Text = text,
+                        Width = width,
+                        TextAlign = HorizontalAlignment.Left
+                    };
+                    listViewSignals.Columns.Add(column);
+                }
+            }
+
+            AddColumn("名称", 120, DisplayColumns.Name);
+            AddColumn("地址", 100, DisplayColumns.Address);
+            AddColumn("值", 100, DisplayColumns.Value);
+            AddColumn("更新时间", 100, DisplayColumns.UpdateTime);
+            AddColumn("类型", 80, DisplayColumns.Type);
+            AddColumn("分组", 100, DisplayColumns.Group);
+            AddColumn("描述", 150, DisplayColumns.Description);
+            AddColumn("单位", 80, DisplayColumns.Unit);
+            AddColumn("格式", 80, DisplayColumns.Format);
+            AddColumn("只读", 60, DisplayColumns.ReadOnlyStatus);
+
+            RefreshSignalList();
+        }
+        finally
+        {
+            listViewSignals.EndUpdate();
+        }
+    }
+    
     private void SetupListView()
     {
         // ListView的基本设置已在Designer中完成
@@ -115,11 +191,19 @@ public partial class SignalList : UserControl
             {
                 column.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
             }
+
         }
         finally
         {
             listViewSignals.EndUpdate();
         }
+    }
+    private void UpdateContextMenuState()
+    {
+        menuItemShowDescription.Checked = (_visibleColumns & DisplayColumns.Description) != 0;
+        menuItemShowUnit.Checked = (_visibleColumns & DisplayColumns.Unit) != 0;
+        menuItemShowFormat.Checked = (_visibleColumns & DisplayColumns.Format) != 0;
+        menuItemShowReadOnly.Checked = (_visibleColumns & DisplayColumns.ReadOnlyStatus) != 0;
     }
 
     private string FormatSignalValue(SignalInfo signal)
@@ -129,6 +213,7 @@ public partial class SignalList : UserControl
         if (!string.IsNullOrEmpty(signal.Unit))
         {
             valueStr += " " + signal.Unit;
+
         }
 
         return valueStr;
@@ -244,17 +329,4 @@ public partial class SignalList : UserControl
     }
 
     #endregion
-
-    protected override void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            if (_notifier != null)
-            {
-                _notifier.SignalValueChanged -= OnSignalValueChanged;
-            }
-            components?.Dispose();
-        }
-        base.Dispose(disposing);
-    }
 }
