@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalSystemDemoForm", "Sig
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demos", "Demos", "{D83696C9-032C-4877-8901-10CDEB495066}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HslCommunicationDemoForm", "HslCommunicationDemoForm\HslCommunicationDemoForm.csproj", "{6457EBB5-9F8C-4F76-96C0-4141111FA7EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,9 +34,14 @@ Global
 		{4570A6F5-B231-44A9-A988-E8219631C12F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4570A6F5-B231-44A9-A988-E8219631C12F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4570A6F5-B231-44A9-A988-E8219631C12F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6457EBB5-9F8C-4F76-96C0-4141111FA7EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6457EBB5-9F8C-4F76-96C0-4141111FA7EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6457EBB5-9F8C-4F76-96C0-4141111FA7EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6457EBB5-9F8C-4F76-96C0-4141111FA7EA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{4570A6F5-B231-44A9-A988-E8219631C12F} = {D83696C9-032C-4877-8901-10CDEB495066}
 		{395D8656-29E8-4323-9C17-11F7D1D4CD1F} = {D83696C9-032C-4877-8901-10CDEB495066}
+		{6457EBB5-9F8C-4F76-96C0-4141111FA7EA} = {D83696C9-032C-4877-8901-10CDEB495066}
 	EndGlobalSection
 EndGlobal
