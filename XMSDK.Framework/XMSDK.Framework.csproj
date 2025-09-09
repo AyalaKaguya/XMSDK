@@ -169,6 +169,7 @@
           <DependentUpon>LoggerList.cs</DependentUpon>
         </Compile>
         <Compile Include="Forms\SignalEditDialog.cs" />
+        <Compile Include="Forms\SignalEditDialog.Designer.cs" />
         <Compile Include="Forms\SignalList.cs">
           <SubType>UserControl</SubType>
         </Compile>
@@ -205,6 +206,9 @@
       </Content>
     </ItemGroup>
     <ItemGroup>
+      <EmbeddedResource Include="Forms\SignalEditDialog.resx">
+        <DependentUpon>SignalEditDialog.cs</DependentUpon>
+      </EmbeddedResource>
       <EmbeddedResource Include="Forms\SplashScreen\SplashWindow.resx">
         <DependentUpon>SplashWindow.cs</DependentUpon>
       </EmbeddedResource>

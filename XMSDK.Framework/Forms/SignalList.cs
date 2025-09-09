@@ -361,8 +361,43 @@ public partial class SignalList : UserControl
             var item = listViewSignals.SelectedItems[0];
             var signal = (SignalInfo)item.Tag;
             if (!signal.IsReadOnly)
-                new SignalEditDialog(signal).Show();
+            {
+                using (var dlg = new SignalEditDialog(signal))
+                {
+                    if (dlg.ShowDialog(this) == DialogResult.OK)
+                    {
+                        var updated = SignalReflectionHelper.UpdateSignalValue(_signalSource, signal.Address, dlg.NewValue);
+                        if (updated)
+                        {
+                            signal.CurrentValue = dlg.NewValue;
+                            signal.LastUpdated = DateTime.Now;
 
+                            // 更新该项显示
+                            int columnIndex = 0;
+                            if ((_visibleColumns & DisplayColumns.Name) != 0) columnIndex++;
+                            if ((_visibleColumns & DisplayColumns.Address) != 0) columnIndex++;
+                            if ((_visibleColumns & DisplayColumns.Value) != 0)
+                            {
+                                if (columnIndex < item.SubItems.Count)
+                                    item.SubItems[columnIndex].Text = FormatSignalValue(signal);
+                                columnIndex++;
+                            }
+                            if ((_visibleColumns & DisplayColumns.UpdateTime) != 0)
+                            {
+                                if (columnIndex < item.SubItems.Count)
+                                    item.SubItems[columnIndex].Text = signal.LastUpdated.ToString("HH:mm:ss");
+                            }
+
+                            SetItemColors(item, signal);
+                            UpdateAllItemsBackgroundColors();
+                        }
+                        else
+                        {
+                            MessageBox.Show("写入失败：值或类型不匹配，或信号不可写。", "写入失败", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                    }
+                }
+            }
             else
             {
                 MessageBox.Show("此信号为只读，无法编辑。", "信息",
@@ -414,10 +449,11 @@ public partial class SignalList : UserControl
         {
             _visibleColumns |= column; // 添加该列
         }
-        
+
         UpdateColumnVisibility();
         UpdateContextMenuState();
     }
 
     #endregion
 }
+
