@@ -120,6 +120,7 @@ namespace XMSDK.Framework.Forms
             this._buttonCancel.Name = "_buttonCancel";
             this._buttonCancel.Size = new System.Drawing.Size(75, 23);
             this._buttonCancel.TabIndex = 7;
+            this._buttonCancel.Text = "取消";
             this._buttonCancel.UseVisualStyleBackColor = true;
             // 
             // SignalEditDialog
@@ -129,6 +130,7 @@ namespace XMSDK.Framework.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this._buttonCancel;
             this.ClientSize = new System.Drawing.Size(294, 191);
+            this.Controls.Add(this._buttonCancel);
             this.Controls.Add(this._buttonOk);
             this.Controls.Add(this._textBoxValue);
             this.Controls.Add(this._labelHint);

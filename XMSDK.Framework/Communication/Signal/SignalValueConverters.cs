@@ -111,7 +111,7 @@ namespace XMSDK.Framework.Communication.Signal
         public bool TryParseValue(string text, out object? value)
         {
             value = null;
-            if (int.TryParse(text, out int result))
+            if (int.TryParse(text, out var result))
             {
                 value = result;
                 return true;
@@ -141,7 +141,7 @@ namespace XMSDK.Framework.Communication.Signal
         public bool TryParseValue(string text, out object? value)
         {
             value = null;
-            if (long.TryParse(text, out long result))
+            if (long.TryParse(text, out var result))
             {
                 value = result;
                 return true;
@@ -172,7 +172,7 @@ namespace XMSDK.Framework.Communication.Signal
         public bool TryParseValue(string text, out object? value)
         {
             value = null;
-            if (float.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out float result))
+            if (float.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out var result))
             {
                 value = result;
                 return true;
@@ -203,7 +203,7 @@ namespace XMSDK.Framework.Communication.Signal
         public bool TryParseValue(string text, out object? value)
         {
             value = null;
-            if (double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out double result))
+            if (double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out var result))
             {
                 value = result;
                 return true;

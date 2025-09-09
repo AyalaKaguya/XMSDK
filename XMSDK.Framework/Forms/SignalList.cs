@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using XMSDK.Framework.Communication.Signal;
+using System.Reflection;
 
 namespace XMSDK.Framework.Forms;
 
@@ -57,6 +58,25 @@ public partial class SignalList : UserControl
     public SignalList()
     {
         InitializeComponent();
+        EnableDoubleBuffering();
+    }
+
+    private void EnableDoubleBuffering()
+    {
+        // 为UserControl开启双缓冲
+        SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
+        UpdateStyles();
+
+        // 为ListView开启双缓冲（受保护属性，使用反射）
+        try
+        {
+            var prop = typeof(ListView).GetProperty("DoubleBuffered", BindingFlags.Instance | BindingFlags.NonPublic);
+            prop?.SetValue(listViewSignals, true, null);
+        }
+        catch
+        {
+            // 忽略反射失败
+        }
     }
 
     /// <summary>
@@ -95,7 +115,7 @@ public partial class SignalList : UserControl
     }
 
     /// <summary>
-    /// 手动刷新信号值（仅用于右键菜单的"立即刷新"功能）
+    /// 手动刷新信号值（仅用于右键菜单的"立即���新"功能）
     /// </summary>
     public void RefreshSignalValues()
     {
@@ -254,13 +274,13 @@ public partial class SignalList : UserControl
     {
         return type switch
         {
-            var t when t == typeof(bool) => "布尔",
-            var t when t == typeof(int) => "整数",
-            var t when t == typeof(long) => "长整数",
-            var t when t == typeof(float) => "单精度",
-            var t when t == typeof(double) => "双精度",
-            var t when t == typeof(byte) => "字节",
-            var t when t == typeof(short) => "短整数",
+            _ when type == typeof(bool) => "布尔",
+            _ when type == typeof(int) => "整数",
+            _ when type == typeof(long) => "长整数",
+            _ when type == typeof(float) => "单精度",
+            _ when type == typeof(double) => "双精度",
+            _ when type == typeof(byte) => "字节",
+            _ when type == typeof(short) => "短整数",
             _ => type.Name
         };
     }
@@ -285,7 +305,7 @@ public partial class SignalList : UserControl
                 if (item.Tag == signal)
                 {
                     // 动态计算列索引
-                    int columnIndex = 0;
+                    var columnIndex = 0;
                     
                     // 名称列总是存在（作为主列），跳过
                     if ((_visibleColumns & DisplayColumns.Name) != 0) columnIndex++;
@@ -362,39 +382,37 @@ public partial class SignalList : UserControl
             var signal = (SignalInfo)item.Tag;
             if (!signal.IsReadOnly)
             {
-                using (var dlg = new SignalEditDialog(signal))
+                using var dlg = new SignalEditDialog(signal);
+                if (dlg.ShowDialog(this) == DialogResult.OK)
                 {
-                    if (dlg.ShowDialog(this) == DialogResult.OK)
+                    var updated = SignalReflectionHelper.UpdateSignalValue(_signalSource, signal.Address, dlg.NewValue);
+                    if (updated)
                     {
-                        var updated = SignalReflectionHelper.UpdateSignalValue(_signalSource, signal.Address, dlg.NewValue);
-                        if (updated)
-                        {
-                            signal.CurrentValue = dlg.NewValue;
-                            signal.LastUpdated = DateTime.Now;
+                        signal.CurrentValue = dlg.NewValue;
+                        signal.LastUpdated = DateTime.Now;
 
-                            // 更新该项显示
-                            int columnIndex = 0;
-                            if ((_visibleColumns & DisplayColumns.Name) != 0) columnIndex++;
-                            if ((_visibleColumns & DisplayColumns.Address) != 0) columnIndex++;
-                            if ((_visibleColumns & DisplayColumns.Value) != 0)
-                            {
-                                if (columnIndex < item.SubItems.Count)
-                                    item.SubItems[columnIndex].Text = FormatSignalValue(signal);
-                                columnIndex++;
-                            }
-                            if ((_visibleColumns & DisplayColumns.UpdateTime) != 0)
-                            {
-                                if (columnIndex < item.SubItems.Count)
-                                    item.SubItems[columnIndex].Text = signal.LastUpdated.ToString("HH:mm:ss");
-                            }
-
-                            SetItemColors(item, signal);
-                            UpdateAllItemsBackgroundColors();
-                        }
-                        else
+                        // 更新该项显示
+                        var columnIndex = 0;
+                        if ((_visibleColumns & DisplayColumns.Name) != 0) columnIndex++;
+                        if ((_visibleColumns & DisplayColumns.Address) != 0) columnIndex++;
+                        if ((_visibleColumns & DisplayColumns.Value) != 0)
                         {
-                            MessageBox.Show("写入失败：值或类型不匹配，或信号不可写。", "写入失败", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            if (columnIndex < item.SubItems.Count)
+                                item.SubItems[columnIndex].Text = FormatSignalValue(signal);
+                            columnIndex++;
                         }
+                        if ((_visibleColumns & DisplayColumns.UpdateTime) != 0)
+                        {
+                            if (columnIndex < item.SubItems.Count)
+                                item.SubItems[columnIndex].Text = signal.LastUpdated.ToString("HH:mm:ss");
+                        }
+
+                        SetItemColors(item, signal);
+                        UpdateAllItemsBackgroundColors();
+                    }
+                    else
+                    {
+                        MessageBox.Show("写入失败：值或类型不匹配，或信号不可写。", "写入失败", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
             }
@@ -456,4 +474,3 @@ public partial class SignalList : UserControl
 
     #endregion
 }
-

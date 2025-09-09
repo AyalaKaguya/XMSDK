@@ -79,7 +79,7 @@ namespace SignalSystemDemoForm
             try
             {
                 // 切换控制信号的值
-                bool currentValue = _enhancedSignalDemo.ControlSignal;
+                var currentValue = _enhancedSignalDemo.ControlSignal;
                 _enhancedSignalDemo.ControlSignal = !currentValue;
 
                 lblStatus.Text = $"状态: 控制信号已切换为 {(!currentValue ? "开启" : "关闭")}";
