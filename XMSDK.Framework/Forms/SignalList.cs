@@ -318,6 +318,32 @@ public partial class SignalList : UserControl
                     break;
                 }
             }
+            
+            // 当有信号值变化时，更新所有项目的背景色（基于timeSinceUpdate逻辑）
+            UpdateAllItemsBackgroundColors();
+        }
+    }
+
+    private void UpdateAllItemsBackgroundColors()
+    {
+        foreach (ListViewItem item in listViewSignals.Items)
+        {
+            if (item.Tag is SignalInfo signal)
+            {
+                var timeSinceUpdate = DateTime.Now - signal.LastUpdated;
+                if (timeSinceUpdate.TotalSeconds > 30)
+                {
+                    item.BackColor = SystemColors.Window;
+                }
+                else if (timeSinceUpdate.TotalSeconds < 2)
+                {
+                    item.BackColor = Color.LightGreen;
+                }
+                else
+                {
+                    item.BackColor = Color.LightYellow;
+                }
+            }
         }
     }
 

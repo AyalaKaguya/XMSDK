@@ -83,9 +83,6 @@ namespace XMSDK.Framework.Demo
 
                 lblStatus.Text = $"状态: 控制信号已切换为 {(!currentValue ? "开启" : "关闭")}";
                 lblStatus.ForeColor = Color.Blue;
-
-                // 立即刷新显示
-                signalList.RefreshSignalValues();
             }
             catch (Exception ex)
             {
