@@ -24,7 +24,7 @@ public abstract class DataDriver
 }
 
 /// <summary>
-/// 使用新的 PollingSignalHost 的示例：显式注册信号而非反射。
+/// 使用新的 PollingSignalHostV2 的示例：显式注册信号而非反射。
 /// </summary>
 public class ExampleOsc : PollingSignalHost
 {
@@ -60,7 +60,7 @@ public class ExampleOsc : PollingSignalHost
     }
 
     // 可选：也可覆盖生命周期钩子
-    protected override void OnSignalChanged(string address, object oldValue, object newValue)
+    protected override void OnValueChanged(string address, object oldValue, object newValue)
     {
         // 这里可以放日志或总线事件
         Debug.WriteLine($"[{nameof(ExampleOsc)}] {address} {oldValue} -> {newValue}");

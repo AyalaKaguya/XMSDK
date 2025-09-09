@@ -8,117 +8,96 @@ using System.Threading.Tasks;
 namespace XMSDK.Framework.Communication;
 
 /// <summary>
-/// 轮询信号宿主：用于集中注册、周期性异步轮询并缓存各类布尔信号的抽象基类。
-/// 提供：
-/// 1) 显式注册（避免反射与隐藏开销）
-/// 2) 周期轮询 / 主动写入统一生命周期管理 (Start/Stop/Restart/Dispose)
-/// 3) 并发安全的信号集合 (ConcurrentDictionary)
-/// 4) 缓存 + 仅在值首次获取或变化时派发事件 (SignalChanged 与 per-signal 回调)
-/// 5) 可自定义写入逻辑（提供 writer 委托时对外写入，否则本地覆盖）
-/// 6) 钩子扩展点：OnSignalChanged / OnAfterCycleAsync / OnSignalException / OnLoopException
-/// 7) 轮询节奏：PollIntervalMs = -1(不启动) / 0(紧凑循环) / >0(固定毫秒延时)
+/// 轮询信号宿主 V2：仅保留核心功能，使用泛型支持 bool/short/int/long 等值类型。
+/// 不考虑旧版兼容性，API 简洁直接。
 /// </summary>
-/// <remarks>
-/// 使用步骤：
-/// 1. 继承本类并在构造函数中调用 <see cref="RegisterBool"/> 注册需要轮询的信号。
-/// 2. 设置 <see cref="PollIntervalMs"/>（默认为 100ms）。
-/// 3. 调用 <see cref="Start"/> 启动后台轮询；必要时用 <see cref="Stop"/> / <see cref="Restart"/> 控制生命周期；或在 <see cref="Dispose"/> 中自动停止。
-/// 4. 通过 <see cref="TryGetCachedBool"/> 读取缓存（非阻塞），或 <see cref="SetBoolAsync"/> 主动写入。
-/// 线程安全：集合操作为并发安全；单个信号更新为无锁覆盖（最后写入获胜），如需更严格一致性可在派生类中自行加锁。
-/// 异常策略：单个信号轮询/写入异常不会终止主循环，仅通过 <see cref="OnSignalException"/> 回调；主循环异常经 <see cref="OnLoopException"/> 记录后继续。
-/// 兼容：.NET Framework 4.6.2 / C# 8 语法。
-/// </remarks>
 public abstract class PollingSignalHost : IDisposable
 {
-    // 注册的信号集合（地址 -> 入口）
     private readonly ConcurrentDictionary<string, ISignalEntry> _signals = new();
     private readonly object _loopLock = new();
     private CancellationTokenSource? _cts;
     private Task? _loopTask;
 
     /// <summary>
-    /// 轮询周期（毫秒）。取值语义：
-    /// -1：不启动后台轮询（调用 <see cref="Start"/> 无效果）
-    ///  0：紧凑循环（每轮结束后 <see cref="Task.Yield"/>，几乎持续占用一个线程调度机会）
-    /// >0：两轮之间固定延迟指定毫秒数。
-    /// 默认 100。
+    /// 轮询周期（毫秒）：-1 不启动；0 紧凑循环；>0 固定延迟（默认 100）。
     /// </summary>
     public int PollIntervalMs { get; set; } = 100;
 
     /// <summary>
-    /// 任意信号值发生变化时触发的汇总事件。
-    /// (address, oldValue, newValue)
-    /// 注意：oldValue 在第一次获取前为默认(bool=false)。
+    /// 值变化事件：(address, oldValue, newValue)。第一次变化 old 为 default(T)。
     /// </summary>
-    public event Action<string, object, object>? SignalChanged;
+    public event Action<string, object, object>? ValueChanged;
 
-    #region 注册 / 访问 API
-
-    /// <summary>
-    /// 注册一个布尔信号（周期性读取并在变化时触发事件）。
-    /// </summary>
-    /// <param name="address">信号唯一地址/键（区分大小写，重复注册抛异常）。</param>
-    /// <param name="reader">异步读取委托（每轮轮询调用）；不可为 null。</param>
-    /// <param name="writer">可选异步写入委托；为 null 时 <see cref="SetBoolAsync"/> 仅更新本地缓存。</param>
-    /// <param name="onChanged">信号级别变化回调 (old,new)，早于 <see cref="SignalChanged"/> 执行。</param>
-    /// <exception cref="ArgumentNullException">address 或 reader 为空。</exception>
-    /// <exception cref="InvalidOperationException">address 已被注册。</exception>
-    protected void RegisterBool(
+    // 注册
+    protected void Register<T>(
         string address,
-        Func<CancellationToken, Task<bool>> reader,
-        Func<bool, CancellationToken, Task>? writer = null,
-        Action<bool, bool>? onChanged = null)
+        Func<CancellationToken, Task<T>> reader,
+        Func<T, CancellationToken, Task>? writer = null,
+        Action<T, T>? onChanged = null)
+        where T : struct
     {
         if (string.IsNullOrWhiteSpace(address)) throw new ArgumentNullException(nameof(address));
         if (reader == null) throw new ArgumentNullException(nameof(reader));
-        var entry = new BoolSignalEntry(address, reader, writer, onChanged, RaiseChangedInternal);
+        var entry = new SignalEntry<T>(address, reader, writer, onChanged, RaiseValueChanged);
         if (!_signals.TryAdd(address, entry))
-            throw new InvalidOperationException("信号已重复注册: " + address);
+            throw new InvalidOperationException("重复注册: " + address);
     }
 
-    /// <summary>
-    /// 尝试获取指定地址的布尔信号最新缓存值（非阻塞，不触发外部读取）。
-    /// </summary>
-    /// <param name="address">信号地址。</param>
-    /// <param name="value">输出：若返回 true，则为当前缓存值；否则为默认 false。</param>
-    /// <returns>若该信号存在且已经至少成功轮询过一次返回 true；否则 false。</returns>
-    public bool TryGetCachedBool(string address, out bool value)
+    // 便捷重载
+    protected void RegisterBool(string address, Func<CancellationToken, Task<bool>> reader, Func<bool, CancellationToken, Task>? writer = null, Action<bool, bool>? onChanged = null)
+        => Register(address, reader, writer, onChanged);
+    protected void RegisterByte(string address, Func<CancellationToken, Task<byte>> reader, Func<byte, CancellationToken, Task>? writer = null, Action<byte, byte>? onChanged = null)
+        => Register(address, reader, writer, onChanged);
+    protected void RegisterShort(string address, Func<CancellationToken, Task<short>> reader, Func<short, CancellationToken, Task>? writer = null, Action<short, short>? onChanged = null)
+        => Register(address, reader, writer, onChanged);
+    protected void RegisterInt(string address, Func<CancellationToken, Task<int>> reader, Func<int, CancellationToken, Task>? writer = null, Action<int, int>? onChanged = null)
+        => Register(address, reader, writer, onChanged);
+    protected void RegisterLong(string address, Func<CancellationToken, Task<long>> reader, Func<long, CancellationToken, Task>? writer = null, Action<long, long>? onChanged = null)
+        => Register(address, reader, writer, onChanged);
+    protected void RegisterFloat(string address, Func<CancellationToken, Task<float>> reader, Func<float, CancellationToken, Task>? writer = null, Action<float, float>? onChanged = null)
+        => Register(address, reader, writer, onChanged);
+    protected void RegisterDouble(string address, Func<CancellationToken, Task<double>> reader, Func<double, CancellationToken, Task>? writer = null, Action<double, double>? onChanged = null)
+        => Register(address, reader, writer, onChanged);
+
+    // 缓存读取
+    public bool TryGet<T>(string address, out T value) where T : struct
     {
-        value = false;
-        if (_signals.TryGetValue(address, out var e) && e is BoolSignalEntry { HasValue: true } be)
+        value = default;
+        if (_signals.TryGetValue(address, out var e) && e is SignalEntry<T> { HasValue: true } se)
         {
-            value = be.Value;
+            value = se.Value;
             return true;
         }
-
         return false;
     }
 
-    /// <summary>
-    /// 主动写入（或本地覆盖）指定布尔信号。
-    /// </summary>
-    /// <param name="address">信号地址。</param>
-    /// <param name="value">目标值。</param>
-    /// <param name="ct">取消令牌。</param>
-    /// <returns>始终返回 true；若 writer 异常会向上抛出。</returns>
-    /// <exception cref="KeyNotFoundException">未注册的信号。</exception>
-    /// <exception cref="InvalidOperationException">信号类型不是布尔。</exception>
-    public Task<bool> SetBoolAsync(string address, bool value, CancellationToken ct = default)
+    public bool TryGetBool(string address, out bool value) => TryGet(address, out value);
+    public bool TryGetByte(string address, out byte value) => TryGet(address, out value);
+    public bool TryGetShort(string address, out short value) => TryGet(address, out value);
+    public bool TryGetInt(string address, out int value) => TryGet(address, out value);
+    public bool TryGetLong(string address, out long value) => TryGet(address, out value);
+    public bool TryGetFloat(string address, out float value) => TryGet(address, out value);
+    public bool TryGetDouble(string address, out double value) => TryGet(address, out value);
+
+    // 主动写入
+    public Task<bool> SetAsync<T>(string address, T value, CancellationToken ct = default) where T : struct
     {
         if (!_signals.TryGetValue(address, out var e))
             throw new KeyNotFoundException(address);
-        if (e is not BoolSignalEntry be)
-            throw new InvalidOperationException("信号类型不是布尔: " + address);
-        return be.SetAsync(value, ct);
+        if (e is not SignalEntry<T> se)
+            throw new InvalidOperationException("类型不匹配: " + address);
+        return se.SetAsync(value, ct);
     }
 
-    #endregion
+    public Task<bool> SetBoolAsync(string address, bool value, CancellationToken ct = default) => SetAsync(address, value, ct);
+    public Task<bool> SetByteAsync(string address, byte value, CancellationToken ct = default) => SetAsync(address, value, ct);
+    public Task<bool> SetShortAsync(string address, short value, CancellationToken ct = default) => SetAsync(address, value, ct);
+    public Task<bool> SetIntAsync(string address, int value, CancellationToken ct = default) => SetAsync(address, value, ct);
+    public Task<bool> SetLongAsync(string address, long value, CancellationToken ct = default) => SetAsync(address, value, ct);
+    public Task<bool> SetFloatAsync(string address, float value, CancellationToken ct = default) => SetAsync(address, value, ct);
+    public Task<bool> SetDoubleAsync(string address, double value, CancellationToken ct = default) => SetAsync(address, value, ct);
 
-    #region 生命周期
-
-    /// <summary>
-    /// 启动后台轮询（若 <see cref="PollIntervalMs"/> == -1 或已在运行则忽略）。
-    /// </summary>
+    // 生命周期
     public void Start()
     {
         if (PollIntervalMs == -1) return;
@@ -130,9 +109,6 @@ public abstract class PollingSignalHost : IDisposable
         }
     }
 
-    /// <summary>
-    /// 停止后台轮询并尝试在 200ms 内等待当前任务结束。
-    /// </summary>
     public void Stop()
     {
         lock (_loopLock)
@@ -144,18 +120,11 @@ public abstract class PollingSignalHost : IDisposable
         }
     }
 
-    /// <summary>
-    /// 重新启动（Stop 后立即 Start）。
-    /// </summary>
     public void Restart()
     {
         Stop();
         Start();
     }
-
-    #endregion
-
-    #region 轮询核心
 
     private async Task LoopAsync(CancellationToken token)
     {
@@ -167,7 +136,7 @@ public abstract class PollingSignalHost : IDisposable
             }
             catch (OperationCanceledException)
             {
-                break;
+                return;
             }
             catch (Exception ex)
             {
@@ -175,7 +144,9 @@ public abstract class PollingSignalHost : IDisposable
             }
 
             if (PollIntervalMs == 0)
+            {
                 await Task.Yield();
+            }
             else if (PollIntervalMs > 0)
             {
                 try
@@ -184,7 +155,7 @@ public abstract class PollingSignalHost : IDisposable
                 }
                 catch (OperationCanceledException)
                 {
-                    break;
+                    return;
                 }
             }
         }
@@ -212,133 +183,95 @@ public abstract class PollingSignalHost : IDisposable
         await OnAfterCycleAsync(token).ConfigureAwait(false);
     }
 
-    #endregion
-
-    #region 事件派发 & 钩子
-
-    private void RaiseChangedInternal(string address, object oldValue, object newValue)
-    {
-        var handler = SignalChanged; // 防止竞态
-        handler?.Invoke(address, oldValue, newValue);
-        OnSignalChanged(address, oldValue, newValue);
-    }
-
-    /// <summary>
-    /// 当任意信号变化后（在汇总事件触发之后）调用。派生类可重写添加日志、消息推送等。
-    /// </summary>
-    /// <param name="address">信号地址。</param>
-    /// <param name="oldValue">旧值。</param>
-    /// <param name="newValue">新值。</param>
-    protected virtual void OnSignalChanged(string address, object oldValue, object newValue)
-    {
-    }
-
-    /// <summary>
-    /// 每轮全部信号轮询结束后调用（即使其中有单个信号失败仍会执行）。
-    /// 可用于批量聚合、统一上报等。
-    /// </summary>
-    /// <param name="token">取消令牌。</param>
-    /// <returns>异步任务。</returns>
-    protected virtual Task OnAfterCycleAsync(CancellationToken token)
-    {
-        return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// 主循环（整轮）异常回调，默认 Debug 输出后继续运行。
-    /// </summary>
-    /// <param name="ex">异常实例。</param>
+    // 钩子
     protected virtual void OnLoopException(Exception ex)
     {
-        Debug.WriteLine("[PollingSignalHost] Loop exception: " + ex);
+        Debug.WriteLine("[PollingSignalHostV2] Loop exception: " + ex);
     }
 
-    /// <summary>
-    /// 单个信号轮询或写入出现异常时回调，默认仅输出简要信息。
-    /// </summary>
-    /// <param name="address">信号地址。</param>
-    /// <param name="ex">异常实例。</param>
     protected virtual void OnSignalException(string address, Exception ex)
     {
-        Debug.WriteLine("[PollingSignalHost] Signal " + address + " exception: " + ex.Message);
+        Debug.WriteLine("[PollingSignalHostV2] Signal " + address + " exception: " + ex.Message);
     }
 
-    #endregion
+    protected virtual Task OnAfterCycleAsync(CancellationToken token) => Task.CompletedTask;
 
-    #region IDisposable
+    private void RaiseValueChanged(string address, object oldValue, object newValue)
+    {
+        ValueChanged?.Invoke(address, oldValue, newValue);
+        OnValueChanged(address, oldValue, newValue);
+    }
 
-    /// <summary>
-    /// 释放资源：调用 <see cref="Stop"/> 终止后台轮询。
-    /// </summary>
+    protected virtual void OnValueChanged(string address, object oldValue, object newValue)
+    {
+    }
+
     public void Dispose()
     {
         Stop();
         GC.SuppressFinalize(this);
     }
 
-    #endregion
-
-    #region 内部结构
-
+    // 内部结构
     private interface ISignalEntry
     {
         Task PollAsync(CancellationToken token);
     }
 
-    private sealed class BoolSignalEntry(
+    private sealed class SignalEntry<T>(
         string address,
-        Func<CancellationToken, Task<bool>> reader,
-        Func<bool, CancellationToken, Task>? writer,
-        Action<bool, bool>? userChanged,
-        Action<string, object, object>? raise)
+        Func<CancellationToken, Task<T>> reader,
+        Func<T, CancellationToken, Task>? writer,
+        Action<T, T>? userChanged,
+        Action<string, object, object> raise)
         : ISignalEntry
+        where T : struct
     {
-        public string Address { get; private set; } = address;
+        private readonly Func<CancellationToken, Task<T>> _reader = reader ?? throw new ArgumentNullException(nameof(reader));
+        private readonly Action<string, object, object> _raise = raise ?? throw new ArgumentNullException(nameof(raise));
+
+        public string Address { get; } = address;
         public bool HasValue { get; private set; }
-        public bool Value { get; private set; }
+        public T Value { get; private set; }
 
         public async Task PollAsync(CancellationToken token)
         {
-            var newVal = await reader(token).ConfigureAwait(false);
-            if (!HasValue || newVal != Value)
+            var newVal = await _reader(token).ConfigureAwait(false);
+            if (!HasValue || !EqualityComparer<T>.Default.Equals(newVal, Value))
             {
                 var old = Value;
                 Value = newVal;
                 HasValue = true;
                 userChanged?.Invoke(old, newVal);
-                raise?.Invoke(Address, old, newVal);
+                _raise(Address, old, newVal);
             }
         }
 
-        public async Task<bool> SetAsync(bool value, CancellationToken token)
+        public async Task<bool> SetAsync(T value, CancellationToken token)
         {
             if (writer == null)
             {
-                if (!HasValue || value != Value)
+                if (!HasValue || !EqualityComparer<T>.Default.Equals(value, Value))
                 {
                     var oldLocal = Value;
                     Value = value;
                     HasValue = true;
                     userChanged?.Invoke(oldLocal, value);
-                    raise?.Invoke(Address, oldLocal, value);
+                    _raise(Address, oldLocal, value);
                 }
-
                 return true;
             }
 
             await writer(value, token).ConfigureAwait(false);
-            if (!HasValue || value != Value)
+            if (!HasValue || !EqualityComparer<T>.Default.Equals(value, Value))
             {
                 var old = Value;
                 Value = value;
                 HasValue = true;
                 userChanged?.Invoke(old, value);
-                raise?.Invoke(Address, old, value);
+                _raise(Address, old, value);
             }
-
             return true;
         }
     }
-
-    #endregion
 }

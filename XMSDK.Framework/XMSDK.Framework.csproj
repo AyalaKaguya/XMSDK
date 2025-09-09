@@ -204,5 +204,8 @@
         <DependentUpon>SplashWindow.cs</DependentUpon>
       </EmbeddedResource>
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Forms\SiginalPanel\" />
+    </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
 </Project>
