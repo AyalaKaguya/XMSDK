@@ -54,6 +54,7 @@
         <Compile Include="Properties\AssemblyInfo.cs"/>
         <Compile Include="TestLicenseManager.cs" />
         <Compile Include="TestLocalFileBinder.cs" />
+        <Compile Include="TestPollingSignalHost.cs" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\XMSDK.Framework\XMSDK.Framework.csproj">
