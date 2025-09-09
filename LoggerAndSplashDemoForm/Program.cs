@@ -2,12 +2,11 @@ using System;
 using System.Windows.Forms;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using XMSDK.Framework.Demo;
 using XMSDK.Framework.Forms;
 using XMSDK.Framework.Forms.SplashScreen;
 using XMSDK.Framework.Logger;
 
-namespace ConsoleApplication1;
+namespace LoggerAndSplashDemoForm;
 
 internal static class Program
 {
@@ -16,7 +15,6 @@ internal static class Program
     [STAThread]
     public static void Main(string[] args)
     {
-        SignalSystemDemoProgram.RunSignalSystemDemo();
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
 

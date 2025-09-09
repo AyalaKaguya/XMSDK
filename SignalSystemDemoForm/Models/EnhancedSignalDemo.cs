@@ -1,11 +1,9 @@
 using System;
 using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
-using XMSDK.Framework.Communication;
 using XMSDK.Framework.Communication.Signal;
 
-namespace XMSDK.Framework.Demo
+namespace SignalSystemDemoForm.Models
 {
     /// <summary>
     /// 增强版信号演示类，包含多种信号类型

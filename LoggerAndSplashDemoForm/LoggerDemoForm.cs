@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using Microsoft.Extensions.Logging;
 using XMSDK.Framework.Logger;
 
-namespace XMSDK.Framework.Demo;
+namespace LoggerAndSplashDemoForm;
 
 public partial class LoggerDemoForm : Form
 {

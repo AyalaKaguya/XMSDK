@@ -1,9 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using XMSDK.Framework.Communication.Signal;
 
-namespace XMSDK.Framework.Demo
+namespace SignalSystemDemoForm.Models
 {
     /// <summary>
     /// 增强版数据驱动，支持多种信号类型的演示

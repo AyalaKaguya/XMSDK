@@ -1,9 +1,7 @@
 using System.ComponentModel;
-using System.Drawing;
 using System.Windows.Forms;
-using XMSDK.Framework.Forms;
 
-namespace XMSDK.Framework.Demo
+namespace LoggerAndSplashDemoForm
 {
     partial class LoggerDemoForm
     {

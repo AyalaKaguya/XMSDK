@@ -1,9 +1,8 @@
 using System;
 using System.Threading.Tasks;
-using XMSDK.Framework.Communication;
 using XMSDK.Framework.Communication.SimpleTCP;
 
-namespace ConsoleApplication1;
+namespace LoggerAndSplashDemoForm;
 
 public static class TransmissionTest
 {

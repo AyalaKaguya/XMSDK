@@ -1,9 +1,10 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using SignalSystemDemoForm.Models;
 using XMSDK.Framework.Forms;
 
-namespace XMSDK.Framework.Demo
+namespace SignalSystemDemoForm
 {
     /// <summary>
     /// 信号系统演示窗体
@@ -127,7 +128,7 @@ namespace XMSDK.Framework.Demo
             // 清理资源
             try
             {
-                _enhancedSignalDemo?.Dispose();
+                _enhancedSignalDemo.Dispose();
                 signalList?.Dispose();
             }
             catch (Exception ex)

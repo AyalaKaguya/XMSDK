@@ -2,7 +2,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace XMSDK.Framework.Demo
+namespace SignalSystemDemoForm
 {
     partial class SignalSystemDemoForm
     {

@@ -1,18 +1,18 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace XMSDK.Framework.Demo
+namespace SignalSystemDemoForm
 {
-    /// <summary>
-    /// 信号系统演示程序启动器
-    /// </summary>
-    public static class SignalSystemDemoProgram
+    static class Program
     {
         /// <summary>
-        /// 启动信号系统演示
+        /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        public static void RunSignalSystemDemo()
+        static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

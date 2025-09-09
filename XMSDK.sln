@@ -2,9 +2,13 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XMSDK.Framework", "XMSDK.Framework\XMSDK.Framework.csproj", "{26A62A51-154D-42EE-B8AF-D2E66A7D36DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.csproj", "{395D8656-29E8-4323-9C17-11F7D1D4CD1F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoggerAndSplashDemoForm", "LoggerAndSplashDemoForm\LoggerAndSplashDemoForm.csproj", "{395D8656-29E8-4323-9C17-11F7D1D4CD1F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XMSDK.Tests", "XMSDK.Tests\XMSDK.Tests.csproj", "{28799320-02C9-45A5-A0F8-5DB4836BFC33}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SignalSystemDemoForm", "SignalSystemDemoForm\SignalSystemDemoForm.csproj", "{4570A6F5-B231-44A9-A988-E8219631C12F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demos", "Demos", "{D83696C9-032C-4877-8901-10CDEB495066}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +28,13 @@ Global
 		{28799320-02C9-45A5-A0F8-5DB4836BFC33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28799320-02C9-45A5-A0F8-5DB4836BFC33}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28799320-02C9-45A5-A0F8-5DB4836BFC33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4570A6F5-B231-44A9-A988-E8219631C12F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4570A6F5-B231-44A9-A988-E8219631C12F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4570A6F5-B231-44A9-A988-E8219631C12F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4570A6F5-B231-44A9-A988-E8219631C12F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4570A6F5-B231-44A9-A988-E8219631C12F} = {D83696C9-032C-4877-8901-10CDEB495066}
+		{395D8656-29E8-4323-9C17-11F7D1D4CD1F} = {D83696C9-032C-4877-8901-10CDEB495066}
 	EndGlobalSection
 EndGlobal
