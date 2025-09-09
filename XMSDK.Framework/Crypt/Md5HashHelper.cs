@@ -43,18 +43,16 @@ public static class Md5HashHelper
     /// <returns></returns>
     private static string Md5Hash(string s, string format)
     {
-        using (var md5 = MD5.Create())
+        using var md5 = MD5.Create();
+        var inputBytes = Encoding.UTF8.GetBytes(s);
+        var hashBytes = md5.ComputeHash(inputBytes);
+        var sb = new StringBuilder();
+        foreach (var b in hashBytes)
         {
-            var inputBytes = Encoding.UTF8.GetBytes(s);
-            var hashBytes = md5.ComputeHash(inputBytes);
-            var sb = new StringBuilder();
-            foreach (var b in hashBytes)
-            {
-                sb.Append(b.ToString(format));
-            }
-
-            return sb.ToString();
+            sb.Append(b.ToString(format));
         }
+
+        return sb.ToString();
     }
 
 }

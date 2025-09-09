@@ -11,10 +11,18 @@ public class SplashItem
     public int Weight { get; }
     public Action<SplashContext> Action { get; }
 
-    public SplashItem(string? description, int weight, Action<SplashContext> action)
+    public SplashItem(string description, int weight, Action<SplashContext> action)
     {
         if (weight <= 0) throw new ArgumentOutOfRangeException(nameof(weight));
-        Description = description ?? string.Empty;
+        Description = description;
+        Weight = weight;
+        Action = action ?? throw new ArgumentNullException(nameof(action));
+    }
+    
+    public SplashItem(int weight, Action<SplashContext> action)
+    {
+        if (weight <= 0) throw new ArgumentOutOfRangeException(nameof(weight));
+        Description = string.Empty;
         Weight = weight;
         Action = action ?? throw new ArgumentNullException(nameof(action));
     }

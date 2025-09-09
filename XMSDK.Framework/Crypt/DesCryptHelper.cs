@@ -26,13 +26,11 @@ public static class DesCryptHelper
         var keyBytes = Encoding.ASCII.GetBytes(key.Md5Upper32().Substring(0, 8));
         des.Key = des.IV = keyBytes;
 
-        using (var ms = new MemoryStream())
-        using (var cs = new CryptoStream(ms, des.CreateEncryptor(), CryptoStreamMode.Write))
-        {
-            cs.Write(inputBytes, 0, inputBytes.Length);
-            cs.FlushFinalBlock();
-            return BitConverter.ToString(ms.ToArray()).Replace("-", "");
-        }
+        using var ms = new MemoryStream();
+        using var cs = new CryptoStream(ms, des.CreateEncryptor(), CryptoStreamMode.Write);
+        cs.Write(inputBytes, 0, inputBytes.Length);
+        cs.FlushFinalBlock();
+        return BitConverter.ToString(ms.ToArray()).Replace("-", "");
     }
 
     /// <summary>
@@ -52,12 +50,10 @@ public static class DesCryptHelper
         var keyBytes = Encoding.ASCII.GetBytes(key.Md5Upper32().Substring(0, 8));
         des.Key = des.IV = keyBytes;
 
-        using (var ms = new MemoryStream())
-        using (var cs = new CryptoStream(ms, des.CreateDecryptor(), CryptoStreamMode.Write))
-        {
-            cs.Write(inputBytes, 0, inputBytes.Length);
-            cs.FlushFinalBlock();
-            return Encoding.Default.GetString(ms.ToArray());
-        }
+        using var ms = new MemoryStream();
+        using var cs = new CryptoStream(ms, des.CreateDecryptor(), CryptoStreamMode.Write);
+        cs.Write(inputBytes, 0, inputBytes.Length);
+        cs.FlushFinalBlock();
+        return Encoding.Default.GetString(ms.ToArray());
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -60,7 +61,7 @@ public class SocketClient
             throw new InvalidOperationException($"Failed to connect to server: {ex.Message}", ex);
         }
     }
-        
+
     /// <summary>
     /// 关闭客户端连接
     /// </summary>
@@ -76,7 +77,7 @@ public class SocketClient
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error stopping client: {ex.Message}");
+            Trace.WriteLine($"Error stopping client: {ex.Message}");
         }
     }
 
@@ -107,25 +108,25 @@ public class SocketClient
     /// <param name="name"></param>
     /// <param name="value"></param>
     /// <typeparam name="T"></typeparam>
-    public void Signal<T>(string name, T value)
+    public void Signal<T>(string name, T value) where T : notnull
     {
         lock (_signalLock)
         {
             if (_signals.TryGetValue(name, out var handler))
             {
                 var oldValue = handler.GetValue();
-                    
+
                 // 比较新旧值，只有在值真正发生变化时才处理
                 if (!Equals(oldValue, value))
                 {
-                    handler.SetValue(value!);
+                    handler.SetValue(value);
 
                     // 发送信号到服务器
                     var message = MessageProtocol.FormatSignalMessage(name, value);
                     Send(message);
 
                     // 触发信号变化回调
-                    handler.InvokeChangedClient(this, oldValue, value!);
+                    handler.InvokeChangedClient(this, oldValue, value);
                 }
             }
         }
@@ -158,9 +159,13 @@ public class SocketClient
 
         lock (_signalLock)
         {
-            if (!_signals.TryGetValue(name, out var handler) || !(handler is SignalHandler<T>)) return false;
-            value = (T)handler.GetValue();
-            return true;
+            if (_signals.TryGetValue(name, out var handler) && handler is SignalHandler<T>)
+            {
+                value = (T)handler.GetValue();
+                return true;
+            }
+
+            return false;
         }
     }
 
@@ -168,11 +173,13 @@ public class SocketClient
     {
         var buffer = new byte[1024 * 1024]; // 1MB buffer
 
+        if (_stream is null) throw new InvalidOperationException("Network stream is not initialized");
+
         while (_isRunning && IsConnected)
         {
             try
             {
-                var bytesRead = _stream.Read(buffer, 0, buffer.Length);
+                var bytesRead = _stream!.Read(buffer, 0, buffer.Length);
                 if (bytesRead == 0)
                     break;
 
@@ -188,7 +195,7 @@ public class SocketClient
             {
                 if (_isRunning)
                 {
-                    Console.WriteLine($"Error receiving message: {ex.Message}");
+                    Trace.WriteLine($"Error receiving message: {ex.Message}");
                     break;
                 }
             }
@@ -209,7 +216,7 @@ public class SocketClient
                 {
                     var oldValue = handler.GetValue();
                     var newValue = MessageProtocol.ConvertValue(signalValue, handler.ValueType);
-                        
+
                     // 只有在值真正发生变化时才触发回调
                     if (!Equals(oldValue, newValue))
                     {
@@ -219,6 +226,7 @@ public class SocketClient
                     }
                 }
             }
+
             return;
         }
 

@@ -15,7 +15,8 @@ namespace XMSDK.Framework.License;
 /// </summary>
 public static class LicenseManager
 {
-    private static readonly Regex MachineCodeRegex = new("^[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}$", RegexOptions.Compiled);
+    private static readonly Regex MachineCodeRegex =
+        new("^[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}$", RegexOptions.Compiled);
 
     /// <summary>
     /// 由 licenseKey 派生 verifyKey（可内置到客户端）
@@ -27,11 +28,12 @@ public static class LicenseManager
     }
 
     /// <summary>
-    /// 生成稳定机器码（同一机器运行多次结果一致）
+    /// 生成稳定机器码（同一机器运行多次的结果一致）
     /// </summary>
     public static string GenerateMachineCode()
     {
-        var raw = string.Join("|", Environment.MachineName, Environment.ProcessorCount, Environment.OSVersion.VersionString);
+        var raw = string.Join("|", Environment.MachineName, Environment.ProcessorCount,
+            Environment.OSVersion.VersionString);
         var md5 = raw.Md5Upper32();
         return string.Format("{0}-{1}-{2}-{3}-{4}",
             md5.Substring(0, 8),
@@ -66,22 +68,53 @@ public static class LicenseManager
     /// <summary>
     /// 校验授权码（仅需 verifyKey）。
     /// </summary>
-    public static bool TryValidate(string licenseCode, string verifyKey, out LicenseInfo info, out string error)
+    public static bool TryValidate(string licenseCode, string verifyKey, out LicenseInfo? info, out string error)
     {
         info = null;
-        error = null;
-        if (string.IsNullOrWhiteSpace(licenseCode)) { error = "授权码为空"; return false; }
-        if (string.IsNullOrWhiteSpace(verifyKey)) { error = "verifyKey 为空"; return false; }
+        error = string.Empty;
+        if (string.IsNullOrWhiteSpace(licenseCode))
+        {
+            error = "授权码为空";
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(verifyKey))
+        {
+            error = "verifyKey 为空";
+            return false;
+        }
 
         string decoded;
-        try { decoded = licenseCode.DecodeBase64(); }
-        catch { error = "授权码格式错误"; return false; }
+        try
+        {
+            decoded = licenseCode.DecodeBase64();
+        }
+        catch
+        {
+            error = "授权码格式错误";
+            return false;
+        }
 
         var parts = decoded.Split('|');
-        if (parts.Length != 3) { error = "授权码字段数量不正确"; return false; }
+        if (parts.Length != 3)
+        {
+            error = "授权码字段数量不正确";
+            return false;
+        }
+
         var machineCode = parts[0];
-        if (!MachineCodeRegex.IsMatch(machineCode)) { error = "机器码格式错误"; return false; }
-        if (!long.TryParse(parts[1], out var ticks)) { error = "过期时间字段错误"; return false; }
+        if (!MachineCodeRegex.IsMatch(machineCode))
+        {
+            error = "机器码格式错误";
+            return false;
+        }
+
+        if (!long.TryParse(parts[1], out var ticks))
+        {
+            error = "过期时间字段错误";
+            return false;
+        }
+
         var sign = parts[2];
 
         var expectSign = CalcSignature(machineCode, ticks, verifyKey);

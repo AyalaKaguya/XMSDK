@@ -112,7 +112,7 @@ public class DirectBus
             var key = payloadType.FullName;
             if (key != null && !_routes.ContainsKey(key))
             {
-                _routes[key] = new List<RouteInfo>();
+                _routes[key] = [];
             }
 
             if (key != null)
@@ -173,7 +173,7 @@ public class DirectBus
     /// <param name="routeKey">路由键</param>
     /// <param name="onException">异常处理回调</param>
     /// <returns>处理该事件的处理器数量</returns>
-    public int Publish<T>(T payload, string routeKey, ExceptionHandler onException)
+    public int Publish<T>(T payload, string routeKey, ExceptionHandler? onException)
     {
         if (payload == null) throw new ArgumentNullException(nameof(payload));
 
@@ -206,7 +206,7 @@ public class DirectBus
 
         var handledCount = 0;
         var payloadType = typeof(T);
-        var routeKey = context.RouteKey ?? "";
+        var routeKey = context.RouteKey;
 
         // 获取匹配的路由（按订阅顺序）
         var matchingRoutes = GetMatchingRoutes(payloadType, routeKey);
@@ -232,7 +232,7 @@ public class DirectBus
                 }
 
                 // 触发异常处理回调
-                if (onException.Invoke(context, ex.InnerException, route.Handler))
+                if (onException.Invoke(context, ex.InnerException ?? ex, route.Handler))
                 {
                     // 用户选择重新抛出异常
                     if (ex.InnerException != null) throw ex.InnerException;

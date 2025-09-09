@@ -35,10 +35,10 @@ public static class MessageProtocol
         return $"#{commandName}";
     }
 
-    public static bool TryParseSignalMessage(string message, out string? signalName, out string? value)
+    public static bool TryParseSignalMessage(string message, out string signalName, out string value)
     {
-        signalName = null;
-        value = null;
+        signalName = string.Empty;
+        value = string.Empty;
 
         if (!message.StartsWith("$"))
             return false;
@@ -59,9 +59,9 @@ public static class MessageProtocol
         return true;
     }
 
-    public static bool TryParseCommandMessage(string message, out string? commandName)
+    public static bool TryParseCommandMessage(string message, out string commandName)
     {
-        commandName = null;
+        commandName = string.Empty;
 
         if (!message.StartsWith("#"))
             return false;
@@ -70,7 +70,7 @@ public static class MessageProtocol
         return !string.IsNullOrEmpty(commandName);
     }
 
-    public static T? ConvertValue<T>(string value)
+    public static T ConvertValue<T>(string value)
     {
         if (typeof(T) == typeof(string))
             return (T)(object)value;
@@ -86,12 +86,26 @@ public static class MessageProtocol
 
         if (typeof(T) == typeof(float))
             return (T)(object)float.Parse(value);
+        
+        if (typeof(T) == typeof(short))
+            return (T)(object)short.Parse(value);
+        
+        if (typeof(T) == typeof(long))
+            return (T)(object)long.Parse(value);
+        
+        if (typeof(T) == typeof(byte))
+            return (T)(object)byte.Parse(value);
+        
+        if (typeof(T) == typeof(char))
+            return (T)(object)char.Parse(value);
+        
+        if (typeof(T) == typeof(decimal))
+            return (T)(object)decimal.Parse(value);
 
-        // 对于复杂类型，使用JSON反序列化
-        return JsonConvert.DeserializeObject<T>(value);
+        throw new NotSupportedException($"Cannot convert {typeof(T).Name} to type {typeof(T).Name}");
     }
 
-    public static object? ConvertValue(string value, Type targetType)
+    public static object ConvertValue(string value, Type targetType)
     {
         if (targetType == typeof(string))
             return value;
@@ -107,8 +121,22 @@ public static class MessageProtocol
 
         if (targetType == typeof(float))
             return float.Parse(value);
+        
+        if (targetType == typeof(short))
+            return short.Parse(value);
+        
+        if (targetType == typeof(long))
+            return long.Parse(value);
+        
+        if (targetType == typeof(byte))
+            return byte.Parse(value);
+        
+        if (targetType == typeof(char))
+            return char.Parse(value);
+        
+        if (targetType == typeof(decimal))
+            return decimal.Parse(value);
 
-        // 对于复杂类型，使用JSON反序列化
-        return JsonConvert.DeserializeObject(value, targetType);
+        throw new NotSupportedException($"Cannot convert {targetType.Name} to type {targetType.Name}");
     }
 }

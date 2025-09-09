@@ -40,7 +40,7 @@ public class AsyncBus : DirectBus, IDisposable
         public object Context { get; set; }
         public Type PayloadType { get; set; }
         public TaskCompletionSource<int> CompletionSource { get; set; }
-        public AsyncExceptionHandler AsyncExceptionHandler { get; set; }
+        public AsyncExceptionHandler? AsyncExceptionHandler { get; set; }
     }
 
     private readonly ChannelWriter<EventQueueItem> _writer;
@@ -162,7 +162,7 @@ public class AsyncBus : DirectBus, IDisposable
     /// <param name="routeKey">路由键</param>
     /// <param name="onException">异常处理回调</param>
     /// <returns>处理该事件的处理器数量</returns>
-    public async Task<int> PublishAsync<T>(T payload, string routeKey, AsyncExceptionHandler onException)
+    public async Task<int> PublishAsync<T>(T payload, string routeKey, AsyncExceptionHandler? onException)
     {
         if (payload == null) throw new ArgumentNullException(nameof(payload));
         if (_disposed) throw new ObjectDisposedException(nameof(AsyncBus));

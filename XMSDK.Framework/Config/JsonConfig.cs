@@ -37,17 +37,15 @@ public class JsonConfig<T> where T : class, new()
     public JsonConfig(string path, JsonSerializerSettings? settings = null)
     {
         var type = typeof(T);
-        // 检查是否有 [Serializable] 或 [DataClass] 特性
-        var isSerializable = Attribute.IsDefined(type, typeof(SerializableAttribute));
-        var isDataClass = Attribute.IsDefined(type, typeof(DataClassAttribute));
-        if (!isSerializable && !isDataClass)
+        // 检查是否有 [Serializable] 特性
+        if (!Attribute.IsDefined(type, typeof(SerializableAttribute)))
         {
             throw new InvalidOperationException($"类型 {type.FullName} 必须标记为 [Serializable] 或 [DataClass] 才能作为配置原型类使用。");
         }
         ConfigPath = path;
-        if (settings != null)
+        if (settings is not null)
             SerializerSettings = settings;
-        Load();
+        Instance = LoadInternal();
     }
 
     /// <summary>
@@ -78,7 +76,7 @@ public class JsonConfig<T> where T : class, new()
             {
                 var value = ((DefaultValueAttribute)attr[0]).Value;
                 // 类型转换，支持基础类型
-                if (value != null && prop.PropertyType != value.GetType())
+                if (prop.PropertyType != value.GetType())
                 {
                     try
                     {
@@ -95,19 +93,26 @@ public class JsonConfig<T> where T : class, new()
         return instance;
     }
 
-    /// <summary>
-    /// 加载配置文件
-    /// </summary>
-    public void Load()
+    private T LoadInternal()
     {
         if (!File.Exists(ConfigPath))
         {
-            Instance = GetDefaultInstance();
-            Save();
-            return;
+            return GetDefaultInstance();
         }
-        var json = File.ReadAllText(ConfigPath);
-        Instance = JsonConvert.DeserializeObject<T>(json, SerializerSettings) ?? GetDefaultInstance();
+        else
+        {
+            var json = File.ReadAllText(ConfigPath);
+            return JsonConvert.DeserializeObject<T>(json, SerializerSettings) ?? GetDefaultInstance();
+        }
+    }
+
+    /// <summary>
+    /// 加载配置文件
+    /// </summary>
+    public T Load()
+    {
+        Instance = LoadInternal();
+        return Instance;
     }
 
     /// <summary>
@@ -117,13 +122,5 @@ public class JsonConfig<T> where T : class, new()
     {
         var json = JsonConvert.SerializeObject(Instance, SerializerSettings);
         File.WriteAllText(ConfigPath, json);
-    }
-
-    /// <summary>
-    /// 重新加载配置
-    /// </summary>
-    public void Reload()
-    {
-        Load();
     }
 }

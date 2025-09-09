@@ -9,9 +9,9 @@ namespace XMSDK.Framework.Forms;
 
 public partial class LoggerList : UserControl
 {
-    private readonly List<LogEntry> _pendingLogEntries = new();
+    private readonly List<LogEntry> _pendingLogEntries = [];
     private readonly object _pendingLockObject = new();
-    private Timer _updateTimer;
+    private Timer? _updateTimer;
     private int _maxLogCount = 300;
     private bool _autoScroll = true; // 默认开启
     private readonly Dictionary<LogLevel, LogLevelColorConfig> _logLevelColors = new()
@@ -106,7 +106,7 @@ public partial class LoggerList : UserControl
     {
         typeof(ListView).InvokeMember("DoubleBuffered",
             System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.SetProperty,
-            null, listViewLogs, new object[] { true });
+            null, listViewLogs, [true]);
     }
 
     private void InitializeTimer()
@@ -121,7 +121,7 @@ public partial class LoggerList : UserControl
 
     private void UpdateTimer_Tick(object sender, EventArgs e)
     {
-        List<LogEntry> toProcess = null;
+        List<LogEntry>? toProcess = null;
         lock (_pendingLockObject)
         {
             if (_pendingLogEntries.Count > 0)
@@ -195,13 +195,12 @@ public partial class LoggerList : UserControl
 
     private ListViewItem CreateListViewItem(LogEntry logEntry)
     {
-        var item = new ListViewItem(new[]
-        {
+        var item = new ListViewItem([
             logEntry.Timestamp.ToString("yyyy-MM-dd HH:mm:ss.fff"),
             GetLogLevelDisplayName(logEntry.LogLevel),
             logEntry.Message,
             logEntry.Source
-        })
+        ])
         {
             Tag = logEntry
         };
@@ -336,8 +335,8 @@ public class LogEntry
 {
     public DateTime Timestamp { get; set; }
     public LogLevel LogLevel { get; set; }
-    public string Message { get; set; }
-    public string Source { get; set; }
+    public string Message { get; set; } = string.Empty;
+    public string Source { get; set; } = string.Empty;
 }
 
 public class LogLevelColorConfig

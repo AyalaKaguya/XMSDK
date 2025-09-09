@@ -4,25 +4,27 @@ using System.Diagnostics;
 
 namespace XMSDK.Framework.Logger.TraceMessage;
 
-public class TraceMessageReceiver: IDisposable
+public class TraceMessageReceiver : IDisposable
 {
     private class CustomTraceListener : TraceListener
     {
-        public event Action<string> OnMessage;
+        public event Action<string>? OnMessage;
 
-        public override void Write(string message)
+        public override void Write(string? message)
         {
-            OnMessage?.Invoke(message);
+            if (message is not null)
+                OnMessage?.Invoke(message);
         }
 
-        public override void WriteLine(string message)
+        public override void WriteLine(string? message)
         {
-            OnMessage?.Invoke(message);
+            if (message is not null)
+                OnMessage?.Invoke(message);
         }
     }
-        
+
     private readonly CustomTraceListener _diagnosticsListener = new();
-    private List<IDisposable> _disposables = new();
+    private readonly List<IDisposable> _disposables = [];
 
     public TraceMessageReceiver AddToDebug()
     {
@@ -58,6 +60,7 @@ public class TraceMessageReceiver: IDisposable
         {
             disposable.Dispose();
         }
+
         _diagnosticsListener.Dispose();
     }
 }

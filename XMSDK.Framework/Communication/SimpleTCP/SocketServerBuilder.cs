@@ -8,9 +8,9 @@ public class SocketServerBuilder
 {
     private readonly string _host;
     private readonly int _port;
-    private Action<SocketServer, TcpClient> _onClientConnected;
-    private Action<SocketServer, TcpClient> _onClientDisconnected;
-    private Action<SocketServer, TcpClient, string> _onMessage;
+    private Action<SocketServer, TcpClient>? _onClientConnected;
+    private Action<SocketServer, TcpClient>? _onClientDisconnected;
+    private Action<SocketServer, TcpClient, string>? _onMessage;
     private TimeSpan _heartbeatTimeout = TimeSpan.FromSeconds(60);
     private TimeSpan _heartbeatInterval = TimeSpan.FromSeconds(30);
     private int _maxMessageLength = 1024 * 1024;

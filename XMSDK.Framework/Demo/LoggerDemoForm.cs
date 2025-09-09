@@ -96,28 +96,26 @@ public partial class LoggerDemoForm : Form
     private void BtnSetMaxCount_Click(object sender, EventArgs e)
     {
         // 使用简单的InputBox替代
-        using (var inputForm = new Form())
+        using var inputForm = new Form();
+        inputForm.Text = "设置最大日志条数";
+        inputForm.Size = new Size(360, 180);
+        inputForm.StartPosition = FormStartPosition.CenterParent;
+                
+        var label = new Label() { Text = "请输入最大日志条数:", Location = new Point(10, 15), Size = new Size(200, 20) };
+        var textBox = new TextBox() { Text = loggerList.MaxLogCount.ToString(), Location = new Point(10, 40), Size = new Size(200, 20) };
+        var btnOk = new Button() { Text = "确定", Location = new Point(50, 70), Size = new Size(75, 23), DialogResult = DialogResult.OK };
+        var btnCancel = new Button() { Text = "取消", Location = new Point(135, 70), Size = new Size(75, 23), DialogResult = DialogResult.Cancel };
+                
+        inputForm.Controls.AddRange([label, textBox, btnOk, btnCancel]);
+        inputForm.AcceptButton = btnOk;
+        inputForm.CancelButton = btnCancel;
+                
+        if (inputForm.ShowDialog() == DialogResult.OK)
         {
-            inputForm.Text = "设置最大日志条数";
-            inputForm.Size = new Size(360, 180);
-            inputForm.StartPosition = FormStartPosition.CenterParent;
-                
-            var label = new Label() { Text = "请输入最大日志条数:", Location = new Point(10, 15), Size = new Size(200, 20) };
-            var textBox = new TextBox() { Text = loggerList.MaxLogCount.ToString(), Location = new Point(10, 40), Size = new Size(200, 20) };
-            var btnOk = new Button() { Text = "确定", Location = new Point(50, 70), Size = new Size(75, 23), DialogResult = DialogResult.OK };
-            var btnCancel = new Button() { Text = "取消", Location = new Point(135, 70), Size = new Size(75, 23), DialogResult = DialogResult.Cancel };
-                
-            inputForm.Controls.AddRange(new Control[] { label, textBox, btnOk, btnCancel });
-            inputForm.AcceptButton = btnOk;
-            inputForm.CancelButton = btnCancel;
-                
-            if (inputForm.ShowDialog() == DialogResult.OK)
+            if (int.TryParse(textBox.Text, out var maxCount) && maxCount > 0)
             {
-                if (int.TryParse(textBox.Text, out var maxCount) && maxCount > 0)
-                {
-                    loggerList.MaxLogCount = maxCount;
-                    _logger.LogInformation($"最大日志条数已设置为: {maxCount}");
-                }
+                loggerList.MaxLogCount = maxCount;
+                _logger.LogInformation($"最大日志条数已设置为: {maxCount}");
             }
         }
     }

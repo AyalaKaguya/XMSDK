@@ -19,20 +19,20 @@ public sealed partial class SplashWindow : Form
     {
         public int Index { get; set; }
         public int Total { get; set; }
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
         public int Percent { get; set; }
-        public Exception Error { get; set; }
+        public Exception? Error { get; set; }
         public bool CompletedAll { get; set; }
         public bool Aborted { get; set; }
     }
 
-    private readonly List<SplashItem> _items = new();
+    private readonly List<SplashItem> _items = [];
     private readonly BackgroundWorker _worker;
     private int _totalWeight;
     private int _doneWeight;
     private bool _started;
     private bool _aborted;
-    private Timer _topMostTimer;
+    private Timer? _topMostTimer;
         
     private int _lastProgressIndex = -1;
     private readonly SplashContext _context; // 上下文供任务使用
@@ -43,7 +43,7 @@ public sealed partial class SplashWindow : Form
     public string AppTitle
     {
         get => lblAppTitle.Text;
-        set => lblAppTitle.Text = value ?? string.Empty;
+        set => lblAppTitle.Text = value;
     }
 
     /// <summary>
@@ -52,7 +52,7 @@ public sealed partial class SplashWindow : Form
     public string AppDescription
     {
         get => lblDescription.Text;
-        set => lblDescription.Text = value ?? string.Empty;
+        set => lblDescription.Text = value;
     }
 
     /// <summary>
@@ -84,17 +84,17 @@ public sealed partial class SplashWindow : Form
     /// <summary>
     /// 任务执行异常回调: (item, ex) => bool  返回true表示继续后续任务，false则中断
     /// </summary>
-    public Func<SplashItem, Exception, bool> OnItemError { get; set; }
+    public Func<SplashItem, Exception, bool>? OnItemError { get; set; }
 
     /// <summary>
     /// 致命错误回调
     /// </summary>
-    public Action<Exception> OnFatalError { get; set; }
+    public Action<Exception>? OnFatalError { get; set; }
 
     /// <summary>
     /// 所有任务完成回调
     /// </summary>
-    public Action OnAllCompleted { get; set; }
+    public Action? OnAllCompleted { get; set; }
 
     /// <summary>
     /// 是否在全部完成后自动关闭窗口
@@ -130,7 +130,7 @@ public sealed partial class SplashWindow : Form
         set
         {
             BackgroundImage = value;
-            BackgroundImageLayout = value != null ? ImageLayout.Stretch : ImageLayout.None;
+            BackgroundImageLayout = ImageLayout.Stretch;
         }
     }
 
@@ -272,7 +272,7 @@ public sealed partial class SplashWindow : Form
                 Aborted = false
             });
 
-            Exception error = null;
+            Exception? error = null;
             try
             {
                 item.Action(_context);
@@ -282,7 +282,7 @@ public sealed partial class SplashWindow : Form
                 error = ex;
             }
 
-            if (error != null)
+            if (error is not null)
             {
                 var cont = false;
                 try 
@@ -366,7 +366,7 @@ public sealed partial class SplashWindow : Form
         }
 
         // 错误时改变颜色
-        if (state.Error != null)
+        if (state.Error is not null)
         {
             lblItemDesc.ForeColor = Color.OrangeRed;
         }
@@ -433,12 +433,9 @@ public sealed partial class SplashWindow : Form
 
     protected override void OnFormClosed(FormClosedEventArgs e)
     {
-        if (_topMostTimer != null)
-        {
-            _topMostTimer.Stop();
-            _topMostTimer.Dispose();
-            _topMostTimer = null;
-        }
+        _topMostTimer?.Stop();
+        _topMostTimer?.Dispose();
+        _topMostTimer = null;
         base.OnFormClosed(e);
     }
 

@@ -65,15 +65,13 @@ public class LogToFolderProcesser : ITraceMessageProcesser, IDisposable
 
                 if (logsToWrite.Count > 0)
                 {
-                    using (var sw = new StreamWriter(_logFileNameGenerator(_logFolderPath), true, Encoding.UTF8))
+                    using var sw = new StreamWriter(_logFileNameGenerator(_logFolderPath), true, Encoding.UTF8);
+                    foreach (var log in logsToWrite)
                     {
-                        foreach (var log in logsToWrite)
-                        {
-                            await sw.WriteLineAsync(log);
-                        }
-
-                        await sw.FlushAsync();
+                        await sw.WriteLineAsync(log);
                     }
+
+                    await sw.FlushAsync();
                 }
 
                 // 每100毫秒检查一次队列
@@ -90,15 +88,13 @@ public class LogToFolderProcesser : ITraceMessageProcesser, IDisposable
             }
             finally
             {
-                using (var sw = new StreamWriter(_logFileNameGenerator(_logFolderPath), true, Encoding.UTF8))
+                using var sw = new StreamWriter(_logFileNameGenerator(_logFolderPath), true, Encoding.UTF8);
+                while (_logQueue.TryDequeue(out var logMessage))
                 {
-                    while (_logQueue.TryDequeue(out var logMessage))
-                    {
-                        await sw.WriteLineAsync(logMessage);
-                    }
-                    // 确保所有日志都被写入
-                    await sw.FlushAsync();
+                    await sw.WriteLineAsync(logMessage);
                 }
+                // 确保所有日志都被写入
+                await sw.FlushAsync();
             }
         }
     }

@@ -8,7 +8,7 @@
         <OutputType>Library</OutputType>
         <RootNamespace>XMSDK.Framework</RootNamespace>
         <AssemblyName>XMSDK.Framework</AssemblyName>
-        <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+        <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
         <FileAlignment>512</FileAlignment>
         <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
         <Deterministic>true</Deterministic>
@@ -145,7 +145,6 @@
         <Compile Include="Communication\SimpleTCP\SocketClientBuilder.cs" />
         <Compile Include="Communication\SimpleTCP\SocketServer.cs" />
         <Compile Include="Communication\SimpleTCP\SocketServerBuilder.cs" />
-        <Compile Include="Config\DataClassAttribute.cs" />
         <Compile Include="Config\DefaultValueAttribute.cs" />
         <Compile Include="Config\JsonConfig.cs" />
         <Compile Include="Config\PrivateProfileSetting.cs" />

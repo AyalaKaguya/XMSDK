@@ -53,27 +53,21 @@ public static class AesCryptHelper
             throw new ArgumentNullException(nameof(key));
         if (iv == null || iv.Length <= 0)
             throw new ArgumentNullException(nameof(iv));
-            
-        byte[] encrypted;
 
-        using (var aesAlg = Aes.Create())
+        using var aesAlg = Aes.Create();
+        aesAlg.Key = key;
+        aesAlg.IV = iv;
+
+        var encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
+
+        using var msEncrypt = new MemoryStream();
+        using (var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+        using (var swEncrypt = new StreamWriter(csEncrypt))
         {
-            aesAlg.Key = key;
-            aesAlg.IV = iv;
-
-            var encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
-
-            using (var msEncrypt = new MemoryStream())
-            {
-                using (var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
-                using (var swEncrypt = new StreamWriter(csEncrypt))
-                {
-                    swEncrypt.Write(plainText);
-                } // StreamWriter和CryptoStream在这里被关闭，确保数据被刷新到MemoryStream
+            swEncrypt.Write(plainText);
+        } // StreamWriter和CryptoStream在这里被关闭，确保数据被刷新到MemoryStream
                     
-                encrypted = msEncrypt.ToArray(); // 现在获取完整的加密数据
-            }
-        }
+        var encrypted = msEncrypt.ToArray(); // 现在获取完整的加密数据
 
         return encrypted;
     }
@@ -87,22 +81,16 @@ public static class AesCryptHelper
         if (iv == null || iv.Length <= 0)
             throw new ArgumentNullException(nameof(iv));
 
-        string plaintext = null;
+        using var aesAlg = Aes.Create();
+        aesAlg.Key = key;
+        aesAlg.IV = iv;
 
-        using (var aesAlg = Aes.Create())
-        {
-            aesAlg.Key = key;
-            aesAlg.IV = iv;
+        var decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
 
-            var decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
-
-            using (var msDecrypt = new MemoryStream(cipherText))
-            using (var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
-            using (var srDecrypt = new StreamReader(csDecrypt))
-            {
-                plaintext = srDecrypt.ReadToEnd();
-            }
-        }
+        using var msDecrypt = new MemoryStream(cipherText);
+        using var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read);
+        using var srDecrypt = new StreamReader(csDecrypt);
+        var plaintext = srDecrypt.ReadToEnd();
 
         return plaintext;
     }

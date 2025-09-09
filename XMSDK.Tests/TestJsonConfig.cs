@@ -20,14 +20,6 @@ public class SerializableConfig
     public string Value { get; set; }
 }
 
-// 标记 DataClass 的类
-[DataClass]
-public class DataClassConfig
-{
-    [DefaultValue(123)]
-    public int Number { get; set; }
-}
-
 [TestFixture]
 public class TestJsonConfig
 {
@@ -47,15 +39,6 @@ public class TestJsonConfig
         var path = GetTempFile();
         var config = new JsonConfig<SerializableConfig>(path);
         Assert.AreEqual("default-ser", config.Instance.Value);
-        File.Delete(path);
-    }
-
-    [Test]
-    public void Should_CreateConfig_WithDataClass()
-    {
-        var path = GetTempFile();
-        var config = new JsonConfig<DataClassConfig>(path);
-        Assert.AreEqual(123, config.Instance.Number);
         File.Delete(path);
     }
 }

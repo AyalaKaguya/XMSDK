@@ -9,58 +9,39 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="00f5f9fb-06c8-40bc-b2d3-3cf4e7adcd61" name="更改" comment="">
-      <change afterPath="$PROJECT_DIR$/XMSDK.Framework/Communication/PollingSignalHost.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.XMSDK/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.XMSDK/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ConsoleApplication1/CommandTransmissionTest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ConsoleApplication1/CommandTransmissionTest.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ConsoleApplication1/ConsoleApplication1.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/ConsoleApplication1/ConsoleApplication1.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ConsoleApplication1/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/ConsoleApplication1/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Communication/ExampleOSC.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Communication/ExampleOSC.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Communication/ObservableSignalCollection.cs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/CommandHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/CommandHandler.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/MessageProtocol.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/MessageProtocol.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/SignalHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/SignalHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/SocketBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/SocketBuilder.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/SocketClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/SocketClient.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/SocketClientBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/SocketClientBuilder.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/SocketServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/SocketServer.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/SocketServerBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Communication/SimpleTCP/SocketServerBuilder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Config/DataClassAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Config/DataClassAttribute.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Config/DataClassAttribute.cs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Config/DefaultValueAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Config/DefaultValueAttribute.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Config/JsonConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Config/JsonConfig.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Config/PrivateProfileSetting.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Config/PrivateProfileSetting.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Config/Singleton/BindLocalFileAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Config/Singleton/BindLocalFileAttribute.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Config/Singleton/LocalFileBinder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Config/Singleton/LocalFileBinder.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Crypt/AesCryptHelper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Crypt/AesCryptHelper.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Crypt/Base64CodeHelper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Crypt/Base64CodeHelper.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Crypt/DesCryptHelper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Crypt/DesCryptHelper.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Crypt/Md5HashHelper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Crypt/Md5HashHelper.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Crypt/ShaHashHelper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Crypt/ShaHashHelper.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Demo/LoggerDemoForm.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Demo/LoggerDemoForm.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/EventBus/AsyncBus.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/EventBus/AsyncBus.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/EventBus/DirectBus.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/EventBus/DirectBus.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/EventBus/EventContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/EventBus/EventContext.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Forms/LoggerList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Forms/LoggerList.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Forms/SplashScreen/SplashContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Forms/SplashScreen/SplashContext.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Forms/SplashScreen/SplashItem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Forms/SplashScreen/SplashItem.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Forms/SplashScreen/SplashWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Forms/SplashScreen/SplashWindow.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/License/LicenseInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/License/LicenseInfo.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/License/LicenseManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/License/LicenseManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Logger/ListViewLoggerProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Logger/ListViewLoggerProvider.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Logger/LoggingBuilderExtensions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Logger/LoggingBuilderExtensions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Logger/TraceMessage/ITraceMessageProcesser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Logger/TraceMessage/ITraceMessageProcesser.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Logger/TraceMessage/LogToConsoleProcesser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Logger/TraceMessage/LogToConsoleProcesser.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Logger/TraceMessage/LogToFileProcesser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Logger/TraceMessage/LogToFileProcesser.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Logger/TraceMessage/LogToFolderProcesser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Logger/TraceMessage/LogToFolderProcesser.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Logger/TraceMessage/LogToListBoxProcesser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Logger/TraceMessage/LogToListBoxProcesser.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/Logger/TraceMessage/TraceMessageReceiver.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/Logger/TraceMessage/TraceMessageReceiver.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Framework/XMSDK.Framework.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/XMSDK.Framework.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.Framework/packages.config" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Framework/packages.config" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Tests/TestAsyncBus.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Tests/TestAsyncBus.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Tests/TestCryptHelper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Tests/TestCryptHelper.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Tests/TestEventBus.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Tests/TestEventBus.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Tests/TestJsonConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Tests/TestJsonConfig.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Tests/TestLicenseManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Tests/TestLicenseManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/XMSDK.Tests/TestLocalFileBinder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Tests/TestLocalFileBinder.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/XMSDK.Tests/XMSDK.Tests.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.Tests/XMSDK.Tests.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/XMSDK.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/XMSDK.sln.DotSettings.user" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -218,7 +199,8 @@
       <workItem from="1757131722891" duration="10547000" />
       <workItem from="1757241255913" duration="3251000" />
       <workItem from="1757291159371" duration="7219000" />
-      <workItem from="1757311101055" duration="9504000" />
+      <workItem from="1757311101055" duration="9575000" />
+      <workItem from="1757377432425" duration="4830000" />
     </task>
     <task id="LOCAL-00001" summary="feat: 日志类，暂时开放供参考">
       <option name="closed" value="true" />
@@ -388,7 +370,15 @@
       <option name="project" value="LOCAL" />
       <updated>1757314488105</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="refactor: 使用简化的命名空间语法，优化代码结构">
+      <option name="closed" value="true" />
+      <created>1757324116475</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1757324116475</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -419,7 +409,8 @@
     <MESSAGE value="feat: 添加授权管理器及相关测试用例" />
     <MESSAGE value="feat: 更新授权管理器逻辑，简化验证流程并添加相关测试" />
     <MESSAGE value="feat: 添加数据驱动和可观察信号集合类，支持异步信号更新" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat: 添加数据驱动和可观察信号集合类，支持异步信号更新" />
+    <MESSAGE value="refactor: 使用简化的命名空间语法，优化代码结构" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor: 使用简化的命名空间语法，优化代码结构" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

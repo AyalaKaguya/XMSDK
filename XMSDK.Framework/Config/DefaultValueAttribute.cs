@@ -3,11 +3,7 @@ using System;
 namespace XMSDK.Framework.Config;
 
 [AttributeUsage(AttributeTargets.Property)]
-public class DefaultValueAttribute : Attribute
+public class DefaultValueAttribute(object value) : Attribute
 {
-    public object Value { get; }
-    public DefaultValueAttribute(object value)
-    {
-        Value = value;
-    }
+    public object Value { get; } = value;
 }

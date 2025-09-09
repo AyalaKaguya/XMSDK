@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -13,9 +14,9 @@ public class SocketServer
 {
     private readonly string _host;
     private readonly int _port;
-    private readonly Action<SocketServer, TcpClient> _onClientConnected;
-    private readonly Action<SocketServer, TcpClient> _onClientDisconnected;
-    private readonly Action<SocketServer, TcpClient, string> _onMessage;
+    private readonly Action<SocketServer, TcpClient>? _onClientConnected;
+    private readonly Action<SocketServer, TcpClient>? _onClientDisconnected;
+    private readonly Action<SocketServer, TcpClient, string>? _onMessage;
     private readonly TimeSpan _heartbeatTimeout;
     private readonly TimeSpan _heartbeatInterval;
     private readonly int _maxMessageLength;
@@ -23,9 +24,9 @@ public class SocketServer
     private readonly Dictionary<string, SignalHandler> _signals;
     private readonly Dictionary<string, CommandHandler> _commands;
 
-    private TcpListener _listener;
+    private TcpListener? _listener;
     private volatile bool _isRunning;
-    private Thread _listenerThread;
+    private Thread? _listenerThread;
 
     private readonly ConcurrentDictionary<TcpClient, ClientInfo> _clients = new();
 
@@ -33,8 +34,8 @@ public class SocketServer
 
     public IReadOnlyList<TcpClient> Clients => _clients.Keys.ToList();
 
-    internal SocketServer(string host, int port, Action<SocketServer, TcpClient> onClientConnected,
-        Action<SocketServer, TcpClient> onClientDisconnected, Action<SocketServer, TcpClient, string> onMessage,
+    internal SocketServer(string host, int port, Action<SocketServer, TcpClient>? onClientConnected,
+        Action<SocketServer, TcpClient>? onClientDisconnected, Action<SocketServer, TcpClient, string>? onMessage,
         TimeSpan heartbeatTimeout, TimeSpan heartbeatInterval, int maxMessageLength, int maxClientCount,
         Dictionary<string, SignalHandler>? signals, Dictionary<string, CommandHandler>? commands)
     {
@@ -127,17 +128,17 @@ public class SocketServer
     /// <param name="name"></param>
     /// <param name="value"></param>
     /// <typeparam name="T"></typeparam>
-    public void Signal<T>(string name, T value)
+    public void Signal<T>(string name, T value) where T : notnull
     {
         lock (_signalLock)
         {
             if (!_signals.TryGetValue(name, out var handler)) return;
 
             var oldValue = handler.GetValue();
-                
+
             // 只有在值真正发生变化时才处理
             if (Equals(oldValue, value)) return;
-                
+
             handler.SetValue(value);
 
             // 通知所有客户端信号变化
@@ -179,17 +180,20 @@ public class SocketServer
         catch (Exception ex)
         {
             // 记录异常但不抛出
-            Console.WriteLine($"Error closing client: {ex.Message}");
+            Trace.WriteLine($"Error closing client: {ex.Message}");
         }
     }
 
     private void ListenForClients()
     {
+        if (_listener is null)
+            throw new InvalidOperationException("Listener is not initialized");
+
         while (_isRunning)
         {
             try
             {
-                var client = _listener.AcceptTcpClient();
+                var client = _listener!.AcceptTcpClient();
 
                 if (_clients.Count >= _maxClientCount)
                 {
@@ -227,7 +231,7 @@ public class SocketServer
             catch (Exception ex)
             {
                 if (_isRunning) // 仅在服务器仍在运行时记录错误
-                    Console.WriteLine($"Error accepting client: {ex.Message}");
+                    Trace.WriteLine($"Error accepting client: {ex.Message}");
             }
         }
     }
@@ -246,7 +250,7 @@ public class SocketServer
                     break;
 
                 var message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                var lines = message.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                var lines = message.Split(['\n'], StringSplitOptions.RemoveEmptyEntries);
 
                 foreach (var line in lines)
                 {
@@ -262,7 +266,7 @@ public class SocketServer
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error handling client: {ex.Message}");
+            Trace.WriteLine($"Error handling client: {ex.Message}");
         }
         finally
         {
@@ -284,7 +288,7 @@ public class SocketServer
                 {
                     var oldValue = handler.GetValue();
                     var newValue = MessageProtocol.ConvertValue(signalValue, handler.ValueType);
-                        
+
                     // 只有在值真正发生变化时才处理
                     if (!Equals(oldValue, newValue))
                     {
@@ -333,11 +337,11 @@ public class SocketServer
         }
     }
 
-    private void SendToClient(TcpClient? client, string message)
+    private void SendToClient(TcpClient client, string message)
     {
         try
         {
-            if (client?.Connected == true)
+            if (client.Connected)
             {
                 var data = Encoding.UTF8.GetBytes(MessageProtocol.EscapeMultiLine(message) + "\n");
                 client.GetStream().Write(data, 0, data.Length);
@@ -345,7 +349,7 @@ public class SocketServer
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error sending to client: {ex.Message}");
+            Trace.WriteLine($"Error sending to client: {ex.Message}");
             Close(client);
         }
     }
@@ -373,7 +377,7 @@ public class SocketServer
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in heartbeat checker: {ex.Message}");
+                Trace.WriteLine($"Error in heartbeat checker: {ex.Message}");
             }
         }
     }

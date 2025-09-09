@@ -42,15 +42,13 @@ public class LogToFileProcesser : ITraceMessageProcesser, IDisposable
 
                 if (logsToWrite.Count > 0)
                 {
-                    using (var sw = new StreamWriter(_logFilePath, true, Encoding.UTF8))
+                    using var sw = new StreamWriter(_logFilePath, true, Encoding.UTF8);
+                    foreach (var log in logsToWrite)
                     {
-                        foreach (var log in logsToWrite)
-                        {
-                            await sw.WriteLineAsync(log);
-                        }
-
-                        await sw.FlushAsync();
+                        await sw.WriteLineAsync(log);
                     }
+
+                    await sw.FlushAsync();
                 }
 
                 await Task.Delay(100, _logCancellationTokenSource.Token); // 如果没有日志，稍作等待
@@ -71,7 +69,7 @@ public class LogToFileProcesser : ITraceMessageProcesser, IDisposable
     {
         _logCancellationTokenSource.Cancel();
         _logWriterTask.Wait();
-        _logCancellationTokenSource?.Dispose();
-        _logWriterTask?.Dispose();
+        _logCancellationTokenSource.Dispose();
+        _logWriterTask.Dispose();
     }
 }

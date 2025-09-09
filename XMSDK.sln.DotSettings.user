@@ -23,12 +23,7 @@
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=7020124F_002D9FFC_002D4AC3_002D8F3D_002DAAB8E0240759_002Ff_003AUnwrapPromise_00601_002Ecs_002Fl_003A_002E_002E_003F_002E_002E_003FAppData_003FRoaming_003FJetBrains_003FRider2025_002E2_003Fresharper_002Dhost_003FDecompilerCache_003Fdecompiler_003F3020f90f960f433086d545c4e07afdfd531820_003F8d_003F06101ca7_003FUnwrapPromise_00601_002Ecs/@EntryIndexedValue">ForceIncluded</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=1a74a003_002Da833_002D4aa5_002Da8a4_002D1fa2631fd6f6/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Tests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;TestAncestor&gt;&#xD;
-    &lt;TestId&gt;NUnit3x::28799320-02C9-45A5-A0F8-5DB4836BFC33::.NETFramework,Version=v4.6.2::XMSDK.Tests.TestLocalFileBinder&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;NUnit3x::28799320-02C9-45A5-A0F8-5DB4836BFC33::.NETFramework,Version=v4.6.2::XMSDK.Tests.TestJsonConfig&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;NUnit3x::28799320-02C9-45A5-A0F8-5DB4836BFC33::.NETFramework,Version=v4.6.2::XMSDK.Tests.TestCryptHelper&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;NUnit3x::28799320-02C9-45A5-A0F8-5DB4836BFC33::.NETFramework,Version=v4.6.2::XMSDK.Tests.TestEventBus&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;NUnit3x::28799320-02C9-45A5-A0F8-5DB4836BFC33::.NETFramework,Version=v4.6.2::XMSDK.Tests.TestAsyncBus&lt;/TestId&gt;&#xD;
-    &lt;TestId&gt;NUnit3x::28799320-02C9-45A5-A0F8-5DB4836BFC33::.NETFramework,Version=v4.6.2::XMSDK.Tests.TestLicenseManager&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::28799320-02C9-45A5-A0F8-5DB4836BFC33::.NETFramework,Version=v4.7.2::XMSDK.Tests.TestJsonConfig&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	<s:Boolean x:Key="/Default/ResxEditorPersonal/CheckedGroups/=ConsoleApplication1_002FProperties_002FResources/@EntryIndexedValue">False</s:Boolean>

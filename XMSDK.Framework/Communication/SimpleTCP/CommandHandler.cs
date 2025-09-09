@@ -5,10 +5,10 @@ namespace XMSDK.Framework.Communication.SimpleTCP;
 
 public class CommandHandler
 {
-    private readonly Action<SocketServer, TcpClient>? _onServerCommandExecuted;
+    private readonly Action<SocketServer, TcpClient?>? _onServerCommandExecuted;
     private readonly Action<SocketClient>? _onClientCommandExecuted;
 
-    public CommandHandler(Action<SocketServer, TcpClient> onServerCommandExecuted)
+    public CommandHandler(Action<SocketServer, TcpClient?> onServerCommandExecuted)
     {
         _onServerCommandExecuted = onServerCommandExecuted;
     }
@@ -18,7 +18,7 @@ public class CommandHandler
         _onClientCommandExecuted = onClientCommandExecuted;
     }
 
-    public void InvokeServer(SocketServer server, TcpClient client)
+    public void InvokeServer(SocketServer server, TcpClient? client)
     {
         _onServerCommandExecuted?.Invoke(server, client);
     }
