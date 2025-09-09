@@ -66,7 +66,6 @@ partial class SignalList
         this.listViewSignals.HideSelection = false;
         this.listViewSignals.MultiSelect = false;
         this.listViewSignals.DoubleClick += new System.EventHandler(this.ListViewSignals_DoubleClick);
-        
         // 默认列将在运行时动态创建
         
         // 

@@ -19,11 +19,6 @@ public partial class SignalList : UserControl
     private IVariableSignalNotifier? _notifier;
 
     /// <summary>
-    /// 信号值变化时触发的事件
-    /// </summary>
-    public event Action<string, object?, object?>? SignalValueChanged;
-
-    /// <summary>
     /// 可配置的显示列选项
     /// </summary>
     [Flags]
@@ -62,7 +57,6 @@ public partial class SignalList : UserControl
     public SignalList()
     {
         InitializeComponent();
-        SetupListView();
     }
 
     /// <summary>
@@ -111,6 +105,7 @@ public partial class SignalList : UserControl
             RefreshSignalList();
         }
     }
+
     private void UpdateColumnVisibility()
     {
         listViewSignals.BeginUpdate();
@@ -150,18 +145,6 @@ public partial class SignalList : UserControl
             listViewSignals.EndUpdate();
         }
     }
-    
-    private void SetupListView()
-    {
-        // ListView的基本设置已在Designer中完成
-        // 这里只需要确保一些运行时设置
-        listViewSignals.UseCompatibleStateImageBehavior = false;
-        listViewSignals.View = View.Details;
-        listViewSignals.FullRowSelect = true;
-        listViewSignals.GridLines = true;
-        listViewSignals.HideSelection = false;
-        listViewSignals.MultiSelect = false;
-    }
 
     private void RefreshSignalList()
     {
@@ -173,31 +156,47 @@ public partial class SignalList : UserControl
             foreach (var signal in _signals.OrderBy(s => s.Group).ThenBy(s => s.Name))
             {
                 var item = new ListViewItem(string.IsNullOrEmpty(signal.Name) ? signal.Address : signal.Name);
+
+                // 按照列的顺序添加子项，需要与UpdateColumnVisibility中的顺序保持一致
+                if ((_visibleColumns & DisplayColumns.Address) != 0)
+                    item.SubItems.Add(signal.Address);
                 
-                item.SubItems.Add(signal.Address);
-                item.SubItems.Add(FormatSignalValue(signal));
-                item.SubItems.Add(signal.LastUpdated.ToString("HH:mm:ss"));
-                item.SubItems.Add(GetTypeDisplayName(signal.SignalType));
-                item.SubItems.Add(signal.Group);
+                if ((_visibleColumns & DisplayColumns.Value) != 0)
+                    item.SubItems.Add(FormatSignalValue(signal));
+                
+                if ((_visibleColumns & DisplayColumns.UpdateTime) != 0)
+                    item.SubItems.Add(signal.LastUpdated.ToString("HH:mm:ss"));
+                
+                if ((_visibleColumns & DisplayColumns.Type) != 0)
+                    item.SubItems.Add(GetTypeDisplayName(signal.SignalType));
+                
+                if ((_visibleColumns & DisplayColumns.Group) != 0)
+                    item.SubItems.Add(signal.Group);
+                
+                if ((_visibleColumns & DisplayColumns.Description) != 0)
+                    item.SubItems.Add(signal.Description);
+                
+                if ((_visibleColumns & DisplayColumns.Unit) != 0)
+                    item.SubItems.Add(signal.Unit);
+                
+                if ((_visibleColumns & DisplayColumns.Format) != 0)
+                    item.SubItems.Add(signal.Format);
+                
+                if ((_visibleColumns & DisplayColumns.ReadOnlyStatus) != 0)
+                    item.SubItems.Add(signal.IsReadOnly ? "只读" : "读/写");
 
                 SetItemColors(item, signal);
-                
+
                 item.Tag = signal;
                 listViewSignals.Items.Add(item);
             }
-
-            // 自动调整列宽
-            foreach (ColumnHeader column in listViewSignals.Columns)
-            {
-                column.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
-            }
-
         }
         finally
         {
             listViewSignals.EndUpdate();
         }
     }
+
     private void UpdateContextMenuState()
     {
         menuItemShowDescription.Checked = (_visibleColumns & DisplayColumns.Description) != 0;
@@ -209,11 +208,10 @@ public partial class SignalList : UserControl
     private string FormatSignalValue(SignalInfo signal)
     {
         var valueStr = SignalConverterManager.ConvertToString(signal.CurrentValue, signal.SignalType, signal.Format);
-        
+
         if (!string.IsNullOrEmpty(signal.Unit))
         {
             valueStr += " " + signal.Unit;
-
         }
 
         return valueStr;
@@ -286,15 +284,41 @@ public partial class SignalList : UserControl
             {
                 if (item.Tag == signal)
                 {
-                    item.SubItems[2].Text = FormatSignalValue(signal);
-                    item.SubItems[3].Text = timestamp.ToString("HH:mm:ss");
+                    // 动态计算列索引
+                    int columnIndex = 0;
+                    
+                    // 名称列总是存在（作为主列），跳过
+                    if ((_visibleColumns & DisplayColumns.Name) != 0) columnIndex++;
+                    
+                    // 检查地址列
+                    if ((_visibleColumns & DisplayColumns.Address) != 0)
+                    {
+                        if (columnIndex < item.SubItems.Count)
+                            item.SubItems[columnIndex].Text = signal.Address;
+                        columnIndex++;
+                    }
+                    
+                    // 检查值列
+                    if ((_visibleColumns & DisplayColumns.Value) != 0)
+                    {
+                        if (columnIndex < item.SubItems.Count)
+                            item.SubItems[columnIndex].Text = FormatSignalValue(signal);
+                        columnIndex++;
+                    }
+                    
+                    // 检查更新时间列
+                    if ((_visibleColumns & DisplayColumns.UpdateTime) != 0)
+                    {
+                        if (columnIndex < item.SubItems.Count)
+                            item.SubItems[columnIndex].Text = timestamp.ToString("HH:mm:ss");
+                        columnIndex++;
+                    }
+                    
                     SetItemColors(item, signal);
                     break;
                 }
             }
         }
-
-        SignalValueChanged?.Invoke(address, oldValue, newValue);
     }
 
     #region 事件处理
@@ -310,14 +334,12 @@ public partial class SignalList : UserControl
         {
             var item = listViewSignals.SelectedItems[0];
             var signal = (SignalInfo)item.Tag;
-            
             if (!signal.IsReadOnly)
-            {
                 new SignalEditDialog(signal).Show();
-            }
+
             else
             {
-                MessageBox.Show("此信号为只读，无法编辑。", "信息", 
+                MessageBox.Show("此信号为只读，无法编辑。", "信息",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
@@ -326,6 +348,49 @@ public partial class SignalList : UserControl
     private void ListViewSignals_DoubleClick(object? sender, EventArgs e)
     {
         MenuItemEdit_Click(sender, e);
+    }
+
+
+    // 列显示选项事件处理
+    private void MenuItemShowDescription_Click(object? sender, EventArgs e)
+    {
+        ToggleColumnVisibility(DisplayColumns.Description);
+    }
+
+    private void MenuItemShowUnit_Click(object? sender, EventArgs e)
+    {
+        ToggleColumnVisibility(DisplayColumns.Unit);
+    }
+
+
+    private void MenuItemShowFormat_Click(object? sender, EventArgs e)
+    {
+        ToggleColumnVisibility(DisplayColumns.Format);
+    }
+
+    private void MenuItemShowReadOnly_Click(object? sender, EventArgs e)
+    {
+        ToggleColumnVisibility(DisplayColumns.ReadOnlyStatus);
+    }
+
+    private void MenuItemResetColumns_Click(object? sender, EventArgs e)
+    {
+        VisibleColumns = DisplayColumns.Default;
+    }
+
+    private void ToggleColumnVisibility(DisplayColumns column)
+    {
+        if ((_visibleColumns & column) != 0)
+        {
+            _visibleColumns &= ~column; // 移除该列
+        }
+        else
+        {
+            _visibleColumns |= column; // 添加该列
+        }
+        
+        UpdateColumnVisibility();
+        UpdateContextMenuState();
     }
 
     #endregion

@@ -25,23 +25,23 @@ namespace XMSDK.Framework.Demo
             {
                 // 创建增强版数据驱动
                 _dataDriver = new EnhancedMockDataDriver();
-                
+
                 // 创建增强版信号宿主
                 _enhancedSignalDemo = new EnhancedSignalDemo(_dataDriver, 1000); // 1秒轮询间隔
-                
+
                 // 设置信号源
                 signalList.SetSignalSource(_enhancedSignalDemo);
-                
+
                 // 配置显示列 - 展示所有ObservableSignal特性
-                signalList.VisibleColumns = SignalList.DisplayColumns.Default | 
-                                           SignalList.DisplayColumns.Description | 
-                                           SignalList.DisplayColumns.Unit | 
-                                           SignalList.DisplayColumns.Format |
-                                           SignalList.DisplayColumns.ReadOnlyStatus;
-                
+                signalList.VisibleColumns = SignalList.DisplayColumns.Default |
+                                            SignalList.DisplayColumns.Description |
+                                            SignalList.DisplayColumns.Unit |
+                                            SignalList.DisplayColumns.Format |
+                                            SignalList.DisplayColumns.ReadOnlyStatus;
+
                 // 监听信号变化事件
-                signalList.SignalValueChanged += OnSignalValueChanged;
-                
+                _enhancedSignalDemo.SignalValueChanged += OnSignalValueChanged;
+
                 lblStatus.Text = "状态: 演示系统已启动 - 显示完整的信号特性描述";
                 lblStatus.ForeColor = Color.Green;
             }
@@ -49,7 +49,7 @@ namespace XMSDK.Framework.Demo
             {
                 lblStatus.Text = $"状态: 初始化失败 - {ex.Message}";
                 lblStatus.ForeColor = Color.Red;
-                MessageBox.Show($"初始化演示失败：{ex.Message}", "错误", 
+                MessageBox.Show($"初始化演示失败：{ex.Message}", "错误",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -57,9 +57,9 @@ namespace XMSDK.Framework.Demo
         private void SignalSystemDemoForm_Load(object sender, EventArgs e)
         {
             lblStatus.Text = "状态: 演示运行中，信号自动轮询和刷新中...";
-            
+
             // 显示使用说明
-            var instructions = 
+            var instructions =
                 "演示说明：\n" +
                 "• 控制信号：可读写的布尔信号\n" +
                 "• 系统状态：只读的布尔信号\n" +
@@ -69,7 +69,7 @@ namespace XMSDK.Framework.Demo
                 "• 状态码：可读写的字节信号\n\n" +
                 "可以双击信号行进行编辑，系统会自动验证输入格式。\n" +
                 "信号值会定期自动变化以模拟真实环境。";
-            
+
             MessageBox.Show(instructions, "演示说明", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -80,10 +80,10 @@ namespace XMSDK.Framework.Demo
                 // 切换控制信号的值
                 bool currentValue = _enhancedSignalDemo.ControlSignal;
                 _enhancedSignalDemo.ControlSignal = !currentValue;
-                
+
                 lblStatus.Text = $"状态: 控制信号已切换为 {(!currentValue ? "开启" : "关闭")}";
                 lblStatus.ForeColor = Color.Blue;
-                
+
                 // 立即刷新显示
                 signalList.RefreshSignalValues();
             }
@@ -111,16 +111,17 @@ namespace XMSDK.Framework.Demo
             }
         }
 
-        private void OnSignalValueChanged(string address, object oldValue, object newValue)
+        private void OnSignalValueChanged(string address, object oldValue, object newValue, DateTime timestamp)
         {
             // 在UI线程上更新状态
             if (InvokeRequired)
             {
-                BeginInvoke(new Action<string, object, object>(OnSignalValueChanged), address, oldValue, newValue);
+                BeginInvoke(new Action<string, object, object, DateTime>(OnSignalValueChanged), address, oldValue, newValue,
+                    timestamp);
                 return;
             }
 
-            lblStatus.Text = $"状态: 信号 {address} 从 {oldValue} 变更为 {newValue} @ {DateTime.Now:HH:mm:ss}";
+            lblStatus.Text = $"状态: 信号 {address} 从 {oldValue} 变更为 {newValue} @ {timestamp:HH:mm:ss}";
             lblStatus.ForeColor = Color.Purple;
         }
 
