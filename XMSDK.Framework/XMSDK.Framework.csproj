@@ -136,7 +136,12 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="Communication\ExampleOSC.cs" />
-        <Compile Include="Communication\PollingSignalHost.cs" />
+        <Compile Include="Communication\Signal\IVariableSignalNotifier.cs" />
+        <Compile Include="Communication\Signal\ObservableSignalAttributes.cs" />
+        <Compile Include="Communication\Signal\PollingSignalHost.cs" />
+        <Compile Include="Communication\Signal\SignalInfo.cs" />
+        <Compile Include="Communication\Signal\SignalReflectionHelper.cs" />
+        <Compile Include="Communication\Signal\SignalValueConverters.cs" />
         <Compile Include="Communication\SimpleTCP\CommandHandler.cs" />
         <Compile Include="Communication\SimpleTCP\MessageProtocol.cs" />
         <Compile Include="Communication\SimpleTCP\SignalHandler.cs" />
@@ -169,6 +174,13 @@
         </Compile>
         <Compile Include="Forms\LoggerList.Designer.cs">
           <DependentUpon>LoggerList.cs</DependentUpon>
+        </Compile>
+        <Compile Include="Forms\SignalEditDialog.cs" />
+        <Compile Include="Forms\SignalList.cs">
+          <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Include="Forms\SignalList.Designer.cs">
+          <DependentUpon>SignalList.cs</DependentUpon>
         </Compile>
         <Compile Include="Forms\SplashScreen\SplashContext.cs" />
         <Compile Include="Forms\SplashScreen\SplashItem.cs" />
@@ -203,9 +215,6 @@
       <EmbeddedResource Include="Forms\SplashScreen\SplashWindow.resx">
         <DependentUpon>SplashWindow.cs</DependentUpon>
       </EmbeddedResource>
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="Forms\SiginalPanel\" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets"/>
 </Project>

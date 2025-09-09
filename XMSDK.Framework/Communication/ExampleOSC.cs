@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using XMSDK.Framework.Communication.Signal;
 
 namespace XMSDK.Framework.Communication;
 
@@ -26,6 +27,7 @@ public abstract class DataDriver
 /// <summary>
 /// 使用新的 PollingSignalHostV2 的示例：显式注册信号而非反射。
 /// </summary>
+[ObservableSignalCollection] // 标记类中存在信号可被观察，以实现诸如外部访问等功能
 public class ExampleOsc : PollingSignalHost
 {
     private volatile bool _d2837; // 本地缓存（回调中更新）
@@ -51,8 +53,9 @@ public class ExampleOsc : PollingSignalHost
     }
 
     /// <summary>
-    /// 暴露属性（读取本地缓存；设置同步调用底层写入——若需不阻塞可提供 SetD2837Async）
+    /// 暴露属性（读取本地缓存；设置同步调用底层写入）
     /// </summary>
+    [ObservableSignal(Name="某个控制信号", Address="D2837", Type=typeof(bool))]
     public bool D2837
     {
         get => _d2837;

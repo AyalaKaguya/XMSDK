@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using XMSDK.Framework.Communication;
+using XMSDK.Framework.Communication.Signal;
 
 namespace XMSDK.Tests;
 
@@ -47,7 +48,7 @@ public class TestPollingSignalHost
 
         // byte
         Assert.IsFalse(host.TryGetByte("by1", out var byv));
-        ok = await host.SetByteAsync("by1", (byte)7);
+        ok = await host.SetByteAsync("by1", 7);
         Assert.IsTrue(ok);
         Assert.IsTrue(host.TryGetByte("by1", out byv) && byv == 7);
 
