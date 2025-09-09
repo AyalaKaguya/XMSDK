@@ -135,7 +135,6 @@
         <Reference Include="System.Xml"/>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Communication\ExampleOSC.cs" />
         <Compile Include="Communication\Signal\IVariableSignalNotifier.cs" />
         <Compile Include="Communication\Signal\ObservableSignalAttributes.cs" />
         <Compile Include="Communication\Signal\PollingSignalHost.cs" />
@@ -160,12 +159,17 @@
         <Compile Include="Crypt\DesCryptHelper.cs" />
         <Compile Include="Crypt\Md5HashHelper.cs" />
         <Compile Include="Crypt\ShaHashHelper.cs" />
+        <Compile Include="Demo\EnhancedMockDataDriver.cs" />
+        <Compile Include="Demo\EnhancedSignalDemo.cs" />
         <Compile Include="Demo\LoggerDemoForm.cs">
           <SubType>Form</SubType>
         </Compile>
         <Compile Include="Demo\LoggerDemoForm.Designer.cs">
           <DependentUpon>LoggerDemoForm.cs</DependentUpon>
         </Compile>
+        <Compile Include="Demo\SignalSystemDemoForm.cs" />
+        <Compile Include="Demo\SignalSystemDemoForm.Designer.cs" />
+        <Compile Include="Demo\SignalSystemDemoProgram.cs" />
         <Compile Include="EventBus\AsyncBus.cs" />
         <Compile Include="EventBus\DirectBus.cs" />
         <Compile Include="EventBus\EventContext.cs" />

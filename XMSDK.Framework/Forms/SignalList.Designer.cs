@@ -10,20 +10,6 @@ partial class SignalList
     /// </summary>
     private IContainer components = null;
 
-    /// <summary> 
-    /// Clean up any resources being used.
-    /// </summary>
-    /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-    protected override void Dispose(bool disposing)
-    {
-        if (disposing && (components != null))
-        {
-            components.Dispose();
-        }
-
-        base.Dispose(disposing);
-    }
-
     #region Component Designer generated code
 
     /// <summary> 
@@ -32,68 +18,74 @@ partial class SignalList
     /// </summary>
     private void InitializeComponent()
     {
-        components = new Container();
+        this.components = new Container();
+        this.listViewSignals = new ListView();
+        this.contextMenuStrip = new ContextMenuStrip(this.components);
+        this.menuItemRefresh = new ToolStripMenuItem();
+        this.menuItemSeparator = new ToolStripSeparator();
+        this.menuItemEdit = new ToolStripMenuItem();
         
-        listViewSignals = new ListView();
-        contextMenuStrip = new ContextMenuStrip(components);
-        menuItemRefresh = new ToolStripMenuItem();
-        menuItemSeparator = new ToolStripSeparator();
-        menuItemEdit = new ToolStripMenuItem();
-        timerRefresh = new Timer(components);
-        
-        SuspendLayout();
+        this.contextMenuStrip.SuspendLayout();
+        this.SuspendLayout();
         
         // 
         // listViewSignals
         // 
-        listViewSignals.Dock = DockStyle.Fill;
-        listViewSignals.FullRowSelect = true;
-        listViewSignals.GridLines = true;
-        listViewSignals.View = View.Details;
-        listViewSignals.ContextMenuStrip = contextMenuStrip;
-        listViewSignals.DoubleClick += ListViewSignals_DoubleClick;
+        this.listViewSignals.Dock = DockStyle.Fill;
+        this.listViewSignals.FullRowSelect = true;
+        this.listViewSignals.GridLines = true;
+        this.listViewSignals.View = View.Details;
+        this.listViewSignals.ContextMenuStrip = this.contextMenuStrip;
+        this.listViewSignals.Name = "listViewSignals";
+        this.listViewSignals.UseCompatibleStateImageBehavior = false;
+        this.listViewSignals.HideSelection = false;
+        this.listViewSignals.MultiSelect = false;
+        this.listViewSignals.DoubleClick += new System.EventHandler(this.ListViewSignals_DoubleClick);
         
         // 添加列
-        listViewSignals.Columns.Add("描述", 150);
-        listViewSignals.Columns.Add("地址", 100);
-        listViewSignals.Columns.Add("信号值", 120);
-        listViewSignals.Columns.Add("更新时间", 120);
-        listViewSignals.Columns.Add("类型", 80);
-        listViewSignals.Columns.Add("分组", 80);
+        this.listViewSignals.Columns.Add("描述", 150);
+        this.listViewSignals.Columns.Add("地址", 100);
+        this.listViewSignals.Columns.Add("信号值", 120);
+        this.listViewSignals.Columns.Add("更新时间", 120);
+        this.listViewSignals.Columns.Add("类型", 80);
+        this.listViewSignals.Columns.Add("分组", 80);
         
         // 
         // contextMenuStrip
         // 
-        contextMenuStrip.Items.AddRange(new ToolStripItem[] {
-            menuItemRefresh,
-            menuItemSeparator,
-            menuItemEdit
+        this.contextMenuStrip.Items.AddRange(new ToolStripItem[] {
+            this.menuItemRefresh,
+            this.menuItemSeparator,
+            this.menuItemEdit
         });
+        this.contextMenuStrip.Name = "contextMenuStrip";
         
         // 
         // menuItemRefresh
         // 
-        menuItemRefresh.Text = "立即刷新(&R)";
-        menuItemRefresh.Click += MenuItemRefresh_Click;
+        this.menuItemRefresh.Name = "menuItemRefresh";
+        this.menuItemRefresh.Text = "立即刷新(&R)";
+        this.menuItemRefresh.Click += new System.EventHandler(this.MenuItemRefresh_Click);
+        
+        // 
+        // menuItemSeparator
+        // 
+        this.menuItemSeparator.Name = "menuItemSeparator";
         
         // 
         // menuItemEdit
         // 
-        menuItemEdit.Text = "编辑信号值(&E)";
-        menuItemEdit.Click += MenuItemEdit_Click;
-        
-        // 
-        // timerRefresh
-        // 
-        timerRefresh.Interval = 1000; // 1秒刷新一次
-        timerRefresh.Tick += TimerRefresh_Tick;
+        this.menuItemEdit.Name = "menuItemEdit";
+        this.menuItemEdit.Text = "编辑信号值(&E)";
+        this.menuItemEdit.Click += new System.EventHandler(this.MenuItemEdit_Click);
         
         // 
         // SignalList
         // 
-        Controls.Add(listViewSignals);
+        this.Controls.Add(this.listViewSignals);
         
-        ResumeLayout(false);
+        this.contextMenuStrip.ResumeLayout(false);
+        this.ResumeLayout(false);
     }
 
     #endregion
@@ -103,5 +95,4 @@ partial class SignalList
     private ToolStripMenuItem menuItemRefresh;
     private ToolStripSeparator menuItemSeparator;
     private ToolStripMenuItem menuItemEdit;
-    private Timer timerRefresh;
 }

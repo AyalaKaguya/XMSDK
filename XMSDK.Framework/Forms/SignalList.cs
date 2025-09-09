@@ -9,6 +9,7 @@ namespace XMSDK.Framework.Forms;
 
 /// <summary>
 /// 可观测信号列表控件，用于显示和管理信号集合。
+/// 所有刷新都由SignalSource的事件触发，不提供自动刷新功能。
 /// </summary>
 public partial class SignalList : UserControl
 {
@@ -17,27 +18,9 @@ public partial class SignalList : UserControl
     private IVariableSignalNotifier? _notifier;
 
     /// <summary>
-    /// 信号值变化��触发的事件
+    /// 信号值变化时触发的事件
     /// </summary>
     public event Action<string, object?, object?>? SignalValueChanged;
-
-    /// <summary>
-    /// 获取或设置是否启用自动刷新
-    /// </summary>
-    public bool AutoRefreshEnabled
-    {
-        get => timerRefresh.Enabled;
-        set => timerRefresh.Enabled = value;
-    }
-
-    /// <summary>
-    /// 获取或设置自动刷新间隔（毫秒）
-    /// </summary>
-    public int RefreshInterval
-    {
-        get => timerRefresh.Interval;
-        set => timerRefresh.Interval = Math.Max(100, value);
-    }
 
     public SignalList()
     {
@@ -81,7 +64,7 @@ public partial class SignalList : UserControl
     }
 
     /// <summary>
-    /// 手动刷新信号值
+    /// 手动刷新信号值（仅用于右键菜单的"立即刷新"功能）
     /// </summary>
     public void RefreshSignalValues()
     {
@@ -94,6 +77,8 @@ public partial class SignalList : UserControl
 
     private void SetupListView()
     {
+        // ListView的基本设置已在Designer中完成
+        // 这里只需要确保一些运行时设置
         listViewSignals.UseCompatibleStateImageBehavior = false;
         listViewSignals.View = View.Details;
         listViewSignals.FullRowSelect = true;
@@ -125,6 +110,7 @@ public partial class SignalList : UserControl
                 listViewSignals.Items.Add(item);
             }
 
+            // 自动调整列宽
             foreach (ColumnHeader column in listViewSignals.Columns)
             {
                 column.AutoResize(ColumnHeaderAutoResizeStyle.ColumnContent);
@@ -210,6 +196,7 @@ public partial class SignalList : UserControl
             signal.CurrentValue = newValue;
             signal.LastUpdated = timestamp;
 
+            // 更新对应的ListView项
             foreach (ListViewItem item in listViewSignals.Items)
             {
                 if (item.Tag == signal)
@@ -226,11 +213,6 @@ public partial class SignalList : UserControl
     }
 
     #region 事件处理
-
-    private void TimerRefresh_Tick(object? sender, EventArgs e)
-    {
-        RefreshSignalValues();
-    }
 
     private void MenuItemRefresh_Click(object? sender, EventArgs e)
     {
@@ -262,4 +244,17 @@ public partial class SignalList : UserControl
     }
 
     #endregion
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            if (_notifier != null)
+            {
+                _notifier.SignalValueChanged -= OnSignalValueChanged;
+            }
+            components?.Dispose();
+        }
+        base.Dispose(disposing);
+    }
 }

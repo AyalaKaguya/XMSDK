@@ -16,6 +16,7 @@ internal static class Program
     [STAThread]
     public static void Main(string[] args)
     {
+        SignalSystemDemoProgram.RunSignalSystemDemo();
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
 
