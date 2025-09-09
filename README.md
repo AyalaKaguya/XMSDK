@@ -9,13 +9,13 @@
 ## 计划
 
 - [X] 日志类
-- [ ] 电子许可
+- [X] 电子许可
 - [X] 配置文件
 - [X] TCP通信（声明式信号系统，自建协议，C/S架构）
-- [ ] WinForms组件（Splash Screen、Login Page等，用于快捷开发）
+- [X] WinForms组件（Splash Screen、Login Page等，用于快捷开发）
 - [X] 加密解密
 - [X] 事件总线
-- [ ] 工业通信
+- [X] 工业通信
 - [ ] 数据库
 
 ### 组件
