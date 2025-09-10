@@ -1,5 +1,4 @@
 using XMSDK.Framework.Communication.Signal;
-using HslCommunication;
 using HslCommunication.Profinet.Melsec;
 
 namespace HslCommunicationDemoForm
@@ -7,7 +6,7 @@ namespace HslCommunicationDemoForm
     [ObservableSignalCollection(Description = "三菱MC协议模拟驱动", Group = "Demo")]
     public class MockMelsecMcNet : PollingSignalHost
     {
-        public MockMelsecMcNet()
+        public MockMelsecMcNet(string ip = "127.0.0.1", int port = 6000)
         {
             var plc1 = new MelsecMcNet();
             plc1.NetworkNumber = 0;
@@ -15,7 +14,7 @@ namespace HslCommunicationDemoForm
             plc1.TargetIOStation = 1023;
             plc1.EnableWriteBitToWordRegister = false;
             plc1.ByteTransform.IsStringReverseByteWord = false;
-            plc1.CommunicationPipe = new HslCommunication.Core.Pipe.PipeTcpNet("127.0.0.1", 6000)
+            plc1.CommunicationPipe = new HslCommunication.Core.Pipe.PipeTcpNet(ip, port)
             {
                 ConnectTimeOut = 5000, // 连接超时时间，单位毫秒
                 ReceiveTimeOut = 10000, // 接收设备数据反馈的超时时间
@@ -144,7 +143,7 @@ namespace HslCommunicationDemoForm
                 writer: async (val, ct) => await plc1.WriteAsync("D720", val),
                 onChanged: (_, newV) => _d720 = newV
             );
-            
+
             Start();
         }
 

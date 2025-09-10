@@ -36,7 +36,9 @@ public partial class SignalList : UserControl
         Unit = 1 << 7,
         Format = 1 << 8,
         ReadOnlyStatus = 1 << 9,
-        Default = Name | Address | Value | UpdateTime | Type | Group
+        Default = Name | Address | Value | UpdateTime | Type | Group,
+        Detailed = Default | Description | ReadOnlyStatus,
+        All = Detailed | Unit | Format,
     }
 
     private DisplayColumns _visibleColumns = DisplayColumns.Default;
@@ -115,7 +117,7 @@ public partial class SignalList : UserControl
     }
 
     /// <summary>
-    /// 手动刷新信号值（仅用于右键菜单的"立即���新"功能）
+    /// 手动刷新信号值（仅用于右键菜单的"立即刷新"功能）
     /// </summary>
     public void RefreshSignalValues()
     {
