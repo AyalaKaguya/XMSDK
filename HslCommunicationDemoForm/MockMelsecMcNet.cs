@@ -173,35 +173,35 @@ namespace HslCommunicationDemoForm
         public bool M3260
         {
             get => _m3260;
-            set => SetBoolAsync("M3260", value);
+            set => SetBoolAsync("M3260", value).Wait();
         }
 
         [ObservableSignal(Address = "M3261", Description = "相机2触发", IsReadOnly = true, Group = "触发信号")]
         public bool M3261
         {
             get => _m3261;
-            set => SetBoolAsync("M3261", value);
+            set => SetBoolAsync("M3261", value).Wait();
         }
 
         [ObservableSignal(Address = "M3262", Description = "相机3触发", IsReadOnly = true, Group = "触发信号")]
         public bool M3262
         {
             get => _m3262;
-            set => SetBoolAsync("M3262", value);
+            set => SetBoolAsync("M3262", value).Wait();
         }
 
         [ObservableSignal(Address = "M3263", Description = "相机4触发", IsReadOnly = true, Group = "触发信号")]
         public bool M3263
         {
             get => _m3263;
-            set => SetBoolAsync("M3263", value);
+            set => SetBoolAsync("M3263", value).Wait();
         }
 
         [ObservableSignal(Address = "M3264", Description = "相机5触发", IsReadOnly = true, Group = "触发信号")]
         public bool M3264
         {
             get => _m3264;
-            set => SetBoolAsync("M3264", value);
+            set => SetBoolAsync("M3264", value).Wait();
         }
 
         // 相机完成信号属性
@@ -209,35 +209,35 @@ namespace HslCommunicationDemoForm
         public bool M3216
         {
             get => _m3216;
-            set => SetBoolAsync("M3216", value);
+            set => SetBoolAsync("M3216", value).Wait();
         }
 
         [ObservableSignal(Address = "M3217", Description = "相机2完成", IsReadOnly = false, Group = "完成信号")]
         public bool M3217
         {
             get => _m3217;
-            set => SetBoolAsync("M3217", value);
+            set => SetBoolAsync("M3217", value).Wait();
         }
 
         [ObservableSignal(Address = "M3218", Description = "相机3完成", IsReadOnly = false, Group = "完成信号")]
         public bool M3218
         {
             get => _m3218;
-            set => SetBoolAsync("M3218", value);
+            set => SetBoolAsync("M3218", value).Wait();
         }
 
         [ObservableSignal(Address = "M3219", Description = "相机4完成", IsReadOnly = false, Group = "完成信号")]
         public bool M3219
         {
             get => _m3219;
-            set => SetBoolAsync("M3219", value);
+            set => SetBoolAsync("M3219", value).Wait();
         }
 
         [ObservableSignal(Address = "M3220", Description = "相机5完成", IsReadOnly = false, Group = "完成信号")]
         public bool M3220
         {
             get => _m3220;
-            set => SetBoolAsync("M3220", value);
+            set => SetBoolAsync("M3220", value).Wait();
         }
 
         // 其他布尔信号
@@ -245,7 +245,7 @@ namespace HslCommunicationDemoForm
         public bool M3276
         {
             get => _m3276;
-            set => SetBoolAsync("M3276", value);
+            set => SetBoolAsync("M3276", value).Wait();
         }
 
         // 相机结果信号属性
@@ -253,42 +253,42 @@ namespace HslCommunicationDemoForm
         public short D703
         {
             get => _d703;
-            set => SetShortAsync("D703", value);
+            set => SetShortAsync("D703", value).Wait();
         }
 
         [ObservableSignal(Address = "D704", Description = "相机2结果", IsReadOnly = false, Group = "结果数据")]
         public short D704
         {
             get => _d704;
-            set => SetShortAsync("D704", value);
+            set => SetShortAsync("D704", value).Wait();
         }
 
         [ObservableSignal(Address = "D705", Description = "相机3结果", IsReadOnly = false, Group = "结果数据")]
         public short D705
         {
             get => _d705;
-            set => SetShortAsync("D705", value);
+            set => SetShortAsync("D705", value).Wait();
         }
 
         [ObservableSignal(Address = "D706", Description = "相机4结果", IsReadOnly = false, Group = "结果数据")]
         public short D706
         {
             get => _d706;
-            set => SetShortAsync("D706", value);
+            set => SetShortAsync("D706", value).Wait();
         }
 
         [ObservableSignal(Address = "D707", Description = "相机5结果", IsReadOnly = false, Group = "结果数据")]
         public short D707
         {
             get => _d707;
-            set => SetShortAsync("D707", value);
+            set => SetShortAsync("D707", value).Wait();
         }
 
         [ObservableSignal(Address = "D720", Description = "产品型号", IsReadOnly = false, Group = "控制信号")]
         public short D720
         {
             get => _d720;
-            set => SetShortAsync("D720", value);
+            set => SetShortAsync("D720", value).Wait();
         }
     }
 }

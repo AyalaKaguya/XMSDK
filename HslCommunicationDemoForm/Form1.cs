@@ -37,14 +37,28 @@ namespace HslCommunicationDemoForm
 
         private void OnSignalValueChanged(string address, object oldVal, object newVal, DateTime timestamp)
         {
-            Task.Run(() => ProcessSignalChange(address, oldVal, newVal, timestamp), _cancellationTokenSource.Token);
+            Task.Run(async () =>
+            {
+                using (var cts = CancellationTokenSource.CreateLinkedTokenSource(_cancellationTokenSource.Token))
+                {
+                    cts.CancelAfter(TimeSpan.FromSeconds(5));
+                    try
+                    {
+                        await ProcessSignalChange(address, oldVal, newVal, timestamp);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        Trace.WriteLine($"信号处理超时: {address}");
+                    }
+                }
+            }, _cancellationTokenSource.Token);
         }
 
         private async Task ProcessSignalChange(string address, object oldVal, object newVal, DateTime timestamp)
         {
             try
             {
-                // 根据信号地址处理不同的任务
+                // 根据信号地址处理不同的任务，这才是真上升沿触发
                 switch (address)
                 {
                     case "M3260":
@@ -52,36 +66,42 @@ namespace HslCommunicationDemoForm
                         {
                             await HandleCamera1Trigger();
                         }
+
                         break;
                     case "M3261":
                         if (newVal is bool triggerValue2 && triggerValue2)
                         {
                             await HandleCamera2Trigger();
                         }
+
                         break;
                     case "M3262":
                         if (newVal is bool triggerValue3 && triggerValue3)
                         {
                             await HandleCamera3Trigger();
                         }
+
                         break;
                     case "M3263":
                         if (newVal is bool triggerValue4 && triggerValue4)
                         {
                             await HandleCamera4Trigger();
                         }
+
                         break;
                     case "M3264":
                         if (newVal is bool triggerValue5 && triggerValue5)
                         {
                             await HandleCamera5Trigger();
                         }
+
                         break;
                     case "D720":
                         if (newVal is short resetValue && mmc.M3276)
                         {
                             Trace.WriteLine($"产品已切换到{resetValue}");
                         }
+
                         break;
                 }
             }
@@ -186,7 +206,7 @@ namespace HslCommunicationDemoForm
             mmc.D707 = 0;
             mmc.M3220 = false;
         }
-        
+
         #endregion
 
         protected override void Dispose(bool disposing)

@@ -27,7 +27,7 @@ namespace HslCommunicationDemoForm
             this.signalList1.Name = "signalList1";
             this.signalList1.Size = new System.Drawing.Size(800, 450);
             this.signalList1.TabIndex = 0;
-            this.signalList1.VisibleColumns = (SignalList.DisplayColumns.Detailed);
+            this.signalList1.VisibleColumns = ((XMSDK.Framework.Forms.SignalList.DisplayColumns)((((((((XMSDK.Framework.Forms.SignalList.DisplayColumns.Name | XMSDK.Framework.Forms.SignalList.DisplayColumns.Address) | XMSDK.Framework.Forms.SignalList.DisplayColumns.Value) | XMSDK.Framework.Forms.SignalList.DisplayColumns.UpdateTime) | XMSDK.Framework.Forms.SignalList.DisplayColumns.Type) | XMSDK.Framework.Forms.SignalList.DisplayColumns.Group) | XMSDK.Framework.Forms.SignalList.DisplayColumns.Description) | XMSDK.Framework.Forms.SignalList.DisplayColumns.ReadOnlyStatus)));
             // 
             // Form1
             // 
@@ -36,7 +36,7 @@ namespace HslCommunicationDemoForm
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.signalList1);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "高并发三菱PLC信号模拟程序";
             this.ResumeLayout(false);
         }
 
