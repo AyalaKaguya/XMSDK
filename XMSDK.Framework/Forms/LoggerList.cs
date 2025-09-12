@@ -126,8 +126,11 @@ public partial class LoggerList : UserControl
         {
             if (_pendingLogEntries.Count > 0)
             {
-                toProcess = new List<LogEntry>(_pendingLogEntries);
-                _pendingLogEntries.Clear();
+                // 限制单次处理数量，避免UI卡顿
+                int batchSize = 100;
+                int count = Math.Min(_pendingLogEntries.Count, batchSize);
+                toProcess = _pendingLogEntries.GetRange(0, count);
+                _pendingLogEntries.RemoveRange(0, count);
             }
         }
         if (toProcess == null || toProcess.Count == 0) return;
@@ -138,15 +141,16 @@ public partial class LoggerList : UserControl
             foreach (var entry in toProcess)
             {
                 if (!IsLevelEnabled(entry.LogLevel))
-                    continue; // 被过滤: 直接丢弃
+                    continue;
                 var item = CreateListViewItem(entry);
                 listViewLogs.Items.Add(item);
             }
-            TrimExcessFromHead();
+            // 批量移除多余日志
+            while (listViewLogs.Items.Count > _maxLogCount)
+                listViewLogs.Items.RemoveAt(0);
+
             if (_autoScroll && listViewLogs.Items.Count > 0)
-            {
                 listViewLogs.EnsureVisible(listViewLogs.Items.Count - 1);
-            }
         }
         finally
         {

@@ -406,24 +406,43 @@ public abstract class PollingSignalHost : IDisposable, IVariableSignalNotifier
 
     private async Task PollOnceAsync(CancellationToken token)
     {
-        foreach (var kv in _signals)
+        // 快照当前信号集合，避免枚举期间可能的并发修改影响
+        var snapshot = _signals.ToArray();
+
+        // 预检查取消
+        token.ThrowIfCancellationRequested();
+
+        var tasks = new List<Task>(snapshot.Length);
+        foreach (var kv in snapshot)
         {
-            token.ThrowIfCancellationRequested();
+            var key = kv.Key;
+            var entry = kv.Value;
+            tasks.Add(PollSignalAsync(key, entry, token));
+        }
+
+        // 并发等待：只有取消会冒泡；其它异常在内部被捕获并上报
+        await Task.WhenAll(tasks).ConfigureAwait(false);
+
+        await OnAfterCycleAsync(token).ConfigureAwait(false);
+
+        // 本地函数：封装单个信号的轮询与异常处理
+        async Task PollSignalAsync(string address, ISignalEntry entry, CancellationToken ct)
+        {
+            ct.ThrowIfCancellationRequested();
             try
             {
-                await kv.Value.PollAsync(token).ConfigureAwait(false);
+                await entry.PollAsync(ct).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
+                // 继续向上抛出以终止本轮
                 throw;
             }
             catch (Exception ex)
             {
-                OnSignalException(kv.Key, ex);
+                OnSignalException(address, ex);
             }
         }
-
-        await OnAfterCycleAsync(token).ConfigureAwait(false);
     }
 
     /// <summary>
